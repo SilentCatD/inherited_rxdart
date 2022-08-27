@@ -10,7 +10,7 @@ import 'type_def.dart';
 class RxProvider<B extends RxBloc> extends SingleChildStatefulWidget {
   RxProvider({
     Key? key,
-    required RxBlocCreate<B> create,
+    required Create<B> create,
     required Widget child,
   })  : _bloc = create(),
         _isCreated = true,

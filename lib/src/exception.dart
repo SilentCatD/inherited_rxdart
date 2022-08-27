@@ -15,3 +15,21 @@ class RxBlocMustBeOfSpecificType implements Exception {
     return "Bloc must be of specific type";
   }
 }
+
+class ServiceNotProvidedException implements Exception {
+  ServiceNotProvidedException(this.type);
+
+  final Type type;
+
+  @override
+  String toString() {
+    return "Can't find Provided Service of type $type";
+  }
+}
+
+class ServiceMustBeOfSpecificType implements Exception {
+  @override
+  String toString() {
+    return "Service must be of specific type";
+  }
+}
