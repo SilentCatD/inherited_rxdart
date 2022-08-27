@@ -53,7 +53,7 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("build MyHomePage");
+    debugPrint("build MyHomePage");
     return Scaffold(
       appBar: AppBar(),
       body: Center(
@@ -65,7 +65,7 @@ class MyHomePage extends StatelessWidget {
                 shouldRebuildWidget: (state1, state2) {
               return state1.text != state2.text;
             }, builder: (context, state) {
-              print("build text");
+              debugPrint("build text");
               return Text("state text: ${state.text}");
             }),
             TextField(
@@ -113,10 +113,10 @@ class MyCounter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("build MyCounter");
+    debugPrint("build MyCounter");
     return RxBuilder<CounterBloc, MyState>(
       builder: (context, state) {
-        print("build BlocBuilder");
+        debugPrint("build BlocBuilder");
         return Text(state.number.toString());
       },
     );
@@ -128,7 +128,7 @@ class MyNested extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("build MyNested");
+    debugPrint("build MyNested");
     return RxListener<CounterBloc, String>(
       listener: (context, state) {
         if (state == "showDialog") {
@@ -149,7 +149,7 @@ class MyNested extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               RxBuilder<CounterBloc, MyState>(builder: (context, state) {
-                print("build BlocBuilder 2 ");
+                debugPrint("build BlocBuilder 2 ");
                 return Text(state.number.toString());
               }),
               ElevatedButton(
