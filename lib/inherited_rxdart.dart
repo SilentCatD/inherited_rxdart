@@ -3,7 +3,7 @@ library inherited_rx_dart;
 export 'package:rxdart/src/rx.dart';
 
 export 'src/exception.dart'
-    show RxBlocMustBeOfSpecificType, RxBlocNotProvidedException;
+    show RxBlocMustBeOfSpecificTypeException, RxBlocNotProvidedException;
 export 'src/multi_service_provider.dart' show MultiServiceProvider;
 export 'src/rx_bloc.dart' show RxBloc, EventDispatcher;
 export 'src/rx_builder.dart' show RxBuilder;

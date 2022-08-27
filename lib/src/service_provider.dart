@@ -16,7 +16,7 @@ class ServiceProvider<S> extends SingleChildStatefulWidget {
 
   static T of<T>(BuildContext context) {
     if (T == dynamic) {
-      throw ServiceMustBeOfSpecificType();
+      throw ServiceMustBeOfSpecificTypeException();
     }
     final element = context.getElementForInheritedWidgetOfExactType<
         _InheritedServiceScope<T>>() as _InheritedServiceElement<T>?;

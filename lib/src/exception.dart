@@ -9,7 +9,7 @@ class RxBlocNotProvidedException implements Exception {
   }
 }
 
-class RxBlocMustBeOfSpecificType implements Exception {
+class RxBlocMustBeOfSpecificTypeException implements Exception {
   @override
   String toString() {
     return "Bloc must be of specific type";
@@ -27,7 +27,7 @@ class ServiceNotProvidedException implements Exception {
   }
 }
 
-class ServiceMustBeOfSpecificType implements Exception {
+class ServiceMustBeOfSpecificTypeException implements Exception {
   @override
   String toString() {
     return "Service must be of specific type";

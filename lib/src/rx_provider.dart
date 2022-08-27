@@ -29,7 +29,7 @@ class RxProvider<B extends RxBloc> extends SingleChildStatefulWidget {
 
   static T of<T extends RxBloc>(BuildContext context, {bool listen = true}) {
     if (T == dynamic) {
-      throw RxBlocMustBeOfSpecificType();
+      throw RxBlocMustBeOfSpecificTypeException();
     }
     final element = context
             .getElementForInheritedWidgetOfExactType<_InheritedBlocScope<T>>()
