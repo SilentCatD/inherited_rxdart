@@ -67,7 +67,11 @@ class _RxProviderState<B extends RxBloc>
   void dispose() {
     if (_isCreated) {
       _bloc.dispose();
+      if (_bloc is EventDispatcher) {
+        (_bloc as EventDispatcher).disposeEventStream();
+      }
     }
+
     return super.dispose();
   }
 

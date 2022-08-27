@@ -38,4 +38,11 @@ mixin EventDispatcher<E> {
 
   @nonVirtual
   void notify(E value) => notificationSubject.add(value);
+
+  @nonVirtual
+  void disposeEventStream() {
+    notificationSubject.close();
+  }
 }
+
+
