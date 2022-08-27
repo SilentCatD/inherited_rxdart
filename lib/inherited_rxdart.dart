@@ -1,6 +1,6 @@
 library inherited_rx_dart;
 
-export 'package:rxdart/src/rx.dart';
+export 'package:rxdart/rxdart.dart';
 
 export 'src/exception.dart'
     show
