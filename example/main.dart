@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../inherited_rx_dart.dart';
+import 'package:inherited_rx_dart/inherited_rx_dart.dart';
 
 class MyState {
   final int number;
