@@ -2,33 +2,63 @@ import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 
 abstract class RxBlocBase<S> {
-  RxBlocBase(S initialState)
-      : stateSubject = BehaviorSubject<S>.seeded(initialState);
-
-  @protected
-  @nonVirtual
-  final BehaviorSubject<S> stateSubject;
-
-  @nonVirtual
-  S get state => stateSubject.value;
+  const RxBlocBase(Subject stateSubject) : _stateSubject = stateSubject;
 
   @nonVirtual
   @protected
-  set state(S value) => stateSubject.value = value;
+  final Subject _stateSubject;
 
-  @nonVirtual
-  Stream<S> get stateStream => stateSubject.stream.distinct();
+  S get state;
+
+  @protected
+  Subject get subject => _stateSubject;
+
+  Stream get stateStream => subject.stream;
 
   @mustCallSuper
   Future<void> init() async {}
 
   @mustCallSuper
   Future<void> dispose() {
-    return stateSubject.close();
+    return _stateSubject.close();
   }
 }
 
-abstract class RxBloc<S, N> extends RxBlocBase<S> {
+abstract class RxSingleStateBloc extends RxBlocBase<RxSingleStateBloc> {
+  RxSingleStateBloc() : super(PublishSubject());
+
+  @override
+  @nonVirtual
+  RxSingleStateBloc get state => this;
+
+  @protected
+  @nonVirtual
+  void stateChange() {
+    _stateSubject.add(null);
+  }
+}
+
+abstract class RxSilentBloc<S> extends RxBlocBase<S> {
+  RxSilentBloc(S initialState) : super(BehaviorSubject<S>.seeded(initialState));
+
+  @override
+  @protected
+  BehaviorSubject<S> get subject => _stateSubject as BehaviorSubject<S>;
+
+  @override
+  @nonVirtual
+  S get state => subject.value;
+
+  @nonVirtual
+  @protected
+  set state(S value) => subject.value = value;
+
+  @override
+  @nonVirtual
+  Stream<S> get stateStream => subject.stream.distinct();
+}
+
+abstract class RxBloc<S, N> extends RxSilentBloc<S> {
   RxBloc(S initialState) : super(initialState);
 
   @protected

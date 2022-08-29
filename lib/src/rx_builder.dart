@@ -4,8 +4,8 @@ import 'rx_bloc.dart';
 import 'rx_provider.dart';
 import 'type_def.dart';
 
-class RxBuilder<B extends RxBlocBase<S>, S> extends StatefulWidget {
-  const RxBuilder({
+class _RxBuilderBase<B extends RxBlocBase, S> extends StatefulWidget {
+  const _RxBuilderBase({
     Key? key,
     required this.builder,
     this.shouldRebuildWidget,
@@ -14,11 +14,11 @@ class RxBuilder<B extends RxBlocBase<S>, S> extends StatefulWidget {
   final ShouldRebuildWidget<S>? shouldRebuildWidget;
 
   @override
-  State<RxBuilder<B, S>> createState() => _RxBuilderState<B, S>();
+  State<_RxBuilderBase<B, S>> createState() => _RxBuilderBaseState<B, S>();
 }
 
-class _RxBuilderState<B extends RxBlocBase<S>, S>
-    extends State<RxBuilder<B, S>> {
+class _RxBuilderBaseState<B extends RxBlocBase, S>
+    extends State<_RxBuilderBase<B, S>> {
   Widget? _cachedWidget;
   S? _cachedState;
   late S _state;
@@ -43,4 +43,27 @@ class _RxBuilderState<B extends RxBlocBase<S>, S>
     }
     return newWidget!;
   }
+}
+
+class RxBuilder<B extends RxSilentBloc<S>, S> extends _RxBuilderBase<B, S> {
+  const RxBuilder({
+    Key? key,
+    required RxBlocWidgetBuilder<S> builder,
+    ShouldRebuildWidget<S>? shouldRebuildWidget,
+  }) : super(
+            key: key,
+            builder: builder,
+            shouldRebuildWidget: shouldRebuildWidget);
+}
+
+class RxSingleStateBuilder<B extends RxSingleStateBloc>
+    extends _RxBuilderBase<B, B> {
+  const RxSingleStateBuilder({
+    Key? key,
+    required RxBlocWidgetBuilder<B> builder,
+    ShouldRebuildWidget<B>? shouldRebuildWidget,
+  }) : super(
+            key: key,
+            builder: builder,
+            shouldRebuildWidget: shouldRebuildWidget);
 }
