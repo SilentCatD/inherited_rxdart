@@ -7,7 +7,7 @@ import 'exception.dart';
 import 'rx_bloc.dart';
 import 'type_def.dart';
 
-class RxProvider<B extends RxBloc> extends SingleChildStatefulWidget {
+class RxProvider<B extends RxBlocBase> extends SingleChildStatefulWidget {
   RxProvider({
     Key? key,
     required Create<B> create,
@@ -27,7 +27,7 @@ class RxProvider<B extends RxBloc> extends SingleChildStatefulWidget {
   final B _bloc;
   final bool _isCreated;
 
-  static T of<T extends RxBloc>(BuildContext context, {bool listen = true}) {
+  static T of<T extends RxBlocBase>(BuildContext context, {bool listen = true}) {
     if (T == dynamic) {
       throw RxBlocMustBeOfSpecificTypeException();
     }
@@ -48,7 +48,7 @@ class RxProvider<B extends RxBloc> extends SingleChildStatefulWidget {
   State<RxProvider<B>> createState() => _RxProviderState<B>();
 }
 
-class _RxProviderState<B extends RxBloc>
+class _RxProviderState<B extends RxBlocBase>
     extends SingleChildState<RxProvider<B>> {
   late final B _bloc;
   late final bool _isCreated;
@@ -67,11 +67,7 @@ class _RxProviderState<B extends RxBloc>
   void dispose() {
     if (_isCreated) {
       _bloc.dispose();
-      if (_bloc is EventDispatcher) {
-        (_bloc as EventDispatcher).disposeEventStream();
-      }
     }
-
     return super.dispose();
   }
 
@@ -84,7 +80,7 @@ class _RxProviderState<B extends RxBloc>
   }
 }
 
-class _InheritedBlocScope<B extends RxBloc> extends InheritedWidget {
+class _InheritedBlocScope<B extends RxBlocBase> extends InheritedWidget {
   final B bloc;
 
   const _InheritedBlocScope(
@@ -102,7 +98,7 @@ class _InheritedBlocScope<B extends RxBloc> extends InheritedWidget {
   }
 }
 
-class _InheritedBlocElement<B extends RxBloc> extends InheritedElement {
+class _InheritedBlocElement<B extends RxBlocBase> extends InheritedElement {
   B get bloc => widget.bloc;
   StreamSubscription? _streamSubscription;
   bool _dirty = false;
@@ -160,11 +156,11 @@ class _InheritedBlocElement<B extends RxBloc> extends InheritedElement {
 }
 
 extension RxContext on BuildContext {
-  B read<B extends RxBloc>() {
+  B read<B extends RxBlocBase>() {
     return RxProvider.of<B>(this, listen: false);
   }
 
-  B watch<B extends RxBloc>() {
+  B watch<B extends RxBlocBase>() {
     return RxProvider.of<B>(this, listen: true);
   }
 }

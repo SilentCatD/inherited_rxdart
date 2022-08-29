@@ -6,48 +6,57 @@ import 'rx_bloc.dart';
 import 'rx_provider.dart';
 import 'type_def.dart';
 
-class RxListener<B extends RxBloc, E> extends StatefulWidget {
+class RxListener<B extends RxBloc<S, N>, S, N> extends StatefulWidget {
   const RxListener({
     Key? key,
-    required this.listener,
+    this.notificationCallback,
+    this.stateCallback,
     required this.child,
   }) : super(key: key);
-  final RxBlocEventListener<E> listener;
+  final RxBlocEventListener<N>? notificationCallback;
+  final RxBlocEventListener<S>? stateCallback;
+
   final Widget child;
 
   @override
-  State<RxListener<B, E>> createState() => _RxListenerState<B, E>();
+  State<RxListener<B, S, N>> createState() => _RxListenerState<B, S, N>();
 }
 
-class _RxListenerState<B extends RxBloc, E> extends State<RxListener<B, E>> {
-  StreamSubscription<E>? _subscription;
+class _RxListenerState<B extends RxBloc<S, N>, S, N>
+    extends State<RxListener<B, S, N>> {
+  StreamSubscription<N>? _notificationSubscription;
+  StreamSubscription<S>? _stateSubscription;
   late B _bloc;
 
   @override
   void initState() {
     super.initState();
     _bloc = context.read<B>();
-    assert(_bloc is EventDispatcher<E>);
     _sub();
   }
 
   void _sub() {
-    _subscription =
-        (_bloc as EventDispatcher<E>).notificationStream.listen((event) {
+    _notificationSubscription = _bloc.notificationStream.listen((notification) {
       if (!mounted) return;
-      widget.listener(context, event);
+      widget.notificationCallback?.call(context, notification);
+    });
+    _stateSubscription = _bloc.stateStream.listen((state) {
+      if (!mounted) return;
+      widget.stateCallback?.call(context, state);
     });
   }
 
   void _unSub() {
-    _subscription?.cancel();
-    _subscription = null;
+    _notificationSubscription?.cancel();
+    _stateSubscription?.cancel();
+    _notificationSubscription = null;
+    _stateSubscription = null;
   }
 
   @override
   void dispose() {
     _unSub();
-    super.dispose();
+    return super.dispose();
   }
 
   @override

@@ -4,7 +4,7 @@ import 'rx_bloc.dart';
 import 'rx_provider.dart';
 import 'type_def.dart';
 
-class RxBuilder<B extends RxBloc<S>, S> extends StatefulWidget {
+class RxBuilder<B extends RxBlocBase<S>, S> extends StatefulWidget {
   const RxBuilder({
     Key? key,
     required this.builder,
@@ -17,7 +17,8 @@ class RxBuilder<B extends RxBloc<S>, S> extends StatefulWidget {
   State<RxBuilder<B, S>> createState() => _RxBuilderState<B, S>();
 }
 
-class _RxBuilderState<B extends RxBloc<S>, S> extends State<RxBuilder<B, S>> {
+class _RxBuilderState<B extends RxBlocBase<S>, S>
+    extends State<RxBuilder<B, S>> {
   Widget? _cachedWidget;
   S? _cachedState;
   late S _state;

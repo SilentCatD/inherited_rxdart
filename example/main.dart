@@ -12,7 +12,7 @@ class MyState {
   }
 }
 
-class CounterBloc extends RxBloc<MyState> with EventDispatcher<String> {
+class CounterBloc extends RxBloc<MyState, String> {
   CounterBloc(MyState initialState) : super(initialState);
 
   void showDialog() {
@@ -129,8 +129,8 @@ class MyNested extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     debugPrint("build MyNested");
-    return RxListener<CounterBloc, String>(
-      listener: (context, state) {
+    return RxListener<CounterBloc, MyState, String>(
+      notificationCallback: (context, state) {
         if (state == "showDialog") {
           showDialog(
               context: context,
@@ -140,6 +140,9 @@ class MyNested extends StatelessWidget {
                 );
               });
         }
+      },
+      stateCallback: (context, state) {
+        debugPrint("this is stateCallback");
       },
       child: Scaffold(
         appBar: AppBar(),

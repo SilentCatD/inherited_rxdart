@@ -1,12 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 
-abstract class RxBloc<S> {
-  RxBloc(this.initialState)
+abstract class RxBlocBase<S> {
+  RxBlocBase(S initialState)
       : stateSubject = BehaviorSubject<S>.seeded(initialState);
-
-  @protected
-  final S initialState;
 
   @protected
   final BehaviorSubject<S> stateSubject;
@@ -15,6 +12,7 @@ abstract class RxBloc<S> {
   S get state => stateSubject.value;
 
   @nonVirtual
+  @protected
   set state(S value) => stateSubject.value = value;
 
   @nonVirtual
@@ -29,18 +27,23 @@ abstract class RxBloc<S> {
   }
 }
 
-mixin EventDispatcher<E> {
+abstract class RxBloc<S, N> extends RxBlocBase<S> {
+  RxBloc(S initialState) : super(initialState);
+
   @protected
-  final PublishSubject<E> notificationSubject = PublishSubject<E>();
+  final PublishSubject<N> notificationSubject = PublishSubject<N>();
 
   @nonVirtual
-  Stream<E> get notificationStream => notificationSubject.stream;
+  @protected
+  void notify(N value) => notificationSubject.add(value);
 
   @nonVirtual
-  void notify(E value) => notificationSubject.add(value);
+  Stream<N> get notificationStream => notificationSubject.stream;
 
-  @nonVirtual
-  void disposeEventStream() {
-    notificationSubject.close();
+  @mustCallSuper
+  @override
+  Future<void> dispose() async {
+    await super.dispose();
+    return notificationSubject.close();
   }
 }

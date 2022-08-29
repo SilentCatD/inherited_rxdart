@@ -3,7 +3,7 @@ import 'rx_bloc.dart';
 import 'rx_provider.dart';
 import 'type_def.dart';
 
-class RxSelector<B extends RxBloc<S>, S, T> extends StatefulWidget {
+class RxSelector<B extends RxBlocBase<S>, S, T> extends StatefulWidget {
   const RxSelector({
     Key? key,
     required this.stateRebuildSelector,
@@ -16,7 +16,7 @@ class RxSelector<B extends RxBloc<S>, S, T> extends StatefulWidget {
   State<RxSelector<B, S, T>> createState() => _RxSelectorState<B, S, T>();
 }
 
-class _RxSelectorState<B extends RxBloc<S>, S, T>
+class _RxSelectorState<B extends RxBlocBase<S>, S, T>
     extends State<RxSelector<B, S, T>> {
   Widget? _cachedWidget;
   T? _cachedValue;
