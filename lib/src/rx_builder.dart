@@ -61,9 +61,5 @@ class RxSingleStateBuilder<B extends RxSingleStateBloc>
   const RxSingleStateBuilder({
     Key? key,
     required RxBlocWidgetBuilder<B> builder,
-    ShouldRebuildWidget<B>? shouldRebuildWidget,
-  }) : super(
-            key: key,
-            builder: builder,
-            shouldRebuildWidget: shouldRebuildWidget);
+  }) : super(key: key, builder: builder);
 }
