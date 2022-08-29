@@ -28,12 +28,11 @@ abstract class RxSingleStateBloc extends RxBlocBase<RxSingleStateBloc> {
   RxSingleStateBloc() : super(PublishSubject());
 
   @override
-  @nonVirtual
   RxSingleStateBloc get state => this;
 
   @protected
   @nonVirtual
-  void stateChange() {
+  void stateChanged() {
     _stateSubject.add(null);
   }
 }

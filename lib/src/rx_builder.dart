@@ -32,9 +32,9 @@ class _RxBuilderBaseState<B extends RxBlocBase, S>
   @override
   Widget build(BuildContext context) {
     Widget? newWidget;
-    final shouldRebuild =
-        widget.shouldRebuildWidget?.call(_cachedState!, _state) ?? true;
-    if (_cachedWidget == null || shouldRebuild) {
+
+    if (_cachedWidget == null ||
+        (widget.shouldRebuildWidget?.call(_cachedState as S, _state) ?? true)) {
       newWidget = widget.builder(context, _state);
       _cachedWidget = newWidget;
       _cachedState = _state;
