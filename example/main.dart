@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:inherited_rxdart/inherited_rxdart.dart';
 
+void main() => runApp(const App());
+
 class MyState {
   final int number;
   final String text;
@@ -32,7 +34,39 @@ class CounterBloc extends RxBloc<MyState, String> {
   }
 }
 
-void main() => runApp(const App());
+class CounterBloc2 extends RxSilentBloc<int> {
+  CounterBloc2(super.initialState);
+
+  void increase() {
+    state++;
+  }
+
+  void decrease() {
+    state--;
+  }
+}
+
+class CounterBloc3 extends RxSingleStateBloc {
+  int num;
+  int num2;
+
+  CounterBloc3(this.num, [this.num2 = 0]);
+
+  @override
+  CounterBloc3 get state => super.state as CounterBloc3;
+
+  void increase() {
+    num++;
+    num2++;
+    stateChanged();
+  }
+
+  void decrease() {
+    num--;
+    num2--;
+    stateChanged();
+  }
+}
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
@@ -40,8 +74,13 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: RxProvider<CounterBloc>(
-        create: () => CounterBloc(const MyState(text: "hi", number: 10)),
+      home: RxMultiProvider(
+        providers: [
+          RxProvider<CounterBloc>(
+              create: () => CounterBloc(const MyState(text: "hi", number: 10))),
+          RxProvider<CounterBloc2>(create: () => CounterBloc2(10)),
+          RxProvider<CounterBloc3>(create: () => CounterBloc3(10)),
+        ],
         child: const MyHomePage(),
       ),
     );
@@ -68,6 +107,13 @@ class MyHomePage extends StatelessWidget {
               debugPrint("build Text");
               return Text("state text: ${state.text}");
             }),
+            RxSingleStateSelector<CounterBloc3, int>(
+                stateRebuildSelector: (state) {
+                  return state.num2;
+                }, builder: (context, state) {
+              debugPrint("build num2");
+              return Text("state num2: ${state.num2}");
+            }),
             TextField(
               onSubmitted: (value) {
                 RxProvider.of<CounterBloc>(context, listen: false)
@@ -81,11 +127,19 @@ class MyHomePage extends StatelessWidget {
                     onPressed: () {
                       RxProvider.of<CounterBloc>(context, listen: false)
                           .increase();
+                      RxProvider.of<CounterBloc2>(context, listen: false)
+                          .increase();
+                      RxProvider.of<CounterBloc3>(context, listen: false)
+                          .increase();
                     },
                     child: const Text("Increase")),
                 ElevatedButton(
                     onPressed: () {
                       RxProvider.of<CounterBloc>(context, listen: false)
+                          .decrease();
+                      RxProvider.of<CounterBloc2>(context, listen: false)
+                          .decrease();
+                      RxProvider.of<CounterBloc3>(context, listen: false)
                           .decrease();
                     },
                     child: const Text("Decrease")),
@@ -114,14 +168,36 @@ class MyCounter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     debugPrint("build MyCounter");
-    return RxBuilder<CounterBloc, MyState>(
-      builder: (context, state) {
-        debugPrint("build Number");
-        return Text(state.number.toString());
-      },
-      shouldRebuildWidget: (prev, curr) {
-        return prev.number != curr.number;
-      },
+    return Column(
+      children: [
+        RxBuilder<CounterBloc, MyState>(
+          builder: (context, state) {
+            debugPrint("build Number 1");
+            return Text('counter bloc 1:  ${state.number}');
+          },
+          shouldRebuildWidget: (prev, curr) {
+            return prev.number != curr.number;
+          },
+        ),
+        RxBuilder<CounterBloc2, int>(
+          builder: (context, state) {
+            debugPrint("build Number 2");
+            return Text('counter bloc 2:  $state');
+          },
+          shouldRebuildWidget: (prev, curr) {
+            return curr < 10;
+          },
+        ),
+        RxSingleStateBuilder<CounterBloc3>(
+          builder: (context, state) {
+            debugPrint("build Number 3");
+            return Text('counter bloc 3:  ${state.num}');
+          },
+          shouldRebuildWidget: (prev, curr) {
+            return curr.num < 20;
+          },
+        ),
+      ],
     );
   }
 }
