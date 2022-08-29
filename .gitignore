@@ -46,4 +46,4 @@ doc/api/
 /pubspec.lock
 **/doc/api/
 
-.fvm/flutter_sdk/
+.fvm/flutter_sdk
