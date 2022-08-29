@@ -18,3 +18,4 @@ export 'src/service_provider.dart' show ServiceProvider, ServiceContext;
 export 'src/type_def.dart'
     show Create, RxBlocEventListener, RxBlocWidgetBuilder, ShouldRebuildWidget;
 export 'src/rx_multi_provider.dart' show RxMultiProvider;
+export 'src/rx_consumer.dart' show RxConsumer;
