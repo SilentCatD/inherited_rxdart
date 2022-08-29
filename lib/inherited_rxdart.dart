@@ -1,4 +1,4 @@
-library inherited_rx_dart;
+library inherited_rxdart;
 
 export 'package:rxdart/rxdart.dart';
 
