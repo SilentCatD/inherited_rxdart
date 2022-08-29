@@ -3,42 +3,43 @@ import 'rx_bloc.dart';
 import 'rx_provider.dart';
 import 'type_def.dart';
 
-class RxSelector<B extends RxBloc<S>, S> extends StatefulWidget {
+class RxSelector<B extends RxBloc<S>, S, T> extends StatefulWidget {
   const RxSelector({
     Key? key,
-    required this.shouldRebuildWidget,
+    required this.stateRebuildSelector,
     required this.builder,
   }) : super(key: key);
-  final ShouldRebuildWidget<S> shouldRebuildWidget;
+  final StateRebuildSelector<S, T> stateRebuildSelector;
   final RxBlocWidgetBuilder<S> builder;
 
   @override
-  State<RxSelector<B, S>> createState() => _RxSelectorState<B, S>();
+  State<RxSelector<B, S, T>> createState() => _RxSelectorState<B, S, T>();
 }
 
-class _RxSelectorState<B extends RxBloc<S>, S>
-    extends State<RxSelector<B, S>> {
-  Widget? oldWidget;
-  S? oldState;
-  late S newState;
+class _RxSelectorState<B extends RxBloc<S>, S, T>
+    extends State<RxSelector<B, S, T>> {
+  Widget? _cachedWidget;
+  T? _cachedValue;
+  late T _value;
+  late S _state;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    newState = context.watch<B>().state;
+    _state = context.watch<B>().state;
+    _value = widget.stateRebuildSelector(_state);
   }
 
   @override
   Widget build(BuildContext context) {
     Widget? newWidget;
-    if (oldWidget == null) {
-      newWidget = widget.builder(context, newState);
-      oldWidget = newWidget;
-      oldState = newState;
+    if (_cachedValue == null ||
+        _cachedValue != widget.stateRebuildSelector(_state)) {
+      newWidget = widget.builder(context, _state);
+      _cachedWidget = newWidget;
+      _cachedValue = _value;
     } else {
-      final shouldRebuild = widget.shouldRebuildWidget(oldState!, newState);
-      newWidget =
-          shouldRebuild ? widget.builder(context, newState) : oldWidget;
+      newWidget = _cachedWidget;
     }
     return newWidget!;
   }

@@ -44,5 +44,3 @@ mixin EventDispatcher<E> {
     notificationSubject.close();
   }
 }
-
-

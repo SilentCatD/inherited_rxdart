@@ -61,9 +61,9 @@ class MyHomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const MyCounter(),
-            RxSelector<CounterBloc, MyState>(
-                shouldRebuildWidget: (state1, state2) {
-              return state1.text != state2.text;
+            RxSelector<CounterBloc, MyState, String>(
+                stateRebuildSelector: (state) {
+              return state.text;
             }, builder: (context, state) {
               debugPrint("build text");
               return Text("state text: ${state.text}");
