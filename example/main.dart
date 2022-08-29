@@ -63,7 +63,7 @@ class CounterBloc3 extends RxSingleStateBloc {
 
   void decrease() {
     num--;
-    num2--;
+    // num2--;
     stateChanged();
   }
 }
