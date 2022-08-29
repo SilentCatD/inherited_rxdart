@@ -11,7 +11,7 @@ class RxProvider<B extends RxBlocBase> extends SingleChildStatefulWidget {
   RxProvider({
     Key? key,
     required Create<B> create,
-    required Widget child,
+    Widget? child,
   })  : _bloc = create(),
         _isCreated = true,
         super(key: key, child: child);
@@ -19,7 +19,7 @@ class RxProvider<B extends RxBlocBase> extends SingleChildStatefulWidget {
   const RxProvider.value({
     Key? key,
     required B value,
-    required Widget child,
+    Widget? child,
   })  : _bloc = value,
         _isCreated = false,
         super(key: key, child: child);
@@ -27,7 +27,8 @@ class RxProvider<B extends RxBlocBase> extends SingleChildStatefulWidget {
   final B _bloc;
   final bool _isCreated;
 
-  static T of<T extends RxBlocBase>(BuildContext context, {bool listen = true}) {
+  static T of<T extends RxBlocBase>(BuildContext context,
+      {bool listen = true}) {
     if (T == dynamic) {
       throw RxBlocMustBeOfSpecificTypeException();
     }
@@ -73,6 +74,7 @@ class _RxProviderState<B extends RxBlocBase>
 
   @override
   Widget buildWithChild(BuildContext context, Widget? child) {
+    assert(child != null, "usage outside of MultiProviders not allowed");
     return _InheritedBlocScope<B>(
       bloc: _bloc,
       child: child!,

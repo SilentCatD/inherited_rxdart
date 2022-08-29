@@ -4,7 +4,7 @@ import 'type_def.dart';
 import 'package:nested/nested.dart';
 
 class ServiceProvider<S> extends SingleChildStatefulWidget {
-  ServiceProvider({Key? key, required Widget child, required Create<S> create})
+  ServiceProvider({Key? key, Widget? child, required Create<S> create})
       : _service = create(),
         super(key: key, child: child);
 
@@ -42,6 +42,7 @@ class _ServiceProviderState<S> extends SingleChildState<ServiceProvider<S>> {
 
   @override
   Widget buildWithChild(BuildContext context, Widget? child) {
+    assert(child != null, "usage outside of MultiProviders not allowed");
     return _InheritedServiceScope<S>(
       service: _service,
       child: child!,
