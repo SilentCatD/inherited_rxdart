@@ -31,15 +31,14 @@ class _RxBuilderState<B extends RxBloc<S>, S> extends State<RxBuilder<B, S>> {
   @override
   Widget build(BuildContext context) {
     Widget? newWidget;
-    if (_cachedWidget == null) {
+    final shouldRebuild =
+        widget.shouldRebuildWidget?.call(_cachedState!, _state) ?? true;
+    if (_cachedWidget == null || shouldRebuild) {
       newWidget = widget.builder(context, _state);
       _cachedWidget = newWidget;
       _cachedState = _state;
     } else {
-      final shouldRebuild =
-          widget.shouldRebuildWidget?.call(_cachedState!, _state) ?? true;
-      newWidget =
-          shouldRebuild ? widget.builder(context, _state) : _cachedWidget;
+      newWidget = _cachedWidget;
     }
     return newWidget!;
   }
