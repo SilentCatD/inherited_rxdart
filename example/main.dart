@@ -63,9 +63,9 @@ class MyHomePage extends StatelessWidget {
             const MyCounter(),
             RxSelector<CounterBloc, MyState, String>(
                 stateRebuildSelector: (state) {
-              return state.text;
-            }, builder: (context, state) {
-              debugPrint("build text");
+                  return state.text;
+                }, builder: (context, state) {
+              debugPrint("build Text");
               return Text("state text: ${state.text}");
             }),
             TextField(
@@ -96,7 +96,7 @@ class MyHomePage extends StatelessWidget {
                   Navigator.of(context).push(MaterialPageRoute(builder: (_) {
                     return RxProvider.value(
                         value:
-                            RxProvider.of<CounterBloc>(context, listen: false),
+                        RxProvider.of<CounterBloc>(context, listen: false),
                         child: const MyNested());
                   }));
                 },
@@ -116,8 +116,11 @@ class MyCounter extends StatelessWidget {
     debugPrint("build MyCounter");
     return RxBuilder<CounterBloc, MyState>(
       builder: (context, state) {
-        debugPrint("build BlocBuilder");
+        debugPrint("build Number");
         return Text(state.number.toString());
+      },
+      shouldRebuildWidget: (prev, curr) {
+        return prev.number != curr.number;
       },
     );
   }
