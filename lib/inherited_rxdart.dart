@@ -16,6 +16,12 @@ export 'src/rx_provider.dart' show RxProvider, RxContext;
 export 'src/rx_selector.dart' show RxSelector, RxSingleStateSelector;
 export 'src/service_provider.dart' show ServiceProvider, ServiceContext;
 export 'src/type_def.dart'
-    show Create, RxBlocEventListener, RxBlocWidgetBuilder, ShouldRebuildWidget;
+    show
+        Create,
+        RxBlocEventListener,
+        RxBlocWidgetBuilder,
+        ShouldRebuildWidget,
+        ShouldRebuildSingleState,
+        StateRebuildSelector;
 export 'src/rx_multi_provider.dart' show RxMultiProvider;
 export 'src/rx_consumer.dart' show RxConsumer;

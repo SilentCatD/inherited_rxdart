@@ -193,6 +193,9 @@ class MyCounter extends StatelessWidget {
             debugPrint("build Number 3");
             return Text('counter bloc 3:  ${state.num}');
           },
+          shouldRebuildWidget: (state) {
+            return state.num < 20;
+          },
         ),
       ],
     );

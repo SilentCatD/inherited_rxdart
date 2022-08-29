@@ -9,9 +9,12 @@ class _RxBuilderBase<B extends RxBlocBase, S> extends StatefulWidget {
     Key? key,
     required this.builder,
     this.shouldRebuildWidget,
-  }) : super(key: key);
+    this.shouldRebuildSingleState,
+  })  : assert(shouldRebuildWidget == null || shouldRebuildSingleState == null),
+        super(key: key);
   final RxBlocWidgetBuilder<S> builder;
   final ShouldRebuildWidget<S>? shouldRebuildWidget;
+  final ShouldRebuildSingleState<S>? shouldRebuildSingleState;
 
   @override
   State<_RxBuilderBase<B, S>> createState() => _RxBuilderBaseState<B, S>();
@@ -34,7 +37,9 @@ class _RxBuilderBaseState<B extends RxBlocBase, S>
     Widget? newWidget;
 
     if (_cachedWidget == null ||
-        (widget.shouldRebuildWidget?.call(_cachedState as S, _state) ?? true)) {
+        ((widget.shouldRebuildWidget?.call(_cachedState as S, _state) ??
+                true) &&
+            (widget.shouldRebuildSingleState?.call(_state) ?? true))) {
       newWidget = widget.builder(context, _state);
       _cachedWidget = newWidget;
       _cachedState = _state;
@@ -61,5 +66,9 @@ class RxSingleStateBuilder<B extends RxSingleStateBloc>
   const RxSingleStateBuilder({
     Key? key,
     required RxBlocWidgetBuilder<B> builder,
-  }) : super(key: key, builder: builder);
+    ShouldRebuildSingleState? shouldRebuildWidget,
+  }) : super(
+            key: key,
+            builder: builder,
+            shouldRebuildSingleState: shouldRebuildWidget);
 }
