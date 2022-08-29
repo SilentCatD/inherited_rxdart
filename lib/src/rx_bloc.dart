@@ -6,6 +6,7 @@ abstract class RxBlocBase<S> {
       : stateSubject = BehaviorSubject<S>.seeded(initialState);
 
   @protected
+  @nonVirtual
   final BehaviorSubject<S> stateSubject;
 
   @nonVirtual
@@ -31,6 +32,7 @@ abstract class RxBloc<S, N> extends RxBlocBase<S> {
   RxBloc(S initialState) : super(initialState);
 
   @protected
+  @nonVirtual
   final PublishSubject<N> notificationSubject = PublishSubject<N>();
 
   @nonVirtual
