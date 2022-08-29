@@ -3,8 +3,8 @@ import 'rx_bloc.dart';
 import 'rx_provider.dart';
 import 'type_def.dart';
 
-class RxSelector<B extends RxSilentBloc<S>, S, T> extends StatefulWidget {
-  const RxSelector({
+class _RxSelectorBase<B extends RxBlocBase, S, T> extends StatefulWidget {
+  const _RxSelectorBase({
     Key? key,
     required this.stateRebuildSelector,
     required this.builder,
@@ -13,11 +13,12 @@ class RxSelector<B extends RxSilentBloc<S>, S, T> extends StatefulWidget {
   final RxBlocWidgetBuilder<S> builder;
 
   @override
-  State<RxSelector<B, S, T>> createState() => _RxSelectorState<B, S, T>();
+  State<_RxSelectorBase<B, S, T>> createState() =>
+      _RxSelectorBaseState<B, S, T>();
 }
 
-class _RxSelectorState<B extends RxSilentBloc<S>, S, T>
-    extends State<RxSelector<B, S, T>> {
+class _RxSelectorBaseState<B extends RxBlocBase, S, T>
+    extends State<_RxSelectorBase<B, S, T>> {
   Widget? _cachedWidget;
   T? _cachedValue;
   late T _value;
@@ -26,7 +27,9 @@ class _RxSelectorState<B extends RxSilentBloc<S>, S, T>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _state = context.watch<B>().state;
+    _state = context
+        .watch<B>()
+        .state;
     _value = widget.stateRebuildSelector(_state);
   }
 
@@ -43,4 +46,29 @@ class _RxSelectorState<B extends RxSilentBloc<S>, S, T>
     }
     return newWidget!;
   }
+}
+
+class RxSelector<B extends RxSilentBloc<S>, S, T>
+    extends _RxSelectorBase<B, S, T> {
+  const RxSelector({
+    Key? key,
+    required StateRebuildSelector<S, T> stateRebuildSelector,
+    required RxBlocWidgetBuilder<S> builder,
+  }) : super(
+      key: key,
+      stateRebuildSelector: stateRebuildSelector,
+      builder: builder);
+}
+
+
+class RxSingleStateSelector<B extends RxSingleStateBloc, T>
+    extends _RxSelectorBase<B, B, T> {
+  const RxSingleStateSelector({
+    Key? key,
+    required StateRebuildSelector<B, T> stateRebuildSelector,
+    required RxBlocWidgetBuilder<B> builder,
+  }) : super(
+      key: key,
+      stateRebuildSelector: stateRebuildSelector,
+      builder: builder);
 }
