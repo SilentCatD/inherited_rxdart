@@ -2,11 +2,40 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:nested/nested.dart';
-
 import 'exception.dart';
 import 'rx_bloc.dart';
 import 'type_def.dart';
 
+/// Widget to provide a bloc of type [B] to a subtree.
+///
+/// The default constructor indicate the creation of above mentioned bloc [B]
+/// through [Create]. However, in case the reuse of existed bloc is required,
+/// [RxProvider.value] should be used instead.
+///
+/// /// If the default constructor is used, created bloc's [RxBlocBase.init] and
+/// [RxBlocBase.dispose] are called automatically. In case of reusing existed
+/// bloc, life cycle of this bloc must be handled by the implementer.
+///
+/// ```dart
+/// RxProvider<CounterBloc3>(
+///     create: () => CounterBloc3(10),
+///     child: const MyHomePage(),
+/// ),
+/// ```
+///
+/// The [RxProvider.value] is useful when you need to provide an existed bloc
+/// to another screen.
+///
+/// ```dart
+/// Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+///     return RxProvider.value(
+///         value:
+///            RxProvider.of<CounterBloc>(context, listen: false),
+///         child: const MyNested());
+/// }));
+/// ```
+/// If multiple bloc are to be provided at once, consider [RxMultiProvider] to
+/// avoid deeply nested [RxProvider] widgets.
 class RxProvider<B extends RxBlocBase> extends SingleChildStatefulWidget {
   RxProvider({
     Key? key,
@@ -27,6 +56,47 @@ class RxProvider<B extends RxBlocBase> extends SingleChildStatefulWidget {
   final B _bloc;
   final bool _isCreated;
 
+  /// Method to locate and get the provided bloc of this subtree.
+  ///
+  /// Type [T] is required to be a subtype of [RxBlocBase] and must be specified
+  /// Failing to so will throw [RxBlocMustBeOfSpecificTypeException], and
+  /// failing to find a bloc of specified type will thrown
+  /// [RxBlocNotProvidedException].
+  ///
+  /// The parameter listen will determine whether to subscribe to the bloc [T]
+  /// when it emit new states or just simple get instance of the bloc.
+  ///
+  /// In many case, subscribing the whole [BuildContext] to a bloc changes is
+  /// unnecessary, doing so will cause this whole widget with associated
+  /// [BuildContext] to rebuild each time a new state emitted. So always
+  /// consider to specified this parameter to false instead.
+  ///
+  /// Consider [RxContext] for a short-hand way to call this function.
+  ///
+  /// Do notice that the use of:
+  /// ```dart
+  ///  RxProvider.of<CounterBloc>(context, listen: false);
+  /// ```
+  /// or
+  ///
+  /// ```dart
+  ///   context.watch<CounterBloc>();
+  /// ```
+  ///
+  /// is valid in [State.initState], while:
+  ///
+  /// ```dart
+  /// RxProvider.of<CounterBloc>(context, listen: true);
+  /// ```
+  ///
+  /// or
+  ///
+  /// ```dart
+  ///   context.watch<CounterBloc>();
+  /// ```
+  ///
+  /// is not valid. You CAN get the instance of the bloc in [State.initState]
+  /// but CAN NOT subscribe to its changes.
   static T of<T extends RxBlocBase>(BuildContext context,
       {bool listen = true}) {
     if (T == dynamic) {
@@ -167,10 +237,66 @@ class _InheritedBlocElement<B extends RxBlocBase> extends InheritedElement {
 }
 
 extension RxContext on BuildContext {
+  /// Short hand way to use:
+  /// ```dart
+  ///   RxProvider.of<B>(this, listen: false);
+  /// ```
+  /// Do notice that the use of:
+  /// ```dart
+  ///  RxProvider.of<CounterBloc>(context, listen: false);
+  /// ```
+  /// or
+  ///
+  /// ```dart
+  ///   context.watch<CounterBloc>();
+  /// ```
+  ///
+  /// is valid in [State.initState], while:
+  ///
+  /// ```dart
+  /// RxProvider.of<CounterBloc>(context, listen: true);
+  /// ```
+  ///
+  /// or
+  ///
+  /// ```dart
+  ///   context.watch<CounterBloc>();
+  /// ```
+  ///
+  /// is not valid. You CAN get the instance of the bloc in [State.initState]
+  /// but CAN NOT subscribe to its changes.
   B read<B extends RxBlocBase>() {
     return RxProvider.of<B>(this, listen: false);
   }
 
+  /// Short hand way to use:
+  /// ```dart
+  ///   RxProvider.of<B>(this, listen: true);
+  /// ```
+  /// Do notice that the use of:
+  /// ```dart
+  ///  RxProvider.of<CounterBloc>(context, listen: false);
+  /// ```
+  /// or
+  ///
+  /// ```dart
+  ///   context.watch<CounterBloc>();
+  /// ```
+  ///
+  /// is valid in [State.initState], while:
+  ///
+  /// ```dart
+  /// RxProvider.of<CounterBloc>(context, listen: true);
+  /// ```
+  ///
+  /// or
+  ///
+  /// ```dart
+  ///   context.watch<CounterBloc>();
+  /// ```
+  ///
+  /// is not valid. You CAN get the instance of the bloc in [State.initState]
+  /// but CAN NOT subscribe to its changes.
   B watch<B extends RxBlocBase>() {
     return RxProvider.of<B>(this, listen: true);
   }
