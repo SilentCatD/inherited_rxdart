@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:inherited_rxdart/inherited_rxdart.dart';
 
 void main() => runApp(const App());
-
+@immutable
 class MyState {
   final int number;
   final String text;
@@ -74,14 +74,15 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: RxMultiProvider(
-        providers: [
-          RxProvider<CounterBloc>(
-              create: () => CounterBloc(const MyState(text: "hi", number: 10))),
-          RxProvider<CounterBloc2>(create: () => CounterBloc2(10)),
-          RxProvider<CounterBloc3>(create: () => CounterBloc3(10)),
-        ],
-        child: const MyHomePage(),
+      home: RxProvider<CounterBloc>(
+        create: () => CounterBloc(const MyState(text: "hi", number: 10)),
+        child: RxProvider<CounterBloc2>(
+          create: () => CounterBloc2(10),
+          child: RxProvider<CounterBloc3>(
+            create: () => CounterBloc3(10),
+            child: const MyHomePage(),
+          ),
+        ),
       ),
     );
   }

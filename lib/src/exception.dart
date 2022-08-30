@@ -1,3 +1,5 @@
+/// An [Exception] to be throw when this current subtree don't have any provided
+/// bloc of [Type].
 class RxBlocNotProvidedException implements Exception {
   RxBlocNotProvidedException(this.type);
 
@@ -9,6 +11,17 @@ class RxBlocNotProvidedException implements Exception {
   }
 }
 
+/// An [Exception] to be throw when the specific [Type] of this bloc is not
+/// provided, please specified the generic parameters before doing any query:
+/// ```dart
+/// // bad
+/// RxProvider.of(context);
+/// ```
+///
+/// ```dart
+/// //good
+/// RxProvider.of<CounterBloc>(context);
+/// ```
 class RxBlocMustBeOfSpecificTypeException implements Exception {
   @override
   String toString() {
@@ -16,6 +29,8 @@ class RxBlocMustBeOfSpecificTypeException implements Exception {
   }
 }
 
+/// An [Exception] to be throw when this current subtree don't have any
+/// provided service of [Type].
 class ServiceNotProvidedException implements Exception {
   ServiceNotProvidedException(this.type);
 
@@ -27,6 +42,17 @@ class ServiceNotProvidedException implements Exception {
   }
 }
 
+/// An [Exception] to be throw when the specific [Type] of this Service is not
+/// provided, please specified the generic parameters before doing any query:
+/// ```dart
+/// // bad
+/// ServiceProvider.of(context);
+/// ```
+///
+/// ```dart
+/// //good
+/// ServiceProvider.of<MyRepo>(context);
+/// ```
 class ServiceMustBeOfSpecificTypeException implements Exception {
   @override
   String toString() {
