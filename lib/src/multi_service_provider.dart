@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:inherited_rxdart/inherited_rxdart.dart';
 import 'package:nested/nested.dart';
 
 /// A widget that should be used when you want to provide multiple

@@ -3,6 +3,37 @@ import 'exception.dart';
 import 'type_def.dart';
 import 'package:nested/nested.dart';
 
+/// Widget to provide a service of type [S] to a subtree.
+///
+/// The default constructor indicate the creation of above mentioned service [S]
+/// through [Create]. However, in case the reuse of existed bloc is required,
+/// [ServiceProvider.value] should be used instead.
+///
+/// Different from [RxProvider], [ServiceProvider] take any class, and does not
+/// manage the life cycle operation of these object. It should be used with
+/// Service class like Repository to use it's function, not to store any mutable
+/// variable/state in it.
+///
+/// ```dart
+/// ServiceProvider<MyService>(
+///     create: () => MyService(),
+///     child: const MyHomePage(),
+/// ),
+/// ```
+///
+/// The [ServiceProvider.value] is useful when you need to provide an existed
+/// service to another screen.
+///
+/// ```dart
+/// Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+///     return ServiceProvider.value(
+///         value:
+///            ServiceProvider.of<MyService>(context, listen: false),
+///         child: const MyNested());
+/// }));
+/// ```
+/// If multiple services are to be provided at once, consider
+/// [MultiServiceProvider] to avoid deeply nested [ServiceProvider] widgets.
 class ServiceProvider<S> extends SingleChildStatefulWidget {
   ServiceProvider({Key? key, Widget? child, required Create<S> create})
       : _service = create(),
@@ -14,6 +45,12 @@ class ServiceProvider<S> extends SingleChildStatefulWidget {
         super(key: key, child: child);
   final S _service;
 
+  /// Method to locate and get the provided bloc of this subtree.
+  ///
+  /// Type [T] is required to be specified. Failing to so will throw
+  /// [ServiceMustBeOfSpecificTypeException], and failing to find a bloc of
+  /// specified type will thrown [ServiceNotProvidedException].
+  /// Consider [ServiceContext.get] for a short-hand way to call this function.
   static T of<T>(BuildContext context) {
     if (T == dynamic) {
       throw ServiceMustBeOfSpecificTypeException();
@@ -78,6 +115,10 @@ class _InheritedServiceElement<S> extends InheritedElement {
 }
 
 extension ServiceContext on BuildContext {
+  /// Short hand way to use:
+  /// ```dart
+  ///   ServiceProvider.of<B>(context);
+  /// ```
   T get<T>() {
     return ServiceProvider.of<T>(this);
   }

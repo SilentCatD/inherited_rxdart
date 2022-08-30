@@ -12,7 +12,7 @@ import 'type_def.dart';
 /// through [Create]. However, in case the reuse of existed bloc is required,
 /// [RxProvider.value] should be used instead.
 ///
-/// /// If the default constructor is used, created bloc's [RxBlocBase.init] and
+/// If the default constructor is used, created bloc's [RxBlocBase.init] and
 /// [RxBlocBase.dispose] are called automatically. In case of reusing existed
 /// bloc, life cycle of this bloc must be handled by the implementer.
 ///
@@ -71,9 +71,11 @@ class RxProvider<B extends RxBlocBase> extends SingleChildStatefulWidget {
   /// [BuildContext] to rebuild each time a new state emitted. So always
   /// consider to specified this parameter to false instead.
   ///
-  /// Consider [RxContext] for a short-hand way to call this function.
+  /// Consider [RxContext.watch] or [RxContext.read] for a short-hand way to
+  /// call this function.
   ///
   /// Do notice that the use of:
+  ///
   /// ```dart
   ///  RxProvider.of<CounterBloc>(context, listen: false);
   /// ```
@@ -239,7 +241,7 @@ class _InheritedBlocElement<B extends RxBlocBase> extends InheritedElement {
 extension RxContext on BuildContext {
   /// Short hand way to use:
   /// ```dart
-  ///   RxProvider.of<B>(this, listen: false);
+  ///   RxProvider.of<B>(context, listen: false);
   /// ```
   /// Do notice that the use of:
   /// ```dart
@@ -271,7 +273,7 @@ extension RxContext on BuildContext {
 
   /// Short hand way to use:
   /// ```dart
-  ///   RxProvider.of<B>(this, listen: true);
+  ///   RxProvider.of<B>(context, listen: true);
   /// ```
   /// Do notice that the use of:
   /// ```dart

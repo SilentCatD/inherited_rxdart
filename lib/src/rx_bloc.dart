@@ -1,4 +1,3 @@
-import 'package:inherited_rxdart/inherited_rxdart.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
