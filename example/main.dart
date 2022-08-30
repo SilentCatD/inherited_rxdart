@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:inherited_rxdart/inherited_rxdart.dart';
 
 void main() => runApp(const App());
+
 @immutable
 class MyState {
   final int number;

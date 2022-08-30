@@ -3,8 +3,8 @@ import 'rx_bloc.dart';
 import 'rx_provider.dart';
 import 'type_def.dart';
 
-class _RxSelectorBase<B extends RxBlocBase, S, T> extends StatefulWidget {
-  const _RxSelectorBase({
+class RxSelectorBase<B extends RxBlocBase, S, T> extends StatefulWidget {
+  const RxSelectorBase({
     Key? key,
     required this.stateRebuildSelector,
     required this.builder,
@@ -13,12 +13,12 @@ class _RxSelectorBase<B extends RxBlocBase, S, T> extends StatefulWidget {
   final RxBlocWidgetBuilder<S> builder;
 
   @override
-  State<_RxSelectorBase<B, S, T>> createState() =>
+  State<RxSelectorBase<B, S, T>> createState() =>
       _RxSelectorBaseState<B, S, T>();
 }
 
 class _RxSelectorBaseState<B extends RxBlocBase, S, T>
-    extends State<_RxSelectorBase<B, S, T>> {
+    extends State<RxSelectorBase<B, S, T>> {
   Widget? _cachedWidget;
   T? _cachedValue;
   late T _value;
@@ -47,7 +47,7 @@ class _RxSelectorBaseState<B extends RxBlocBase, S, T>
 }
 
 class RxSelector<B extends RxSilentBloc<S>, S, T>
-    extends _RxSelectorBase<B, S, T> {
+    extends RxSelectorBase<B, S, T> {
   const RxSelector({
     Key? key,
     required StateRebuildSelector<S, T> stateRebuildSelector,
@@ -59,7 +59,7 @@ class RxSelector<B extends RxSilentBloc<S>, S, T>
 }
 
 class RxSingleStateSelector<B extends RxSingleStateBloc, T>
-    extends _RxSelectorBase<B, B, T> {
+    extends RxSelectorBase<B, B, T> {
   const RxSingleStateSelector({
     Key? key,
     required StateRebuildSelector<B, T> stateRebuildSelector,
