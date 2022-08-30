@@ -4,6 +4,8 @@ import 'package:rxdart/rxdart.dart';
 abstract class RxBlocBase<S> {
   const RxBlocBase(Subject stateSubject) : _stateSubject = stateSubject;
 
+  bool get shouldSkipFirstBuild;
+
   @nonVirtual
   @protected
   final Subject _stateSubject;
@@ -28,6 +30,10 @@ abstract class RxSingleStateBloc extends RxBlocBase<RxSingleStateBloc> {
   RxSingleStateBloc() : super(PublishSubject());
 
   @override
+  @nonVirtual
+  bool get shouldSkipFirstBuild => false;
+
+  @override
   RxSingleStateBloc get state => this;
 
   @protected
@@ -39,6 +45,11 @@ abstract class RxSingleStateBloc extends RxBlocBase<RxSingleStateBloc> {
 
 abstract class RxSilentBloc<S> extends RxBlocBase<S> {
   RxSilentBloc(S initialState) : super(BehaviorSubject<S>.seeded(initialState));
+
+
+  @override
+  @nonVirtual
+  bool get shouldSkipFirstBuild => true;
 
   @override
   @protected

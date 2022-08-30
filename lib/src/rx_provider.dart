@@ -104,9 +104,12 @@ class _InheritedBlocElement<B extends RxBlocBase> extends InheritedElement {
   B get bloc => widget.bloc;
   StreamSubscription? _streamSubscription;
   bool _dirty = false;
+  late final bool _shouldSkipFirstBuild;
+  bool _isFirstBuild = true;
 
   _InheritedBlocElement(_InheritedBlocScope<B> widget) : super(widget) {
     _sub(widget.bloc);
+    _shouldSkipFirstBuild = widget.bloc.shouldSkipFirstBuild;
   }
 
   @override
@@ -124,6 +127,9 @@ class _InheritedBlocElement<B extends RxBlocBase> extends InheritedElement {
   }
 
   void _handleUpdate() {
+    if (_shouldSkipFirstBuild && _isFirstBuild) {
+      return;
+    }
     _dirty = true;
     markNeedsBuild();
   }
@@ -146,6 +152,9 @@ class _InheritedBlocElement<B extends RxBlocBase> extends InheritedElement {
     if (_dirty) {
       notifyClients(widget);
       _dirty = false;
+    }
+    if (_isFirstBuild) {
+      _isFirstBuild = false;
     }
     return super.build();
   }
