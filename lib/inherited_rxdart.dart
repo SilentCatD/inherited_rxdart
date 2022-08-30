@@ -9,7 +9,8 @@ export 'src/exception.dart'
 export 'src/multi_service_provider.dart' show MultiServiceProvider;
 export 'src/rx_bloc.dart'
     show RxBloc, RxSingleStateBloc, RxSilentBloc, RxBlocBase;
-export 'src/rx_builder.dart' show RxBuilder, RxSingleStateBuilder;
+export 'src/rx_builder.dart'
+    show RxBuilder, RxSingleStateBuilder, RxBuilderBase;
 export 'src/rx_listener.dart' show RxListener;
 export 'src/rx_provider.dart' show RxProvider, RxContext;
 export 'src/rx_selector.dart' show RxSelector, RxSingleStateSelector;
