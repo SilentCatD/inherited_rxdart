@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 abstract class RxBlocBase<S> {
