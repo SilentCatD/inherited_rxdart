@@ -64,7 +64,6 @@ abstract class RxSilentBloc<S> extends RxBlocBase<S> {
   set state(S value) => subject.value = value;
 
   @override
-  @nonVirtual
   Stream<S> get stateStream => subject.stream.distinct();
 }
 
@@ -79,7 +78,6 @@ abstract class RxBloc<S, N> extends RxSilentBloc<S> {
   @protected
   void notify(N value) => notificationSubject.add(value);
 
-  @nonVirtual
   Stream<N> get notificationStream => notificationSubject.stream;
 
   @mustCallSuper
