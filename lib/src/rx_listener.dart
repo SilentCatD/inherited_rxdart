@@ -50,31 +50,70 @@ import 'type_def.dart';
 ///       ),
 ///     );
 /// ```
-class RxListener<B extends RxBloc<S, N>, S, N> extends StatefulWidget {
-  const RxListener({
+class RxBlocNotificationListener<B extends RxBloc<S, N>, S, N>
+    extends RxBlocStateListener<B, S> {
+  const RxBlocNotificationListener({
     Key? key,
+    RxBlocEventListener<S>? stateCallback,
     this.notificationCallback,
-    this.stateCallback,
-    required this.child,
-  }) : super(key: key);
+    required Widget child,
+  }) : super(key: key, stateCallback: stateCallback, child: child);
 
   /// Callback for notification emitted from [RxBloc]
   final RxBlocEventListener<N>? notificationCallback;
 
-  /// Callback for state emitted from [RxBloc]
+  @override
+  _RxBlocNotificationListenerState<B, S, N> createState() =>
+      _RxBlocNotificationListenerState<B, S, N>();
+}
+
+class _RxBlocNotificationListenerState<B extends RxBloc<S, N>, S, N>
+    extends _RxBlocStateListenerState<B, S> {
+  StreamSubscription<N>? _notificationSubscription;
+
+  @override
+  void _sub() {
+    super._sub();
+    _notificationSubscription = _bloc.notificationStream.listen((notification) {
+      if (!mounted) return;
+      widget.notificationCallback?.call(context, notification);
+    });
+  }
+
+  void _unSub() {
+    _notificationSubscription?.cancel();
+    _stateSubscription?.cancel();
+    _notificationSubscription = null;
+    _stateSubscription = null;
+  }
+
+  @override
+  void dispose() {
+    _unSub();
+    return super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
+  }
+}
+
+class RxBlocStateListener<B extends RxBlocBase<S>, S> extends StatefulWidget {
+  const RxBlocStateListener({Key? key, required this.child, this.stateCallback})
+      : super(key: key);
+
   final RxBlocEventListener<S>? stateCallback;
 
-  /// Child widget of this [RxListener]
   final Widget child;
 
   @override
-  State<RxListener<B, S, N>> createState() => _RxListenerState<B, S, N>();
+  State<RxBlocStateListener<B, S>> createState() =>
+      _RxBlocStateListenerState<B, S>();
 }
 
-class _RxListenerState<B extends RxBloc<S, N>, S, N>
-    extends State<RxListener<B, S, N>> {
-  StreamSubscription<N>? _notificationSubscription;
-  StreamSubscription<S>? _stateSubscription;
+class _RxBlocStateListenerState<B extends RxBlocBase<S>, S>
+    extends State<RxBlocStateListener<B, S>> {
   late B _bloc;
 
   @override
@@ -84,11 +123,9 @@ class _RxListenerState<B extends RxBloc<S, N>, S, N>
     _sub();
   }
 
+  StreamSubscription<S>? _stateSubscription;
+
   void _sub() {
-    _notificationSubscription = _bloc.notificationStream.listen((notification) {
-      if (!mounted) return;
-      widget.notificationCallback?.call(context, notification);
-    });
     _stateSubscription = _bloc.stateStream.listen((state) {
       if (!mounted) return;
       widget.stateCallback?.call(context, state);
@@ -96,9 +133,7 @@ class _RxListenerState<B extends RxBloc<S, N>, S, N>
   }
 
   void _unSub() {
-    _notificationSubscription?.cancel();
     _stateSubscription?.cancel();
-    _notificationSubscription = null;
     _stateSubscription = null;
   }
 

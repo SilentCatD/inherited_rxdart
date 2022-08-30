@@ -4,7 +4,7 @@ import 'rx_bloc.dart';
 import 'rx_provider.dart';
 import 'type_def.dart';
 
-/// Base RxBuilder for [RxBuilder] and [RxSingleStateBuilder], which value
+/// Base class for [RxBuilder] and [RxSingleStateBuilder], which value
 /// is built around generic type, thus is flexible to be base of the two.
 /// The generic types in this case is [B] for the type of bloc and [S] for
 /// state.

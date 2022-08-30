@@ -5,7 +5,7 @@ import 'rx_builder.dart';
 import 'rx_bloc.dart';
 import 'type_def.dart';
 
-/// Combination of [RxListener] and [RxBuilder] for bloc [B] of type [RxBloc],
+/// Combination of [RxBlocNotificationListener] and [RxBuilder] for bloc [B] of type [RxBloc],
 /// state [S] and notification [N]
 class RxConsumer<B extends RxBloc<S, N>, S, N> extends StatelessWidget {
   const RxConsumer({
@@ -32,7 +32,7 @@ class RxConsumer<B extends RxBloc<S, N>, S, N> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RxListener<B, S, N>(
+    return RxBlocNotificationListener<B, S, N>(
       stateCallback: stateCallback,
       notificationCallback: notificationCallback,
       child: RxBuilder<B, S>(

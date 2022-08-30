@@ -12,7 +12,7 @@ import 'package:rxdart/rxdart.dart';
 /// implementer.
 abstract class RxBlocBase<S> {
   /// This bloc need a type of subject to work with.
-  const RxBlocBase(Subject stateSubject) : _stateSubject = stateSubject;
+  const RxBlocBase(Subject<S> stateSubject) : _stateSubject = stateSubject;
 
   /// Whether to skip the first build trigger by stream, for when using
   /// [BehaviorSubject], the first state rebuild is not really necessary and
@@ -21,7 +21,7 @@ abstract class RxBlocBase<S> {
 
   @nonVirtual
   @protected
-  final Subject _stateSubject;
+  final Subject<S> _stateSubject;
 
   /// The current state this bloc is holding.
   S get state;
@@ -31,12 +31,12 @@ abstract class RxBlocBase<S> {
   /// * [PublishSubject] for [RxSingleStateBloc] and notifications
   /// * [BehaviorSubject] for [RxBloc], [RxSilentBloc]
   @protected
-  Subject get subject => _stateSubject;
+  Subject<S> get subject => _stateSubject;
 
   /// The value stream of this bloc, which listened by the library and cause the
   /// rebuild of dependents, subclass can override this to add filter,
   /// throttle,...
-  Stream get stateStream => subject.stream;
+  Stream<S> get stateStream => subject.stream;
 
   /// Initialize logic for this bloc, will be automatically called by
   /// [RxProvider] if the [Create] function is used in constructor.
@@ -94,7 +94,7 @@ abstract class RxBlocBase<S> {
 /// implementer.
 abstract class RxSingleStateBloc extends RxBlocBase<RxSingleStateBloc> {
   /// This bloc will use [PublishSubject] as its internal.
-  RxSingleStateBloc() : super(PublishSubject());
+  RxSingleStateBloc() : super(PublishSubject<RxSingleStateBloc>());
 
   /// Whether to skip the first build trigger by stream, for when using
   /// [BehaviorSubject], the first state rebuild is not really necessary and
@@ -116,7 +116,7 @@ abstract class RxSingleStateBloc extends RxBlocBase<RxSingleStateBloc> {
   @protected
   @nonVirtual
   void stateChanged() {
-    _stateSubject.add(null);
+    _stateSubject.add(this);
   }
 }
 
