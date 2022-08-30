@@ -11,29 +11,43 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages). 
 -->
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+A simple state management solution that combine the power of inherited widget and rxdart
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+Create state management logic for your app using multitude of blocs, which internal
+is just stream and rxdart, you can access them anywhere in your widget tree when
+provided using providers.
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Started by providing blocs and service for your widget's subtree like this:
+
+```dart
+class App extends StatelessWidget {
+  const App({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        home: RxProvider<CounterBloc>(
+          create: () => CounterBloc(10),
+          child: MyHomePage(),
+        )
+    );
+  }
+}
+```
+
+And then access them anywhere in your subtree  with:
+
+```dart
+final bloc = RxProvider.of<CounterBloc>(context);
+```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
-
-```dart
-const like = 'sample';
-```
+More details coming soon
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
