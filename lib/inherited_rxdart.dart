@@ -8,10 +8,11 @@ export 'src/exception.dart'
         ServiceMustBeOfSpecificTypeException;
 export 'src/multi_service_provider.dart' show MultiServiceProvider;
 export 'src/rx_bloc.dart'
-    show RxBloc, RxSingleStateBloc, RxSilentBloc, RxBlocBase;
+    show RxBloc, RxSingleStateBloc, RxSilentBloc;
 export 'src/rx_builder.dart'
-    show RxBuilder, RxSingleStateBuilder, RxBuilderBase;
-export 'src/rx_listener.dart' show RxBlocNotificationListener;
+    show RxBuilder, RxSingleStateBuilder;
+export 'src/rx_listener.dart'
+    show RxStateListener, RxSingleStateListener, RxBlocListener;
 export 'src/rx_provider.dart' show RxProvider, RxContext;
 export 'src/rx_selector.dart'
     show RxSelector, RxSingleStateSelector, RxSelectorBase;
@@ -25,4 +26,3 @@ export 'src/type_def.dart'
         ShouldRebuildSingleState,
         StateRebuildSelector;
 export 'src/rx_multi_provider.dart' show RxMultiProvider;
-export 'src/rx_consumer.dart' show RxConsumer;

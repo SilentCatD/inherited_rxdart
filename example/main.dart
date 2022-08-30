@@ -210,7 +210,7 @@ class MyNested extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     debugPrint("build MyNested");
-    return RxBlocNotificationListener<CounterBloc, MyState, String>(
+    return RxBlocListener<CounterBloc, MyState, String>(
       notificationCallback: (context, notification) {
         if (notification == "showDialog") {
           showDialog(

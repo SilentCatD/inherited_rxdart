@@ -8,7 +8,8 @@ import 'type_def.dart';
 /// is built around generic type, thus is flexible to be base of the two.
 /// The generic types in this case is [B] for the type of bloc and [S] for
 /// state.
-class RxBuilderBase<B extends RxBlocBase, S> extends StatefulWidget {
+abstract class RxBuilderBase<B extends RxBlocBase, S>
+    extends StatefulWidget {
   const RxBuilderBase({
     Key? key,
     required this.builder,
