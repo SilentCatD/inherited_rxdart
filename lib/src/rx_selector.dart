@@ -27,9 +27,7 @@ class _RxSelectorBaseState<B extends RxBlocBase, S, T>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _state = context
-        .watch<B>()
-        .state;
+    _state = context.watch<B>().state;
     _value = widget.stateRebuildSelector(_state);
   }
 
@@ -55,11 +53,10 @@ class RxSelector<B extends RxSilentBloc<S>, S, T>
     required StateRebuildSelector<S, T> stateRebuildSelector,
     required RxBlocWidgetBuilder<S> builder,
   }) : super(
-      key: key,
-      stateRebuildSelector: stateRebuildSelector,
-      builder: builder);
+            key: key,
+            stateRebuildSelector: stateRebuildSelector,
+            builder: builder);
 }
-
 
 class RxSingleStateSelector<B extends RxSingleStateBloc, T>
     extends _RxSelectorBase<B, B, T> {
@@ -68,7 +65,7 @@ class RxSingleStateSelector<B extends RxSingleStateBloc, T>
     required StateRebuildSelector<B, T> stateRebuildSelector,
     required RxBlocWidgetBuilder<B> builder,
   }) : super(
-      key: key,
-      stateRebuildSelector: stateRebuildSelector,
-      builder: builder);
+            key: key,
+            stateRebuildSelector: stateRebuildSelector,
+            builder: builder);
 }

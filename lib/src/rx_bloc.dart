@@ -46,7 +46,6 @@ abstract class RxSingleStateBloc extends RxBlocBase<RxSingleStateBloc> {
 abstract class RxSilentBloc<S> extends RxBlocBase<S> {
   RxSilentBloc(S initialState) : super(BehaviorSubject<S>.seeded(initialState));
 
-
   @override
   @nonVirtual
   bool get shouldSkipFirstBuild => true;

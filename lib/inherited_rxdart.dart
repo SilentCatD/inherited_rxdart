@@ -1,7 +1,5 @@
 library inherited_rxdart;
 
-export 'package:rxdart/rxdart.dart';
-
 export 'src/exception.dart'
     show
         RxBlocMustBeOfSpecificTypeException,

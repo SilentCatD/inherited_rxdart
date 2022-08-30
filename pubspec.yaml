@@ -1,5 +1,5 @@
 name: inherited_rxdart
-description: A package that combine power of inherited widget and rxdart
+description: "Inherited RxDart is a state management library that combine the power of InheritedWidget and RxDart, a simple and elegant state management solution for apps of any scale"
 version: 0.0.1
 homepage: https://github.com/SilentCatD/inherited_rxdart
 issue_tracker: https://github.com/SilentCatD/inherited_rxdart/issues
