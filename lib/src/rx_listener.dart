@@ -26,7 +26,7 @@ class RxStateListener<B extends RxSilentBloc<S>, S>
   }
 }
 
-class RxSingleStateListener<B extends RxSingleStateBloc>
+class RxSingleStateListener<B extends RxSingleStateBloc<B>>
     extends RxListenerBase<B, B> {
   const RxSingleStateListener(
       {Key? key, required Widget child, RxBlocEventListener<B>? stateCallback})

@@ -58,7 +58,7 @@ class RxSelector<B extends RxSilentBloc<S>, S, T>
             builder: builder);
 }
 
-class RxSingleStateSelector<B extends RxSingleStateBloc, T>
+class RxSingleStateSelector<B extends RxSingleStateBloc<B>, T>
     extends RxSelectorBase<B, B, T> {
   const RxSingleStateSelector({
     Key? key,

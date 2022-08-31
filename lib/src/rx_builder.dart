@@ -111,7 +111,7 @@ class RxBuilder<B extends RxSilentBloc<S>, S> extends RxBuilderBase<B, S> {
 ///      },
 ///  ),
 /// ```
-class RxSingleStateBuilder<B extends RxSingleStateBloc>
+class RxSingleStateBuilder<B extends RxSingleStateBloc<B>>
     extends RxBuilderBase<B, B> {
   const RxSingleStateBuilder({
     Key? key,

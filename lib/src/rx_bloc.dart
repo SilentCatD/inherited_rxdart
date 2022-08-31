@@ -92,9 +92,10 @@ abstract class RxBlocBase<S> {
 /// object are created outside of [RxProvider] (ex: [RxProvider.value]), its
 /// life cycle operation (init, dispose) must be handled and ensured by
 /// implementer.
-abstract class RxSingleStateBloc extends RxBlocBase<RxSingleStateBloc> {
+abstract class RxSingleStateBloc<T extends RxSingleStateBloc<T>>
+    extends RxBlocBase<T> {
   /// This bloc will use [PublishSubject] as its internal.
-  RxSingleStateBloc() : super(PublishSubject<RxSingleStateBloc>());
+  RxSingleStateBloc() : super(PublishSubject<T>());
 
   /// Whether to skip the first build trigger by stream, for when using
   /// [BehaviorSubject], the first state rebuild is not really necessary and
@@ -109,14 +110,14 @@ abstract class RxSingleStateBloc extends RxBlocBase<RxSingleStateBloc> {
   /// object itself, so internal mutable variable and the dependent that depend
   /// on those will be rebuilt accordingly.
   @override
-  RxSingleStateBloc get state => this;
+  T get state => this as T;
 
   /// Signature function of [RxSingleStateBloc], call to this function
   /// will cause all the dependent widget of this bloc to be rebuilt.
   @protected
   @nonVirtual
   void stateChanged() {
-    _stateSubject.add(this);
+    _stateSubject.add(this as T);
   }
 }
 
