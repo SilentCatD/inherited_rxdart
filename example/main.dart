@@ -53,7 +53,6 @@ class CounterBloc3 extends RxSingleStateBloc<CounterBloc3> {
 
   CounterBloc3(this.num, [this.num2 = 0]);
 
-
   void increase() {
     num++;
     num2++;
@@ -103,15 +102,15 @@ class MyHomePage extends StatelessWidget {
             const MyCounter(),
             RxSelector<CounterBloc, MyState, String>(
                 stateRebuildSelector: (state) {
-                  return state.text;
-                }, builder: (context, state) {
+              return state.text;
+            }, builder: (context, state) {
               debugPrint("build Text");
               return Text("state text: ${state.text}");
             }),
             RxSingleStateSelector<CounterBloc3, int>(
                 stateRebuildSelector: (state) {
-                  return state.num2;
-                }, builder: (context, state) {
+              return state.num2;
+            }, builder: (context, state) {
               debugPrint("build num2");
               return Text("state num2: ${state.num2}");
             }),
@@ -151,7 +150,7 @@ class MyHomePage extends StatelessWidget {
                   Navigator.of(context).push(MaterialPageRoute(builder: (_) {
                     return RxProvider.value(
                         value:
-                        RxProvider.of<CounterBloc>(context, listen: false),
+                            RxProvider.of<CounterBloc>(context, listen: false),
                         child: const MyNested());
                   }));
                 },
