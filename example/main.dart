@@ -169,7 +169,7 @@ class MyCounter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     debugPrint("build MyCounter");
-    return RxBlocListener<CounterBloc, MyState, String>(
+    return RxListener<CounterBloc, MyState, String>(
       stateCallback: (context, state) {
         debugPrint(
             "from RxBlocListener: CounterBloc/${state.number}/${state.text}");
@@ -232,7 +232,7 @@ class MyNested extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     debugPrint("build MyNested");
-    return RxBlocListener<CounterBloc, MyState, String>(
+    return RxListener<CounterBloc, MyState, String>(
       notificationCallback: (context, notification) {
         if (notification == "showDialog") {
           showDialog(

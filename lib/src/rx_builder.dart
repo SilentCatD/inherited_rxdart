@@ -4,12 +4,12 @@ import 'rx_bloc.dart';
 import 'rx_provider.dart';
 import 'type_def.dart';
 
-/// Base class for [RxBuilder] and [RxSingleStateBuilder], which value
-/// is built around generic type, thus is flexible to be base of the two.
-/// The generic types in this case is [B] for the type of bloc and [S] for
-/// state.
-abstract class RxBuilderBase<B extends RxBlocBase, S>
-    extends StatefulWidget {
+/// Base class for [RxBuilder] and [RxSingleStateBuilder]
+///
+/// Which value is built around generic type, thus is flexible to be base of
+/// the two. The generic types in this case is [B] for the type of bloc and [S]
+/// for state.
+abstract class RxBuilderBase<B extends RxBlocBase, S> extends StatefulWidget {
   const RxBuilderBase({
     Key? key,
     required this.builder,
@@ -116,7 +116,7 @@ class RxSingleStateBuilder<B extends RxSingleStateBloc<B>>
   const RxSingleStateBuilder({
     Key? key,
     required RxBlocWidgetBuilder<B> builder,
-    ShouldRebuildSingleState? shouldRebuildWidget,
+    ShouldRebuildSingleState<B>? shouldRebuildWidget,
   }) : super(
             key: key,
             builder: builder,

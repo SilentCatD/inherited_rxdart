@@ -7,15 +7,15 @@ export 'src/exception.dart'
         ServiceNotProvidedException,
         ServiceMustBeOfSpecificTypeException;
 export 'src/multi_service_provider.dart' show MultiServiceProvider;
-export 'src/rx_bloc.dart'
-    show RxBloc, RxSingleStateBloc, RxSilentBloc;
-export 'src/rx_builder.dart'
-    show RxBuilder, RxSingleStateBuilder;
+export 'src/rx_bloc.dart' show RxBloc, RxSingleStateBloc, RxSilentBloc;
+export 'src/rx_builder.dart' show RxBuilder, RxSingleStateBuilder;
 export 'src/rx_listener.dart'
-    show RxStateListener, RxSingleStateListener, RxBlocListener;
+    show RxStateListener, RxSingleStateListener, RxListener;
 export 'src/rx_provider.dart' show RxProvider, RxContext;
 export 'src/rx_selector.dart'
     show RxSelector, RxSingleStateSelector, RxSelectorBase;
+export 'src/rx_consumer.dart'
+    show RxStateConsumer, RxSingleStateConsumer, RxConsumer;
 export 'src/service_provider.dart' show ServiceProvider, ServiceContext;
 export 'src/type_def.dart'
     show

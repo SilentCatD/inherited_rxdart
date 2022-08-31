@@ -37,12 +37,13 @@ import 'type_def.dart';
 /// If multiple bloc are to be provided at once, consider [RxMultiProvider] to
 /// avoid deeply nested [RxProvider] widgets.
 class RxProvider<B extends RxBlocBase> extends SingleChildStatefulWidget {
-  RxProvider({
+  const RxProvider({
     Key? key,
     required Create<B> create,
     Widget? child,
-  })  : _bloc = create(),
-        _isCreated = true,
+  })  : _isCreated = true,
+        _create = create,
+        _bloc = null,
         super(key: key, child: child);
 
   const RxProvider.value({
@@ -51,10 +52,12 @@ class RxProvider<B extends RxBlocBase> extends SingleChildStatefulWidget {
     Widget? child,
   })  : _bloc = value,
         _isCreated = false,
+        _create = null,
         super(key: key, child: child);
 
-  final B _bloc;
+  final B? _bloc;
   final bool _isCreated;
+  final Create<B>? _create;
 
   /// Method to locate and get the provided bloc of this subtree.
   ///
@@ -129,10 +132,12 @@ class _RxProviderState<B extends RxBlocBase>
   @override
   void initState() {
     super.initState();
-    _bloc = widget._bloc;
     _isCreated = widget._isCreated;
     if (_isCreated) {
+      _bloc = widget._create!.call();
       _bloc.init();
+    } else {
+      _bloc = widget._bloc!;
     }
   }
 

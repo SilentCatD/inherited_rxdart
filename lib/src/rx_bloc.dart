@@ -1,12 +1,12 @@
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
-/// Base class for all other bloc, subclass this when making a new bloc.
+/// Base class for others bloc, subclass this when making a new bloc.
 ///
 /// The type [S] would be the type of value of [Stream] and [state].
 ///
 /// The init and dispose logic of these bloc are called automatically by
-/// [RxProvider], so implementer of these class don't have to, but if an Bloc
+/// [RxProvider], so implementer of these class don't have to, but if a Bloc
 /// object are created outside of [RxProvider] (ex: [RxProvider.value]), its
 /// life cycle operation (init, dispose) must be handled and ensured by
 /// implementer.
@@ -59,7 +59,7 @@ abstract class RxBlocBase<S> {
 /// need to rebuild. For example:
 ///
 /// ```dart
-/// class CounterBloc3 extends RxSingleStateBloc {
+/// class CounterBloc3 extends RxSingleStateBloc<CounterBloc3> {
 ///   int num;
 ///   int num2;
 ///
@@ -82,13 +82,16 @@ abstract class RxBlocBase<S> {
 /// }
 ///```
 ///
-/// Because the simplicity of this modal based bloc, there are two classes
-/// that handle the rebuild of this type of bloc dependent:
+/// Because the simplicity of this modal based bloc, there are classes
+/// that handle the rebuild or listen to the states of this type of
+/// bloc dependent:
 /// * [RxSingleStateBuilder]
 /// * [RxSingleStateSelector]
+/// * [RxSingleStateListener]
+/// * [RxSingleStateConsumer]
 ///
 /// The init and dispose logic of these bloc are called automatically by
-/// [RxProvider], so implementer of these class don't have to, but if an Bloc
+/// [RxProvider], so implementer of these class don't have to, but if a Bloc
 /// object are created outside of [RxProvider] (ex: [RxProvider.value]), its
 /// life cycle operation (init, dispose) must be handled and ensured by
 /// implementer.
@@ -168,12 +171,14 @@ abstract class RxSingleStateBloc<T extends RxSingleStateBloc<T>>
 /// ```
 ///
 /// Dependent of [RxProvider] of this bloc can use the following widgets for
-/// their rebuilding:
+/// their rebuilding and listening for state changes:
 /// * [RxBuilder]
 /// * [RxSelector]
+/// * [RxStateConsumer]
+/// * [RxStateListener]
 ///
 /// The init and dispose logic of these bloc are called automatically by
-/// [RxProvider], so implementer of these class don't have to, but if an Bloc
+/// [RxProvider], so implementer of these class don't have to, but if a bloc
 /// object are created outside of [RxProvider] (ex: [RxProvider.value]), its
 /// life cycle operation (init, dispose) must be handled and ensured by
 /// implementer.
@@ -263,11 +268,13 @@ abstract class RxSilentBloc<S> extends RxBlocBase<S> {
 /// Widgets that supported by this class are:
 /// * [RxBuilder]
 /// * [RxListener]
+/// * [RxStateListener]
 /// * [RxConsumer]
+/// * [RxStateConsumer]
 /// * [RxSelector]
 ///
 /// The init and dispose logic of these bloc are called automatically by
-/// [RxProvider], so implementer of these class don't have to, but if an Bloc
+/// [RxProvider], so implementer of these class don't have to, but if a Bloc
 /// object are created outside of [RxProvider] (ex: [RxProvider.value]), its
 /// life cycle operation (init, dispose) must be handled and ensured by
 /// implementer.
