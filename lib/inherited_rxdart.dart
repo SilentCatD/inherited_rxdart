@@ -13,7 +13,7 @@ export 'src/rx_listener.dart'
     show RxStateListener, RxSingleStateListener, RxListener;
 export 'src/rx_provider.dart' show RxProvider, RxContext;
 export 'src/rx_selector.dart'
-    show RxSelector, RxSingleStateSelector, RxSelectorBase;
+    show RxSelector, RxSingleStateSelector;
 export 'src/rx_consumer.dart'
     show RxStateConsumer, RxSingleStateConsumer, RxConsumer;
 export 'src/service_provider.dart' show ServiceProvider, ServiceContext;
