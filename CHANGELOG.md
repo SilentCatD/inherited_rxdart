@@ -1,3 +1,10 @@
+## 0.0.4
+
+* Remove generic type requirement in RxSingleStateBloc
+* Add implementations for Builder, Listener, Consumer of RxSingleStateBloc
+* Remove dynamic type of BuilderBase/ListenerBase
+* Rework selector/builder implementation (remove unnecessary variable/state/value)
+
 ## 0.0.3+2
 
 * Format
