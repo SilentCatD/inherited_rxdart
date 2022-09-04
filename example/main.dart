@@ -47,7 +47,7 @@ class CounterBloc2 extends RxSilentBloc<int> {
   }
 }
 
-class CounterBloc3 extends RxSingleStateBloc<CounterBloc3> {
+class CounterBloc3 extends RxSingleStateBloc {
   int num;
   int num2;
 
@@ -103,16 +103,16 @@ class MyHomePage extends StatelessWidget {
             RxSelector<CounterBloc, MyState, String>(
                 stateRebuildSelector: (state) {
               return state.text;
-            }, builder: (context, state) {
+            }, builder: (context, value) {
               debugPrint("build Text");
-              return Text("state text: ${state.text}");
+              return Text("state text: $value");
             }),
             RxSingleStateSelector<CounterBloc3, int>(
                 stateRebuildSelector: (state) {
               return state.num2;
-            }, builder: (context, state) {
+            }, builder: (context, value) {
               debugPrint("build num2");
-              return Text("state num2: ${state.num2}");
+              return Text("state num2: $value");
             }),
             TextField(
               onSubmitted: (value) {

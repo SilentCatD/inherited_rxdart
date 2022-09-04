@@ -80,7 +80,7 @@ class _RxConsumerState<B extends RxBloc<S, N>, S, N>
 ///
 /// Work with:
 /// * [RxSingleStateBloc]
-class RxSingleStateConsumer<B extends RxSingleStateBloc<B>>
+class RxSingleStateConsumer<B extends RxSingleStateBloc>
     extends StatefulWidget {
   const RxSingleStateConsumer({
     Key? key,
@@ -97,7 +97,7 @@ class RxSingleStateConsumer<B extends RxSingleStateBloc<B>>
       _RxSingleStateConsumerState<B>();
 }
 
-class _RxSingleStateConsumerState<B extends RxSingleStateBloc<B>>
+class _RxSingleStateConsumerState<B extends RxSingleStateBloc>
     extends State<RxSingleStateConsumer<B>> {
   @override
   Widget build(BuildContext context) {

@@ -6,7 +6,7 @@ import 'type_def.dart';
 /// Widget for selectively rebuild ui base on a property of the whole state [S].
 ///
 /// Base Widget for [RxSelector] and [RxSingleStateSelector].
-class RxSelectorBase<B extends RxBlocBase, S, T> extends StatefulWidget {
+class RxSelectorBase<B extends RxBlocBase<S>, S, T> extends StatefulWidget {
   const RxSelectorBase({
     Key? key,
     required this.stateRebuildSelector,
@@ -18,39 +18,33 @@ class RxSelectorBase<B extends RxBlocBase, S, T> extends StatefulWidget {
   final StateRebuildSelector<S, T> stateRebuildSelector;
 
   /// Typical builder function, return a widget.
-  final RxBlocWidgetBuilder<S> builder;
+  final RxBlocWidgetBuilder<T> builder;
 
   @override
   State<RxSelectorBase<B, S, T>> createState() =>
       _RxSelectorBaseState<B, S, T>();
 }
 
-class _RxSelectorBaseState<B extends RxBlocBase, S, T>
+class _RxSelectorBaseState<B extends RxBlocBase<S>, S, T>
     extends State<RxSelectorBase<B, S, T>> {
   Widget? _cachedWidget;
   T? _cachedValue;
   late T _value;
-  late S _state;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _state = context.watch<B>().state;
-    _value = widget.stateRebuildSelector(_state);
+    final state = context.watch<B>().state;
+    _value = widget.stateRebuildSelector(state);
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget? newWidget;
-    if (_cachedValue == null ||
-        _cachedValue != widget.stateRebuildSelector(_state)) {
-      newWidget = widget.builder(context, _state);
-      _cachedWidget = newWidget;
+    if (_cachedValue == null || _cachedValue != _value) {
+      _cachedWidget = widget.builder(context, _value);
       _cachedValue = _value;
-    } else {
-      newWidget = _cachedWidget;
     }
-    return newWidget!;
+    return _cachedWidget!;
   }
 }
 
@@ -63,9 +57,9 @@ class _RxSelectorBaseState<B extends RxBlocBase, S, T>
 /// RxSelector<CounterBloc, MyState, String>(
 ///   stateRebuildSelector: (state) {
 ///     return state.text;
-///   }, builder: (context, state) {
+///   }, builder: (context, value) {
 ///     debugPrint("build Text");
-///     return Text("state text: ${state.text}");
+///     return Text("state text: $value");
 ///   }),
 /// ```
 /// ... the builder function will only be executed and a new widget is built
@@ -79,7 +73,7 @@ class RxSelector<B extends RxSilentBloc<S>, S, T>
   const RxSelector({
     Key? key,
     required StateRebuildSelector<S, T> stateRebuildSelector,
-    required RxBlocWidgetBuilder<S> builder,
+    required RxBlocWidgetBuilder<T> builder,
   }) : super(
             key: key,
             stateRebuildSelector: stateRebuildSelector,
@@ -95,9 +89,9 @@ class RxSelector<B extends RxSilentBloc<S>, S, T>
 ///  RxSingleStateSelector<CounterBloc3, int>(
 ///   stateRebuildSelector: (state) {
 ///     return state.num2;
-///   }, builder: (context, state) {
+///   }, builder: (context, value) {
 ///       debugPrint("build num2");
-///       return Text("state num2: ${state.num2}");
+///       return Text("state num2: $value");
 ///   }),
 /// ```
 /// ... the builder function will only be executed and a new widget is built
@@ -105,14 +99,41 @@ class RxSelector<B extends RxSilentBloc<S>, S, T>
 ///
 /// Work with:
 /// * [RxSingleStateBloc]
-class RxSingleStateSelector<B extends RxSingleStateBloc<B>, T>
-    extends RxSelectorBase<B, B, T> {
+class RxSingleStateSelector<B extends RxSingleStateBloc, T>
+    extends StatefulWidget {
   const RxSingleStateSelector({
     Key? key,
-    required StateRebuildSelector<B, T> stateRebuildSelector,
-    required RxBlocWidgetBuilder<B> builder,
-  }) : super(
-            key: key,
-            stateRebuildSelector: stateRebuildSelector,
-            builder: builder);
+    required this.stateRebuildSelector,
+    required this.builder,
+  }) : super(key: key);
+
+  final StateRebuildSelector<B, T> stateRebuildSelector;
+  final RxBlocWidgetBuilder<T> builder;
+
+  @override
+  State<RxSingleStateSelector<B, T>> createState() =>
+      _RxSingleStateSelectorState<B, T>();
+}
+
+class _RxSingleStateSelectorState<B extends RxSingleStateBloc, T>
+    extends State<RxSingleStateSelector<B, T>> {
+  Widget? _cachedWidget;
+  T? _cachedValue;
+  late T _value;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final state = context.watch<B>().state as B;
+    _value = widget.stateRebuildSelector(state);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_cachedValue == null || _cachedValue != _value) {
+      _cachedWidget = widget.builder(context, _value);
+      _cachedValue = _value;
+    }
+    return _cachedWidget!;
+  }
 }

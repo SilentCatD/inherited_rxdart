@@ -4,66 +4,6 @@ import 'rx_bloc.dart';
 import 'rx_provider.dart';
 import 'type_def.dart';
 
-/// Base class for [RxBuilder] and [RxSingleStateBuilder]
-///
-/// Which value is built around generic type, thus is flexible to be base of
-/// the two. The generic types in this case is [B] for the type of bloc and [S]
-/// for state.
-abstract class RxBuilderBase<B extends RxBlocBase, S> extends StatefulWidget {
-  const RxBuilderBase({
-    Key? key,
-    required this.builder,
-    this.shouldRebuildWidget,
-    this.shouldRebuildSingleState,
-  })  : assert(shouldRebuildWidget == null || shouldRebuildSingleState == null),
-        super(key: key);
-
-  /// Typical Builder function, which called when the bloc this widget depend
-  /// on require its to rebuild itself with new value.
-  final RxBlocWidgetBuilder<S> builder;
-
-  /// Function to determine whether this widget should rebuild itself when state
-  /// changed.
-  final ShouldRebuildWidget<S>? shouldRebuildWidget;
-
-  /// Function to determine whether this widget should rebuild itself when state
-  /// changed.
-  final ShouldRebuildSingleState<S>? shouldRebuildSingleState;
-
-  @override
-  State<RxBuilderBase<B, S>> createState() => _RxBuilderBaseState<B, S>();
-}
-
-class _RxBuilderBaseState<B extends RxBlocBase, S>
-    extends State<RxBuilderBase<B, S>> {
-  Widget? _cachedWidget;
-  S? _cachedState;
-  late S _state;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _state = context.watch<B>().state;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Widget? newWidget;
-
-    if (_cachedWidget == null ||
-        ((widget.shouldRebuildWidget?.call(_cachedState as S, _state) ??
-                true) &&
-            (widget.shouldRebuildSingleState?.call(_state) ?? true))) {
-      newWidget = widget.builder(context, _state);
-      _cachedWidget = newWidget;
-      _cachedState = _state;
-    } else {
-      newWidget = _cachedWidget;
-    }
-    return newWidget!;
-  }
-}
-
 /// Builder function to subscribe for changes of specific Bloc of type [B]
 /// like [RxBloc], [RxSilentBloc] with state [S]
 ///
@@ -82,15 +22,46 @@ class _RxBuilderBaseState<B extends RxBlocBase, S>
 ///       },
 ///   ),
 /// ```
-class RxBuilder<B extends RxSilentBloc<S>, S> extends RxBuilderBase<B, S> {
+class RxBuilder<B extends RxSilentBloc<S>, S> extends StatefulWidget {
   const RxBuilder({
     Key? key,
-    required RxBlocWidgetBuilder<S> builder,
-    ShouldRebuildWidget<S>? shouldRebuildWidget,
-  }) : super(
-            key: key,
-            builder: builder,
-            shouldRebuildWidget: shouldRebuildWidget);
+    required this.builder,
+    this.shouldRebuildWidget,
+  }) : super(key: key);
+
+  /// Typical Builder function, which called when the bloc this widget depend
+  /// on require its to rebuild itself with new value.
+  final RxBlocWidgetBuilder<S> builder;
+
+  /// Function to determine whether this widget should rebuild itself when state
+  /// changed.
+  final ShouldRebuildWidget<S>? shouldRebuildWidget;
+
+  @override
+  State<RxBuilder<B, S>> createState() => _RxBuilderState<B, S>();
+}
+
+class _RxBuilderState<B extends RxSilentBloc<S>, S>
+    extends State<RxBuilder<B, S>> {
+  Widget? _cachedWidget;
+  S? _cachedState;
+  late S _state;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _state = context.watch<B>().state;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_cachedWidget == null ||
+        (widget.shouldRebuildWidget?.call(_cachedState as S, _state) ?? true)) {
+      _cachedWidget = widget.builder(context, _state);
+      _cachedState = _state;
+    }
+    return _cachedWidget!;
+  }
 }
 
 /// Builder function to subscribe for changes of specific Bloc of type [B]
@@ -111,14 +82,43 @@ class RxBuilder<B extends RxSilentBloc<S>, S> extends RxBuilderBase<B, S> {
 ///      },
 ///  ),
 /// ```
-class RxSingleStateBuilder<B extends RxSingleStateBloc<B>>
-    extends RxBuilderBase<B, B> {
+class RxSingleStateBuilder<B extends RxSingleStateBloc> extends StatefulWidget {
   const RxSingleStateBuilder({
     Key? key,
-    required RxBlocWidgetBuilder<B> builder,
-    ShouldRebuildSingleState<B>? shouldRebuildWidget,
-  }) : super(
-            key: key,
-            builder: builder,
-            shouldRebuildSingleState: shouldRebuildWidget);
+    required this.builder,
+    this.shouldRebuildWidget,
+  }) : super(key: key);
+
+  /// Typical Builder function, which called when the bloc this widget depend
+  /// on require its to rebuild itself with new value.
+  final RxBlocWidgetBuilder<B> builder;
+
+  /// Function to determine whether this widget should rebuild itself when state
+  /// changed.
+  final ShouldRebuildSingleState<B>? shouldRebuildWidget;
+
+  @override
+  State<RxSingleStateBuilder<B>> createState() =>
+      _RxSingleStateBuilderState<B>();
+}
+
+class _RxSingleStateBuilderState<B extends RxSingleStateBloc>
+    extends State<RxSingleStateBuilder<B>> {
+  Widget? _cachedWidget;
+  late B _state;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _state = context.watch<B>().state as B;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_cachedWidget == null ||
+        (widget.shouldRebuildWidget?.call(_state) ?? true)) {
+      _cachedWidget = widget.builder(context, _state);
+    }
+    return _cachedWidget!;
+  }
 }

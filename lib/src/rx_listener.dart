@@ -10,13 +10,54 @@ import 'type_def.dart';
 ///
 /// Will execute callback when a new state of type [S] is emitted from the bloc
 /// of type [B].
-abstract class RxListenerBase<B extends RxBlocBase, S> extends StatefulWidget {
+abstract class RxListenerBase<B extends RxBlocBase<S>, S>
+    extends StatefulWidget {
   const RxListenerBase({Key? key, required this.child, this.stateCallback})
       : super(key: key);
 
   /// This widget require a child, which will not be affected by these callback
   final Widget child;
   final RxBlocEventListener<S>? stateCallback;
+
+  @override
+  State<RxListenerBase<B, S>> createState() => _RxListenerBaseState<B, S>();
+}
+
+class _RxListenerBaseState<B extends RxBlocBase<S>, S>
+    extends State<RxListenerBase<B, S>> {
+  late B _bloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _bloc = context.read<B>();
+    _sub();
+  }
+
+  StreamSubscription<S>? _stateSubscription;
+
+  void _sub() {
+    _stateSubscription = _bloc.stateStream.listen((state) {
+      if (!mounted) return;
+      widget.stateCallback?.call(context, state);
+    });
+  }
+
+  void _unSub() {
+    _stateSubscription?.cancel();
+    _stateSubscription = null;
+  }
+
+  @override
+  void dispose() {
+    _unSub();
+    return super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
+  }
 }
 
 /// Listener for listening state changes.
@@ -32,11 +73,6 @@ class RxStateListener<B extends RxSilentBloc<S>, S>
   const RxStateListener(
       {Key? key, required Widget child, RxBlocEventListener<S>? stateCallback})
       : super(key: key, stateCallback: stateCallback, child: child);
-
-  @override
-  State<RxStateListener<B, S>> createState() {
-    return _RxListenerBaseState<RxStateListener<B, S>, B, S>();
-  }
 }
 
 /// Listener for listening state changes for [RxSingleStateBloc]
@@ -46,20 +82,22 @@ class RxStateListener<B extends RxSilentBloc<S>, S>
 ///
 /// Work only with:
 /// * [RxSingleStateBloc]
-class RxSingleStateListener<B extends RxSingleStateBloc<B>>
-    extends RxListenerBase<B, B> {
+class RxSingleStateListener<B extends RxSingleStateBloc>
+    extends StatefulWidget {
   const RxSingleStateListener(
-      {Key? key, required Widget child, RxBlocEventListener<B>? stateCallback})
-      : super(key: key, stateCallback: stateCallback, child: child);
+      {Key? key, required this.child, this.stateCallback})
+      : super(key: key);
+
+  final Widget child;
+  final RxBlocEventListener<B>? stateCallback;
 
   @override
-  State<RxSingleStateListener<B>> createState() {
-    return _RxListenerBaseState<RxSingleStateListener<B>, B, B>();
-  }
+  State<RxSingleStateListener<B>> createState() =>
+      _RxSingleStateListenerState<B>();
 }
 
-class _RxListenerBaseState<T extends RxListenerBase<B, S>, B extends RxBlocBase,
-    S> extends State<T> {
+class _RxSingleStateListenerState<B extends RxSingleStateBloc>
+    extends State<RxSingleStateListener<B>> {
   late B _bloc;
 
   @override
@@ -69,12 +107,12 @@ class _RxListenerBaseState<T extends RxListenerBase<B, S>, B extends RxBlocBase,
     _sub();
   }
 
-  StreamSubscription<S>? _stateSubscription;
+  StreamSubscription<RxSingleStateBloc>? _stateSubscription;
 
   void _sub() {
-    _stateSubscription = (_bloc as RxBlocBase<S>).stateStream.listen((state) {
+    _stateSubscription = _bloc.stateStream.listen((state) {
       if (!mounted) return;
-      widget.stateCallback?.call(context, state);
+      widget.stateCallback?.call(context, state as B);
     });
   }
 
@@ -159,8 +197,11 @@ class RxListener<B extends RxBloc<S, N>, S, N> extends RxListenerBase<B, S> {
 }
 
 class _RxBlocListenerState<B extends RxBloc<S, N>, S, N>
-    extends _RxListenerBaseState<RxListener<B, S, N>, B, S> {
+    extends _RxListenerBaseState<B, S> {
   StreamSubscription<N>? _notificationSubscription;
+
+  @override
+  RxListener<B, S, N> get widget => super.widget as RxListener<B, S, N>;
 
   @override
   void _sub() {

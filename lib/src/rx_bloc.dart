@@ -59,7 +59,7 @@ abstract class RxBlocBase<S> {
 /// need to rebuild. For example:
 ///
 /// ```dart
-/// class CounterBloc3 extends RxSingleStateBloc<CounterBloc3> {
+/// class CounterBloc3 extends RxSingleStateBloc {
 ///   int num;
 ///   int num2;
 ///
@@ -95,10 +95,9 @@ abstract class RxBlocBase<S> {
 /// object are created outside of [RxProvider] (ex: [RxProvider.value]), its
 /// life cycle operation (init, dispose) must be handled and ensured by
 /// implementer.
-abstract class RxSingleStateBloc<T extends RxSingleStateBloc<T>>
-    extends RxBlocBase<T> {
+abstract class RxSingleStateBloc extends RxBlocBase<RxSingleStateBloc> {
   /// This bloc will use [PublishSubject] as its internal.
-  RxSingleStateBloc() : super(PublishSubject<T>());
+  RxSingleStateBloc() : super(PublishSubject<RxSingleStateBloc>());
 
   /// Whether to skip the first build trigger by stream, for when using
   /// [BehaviorSubject], the first state rebuild is not really necessary and
@@ -113,14 +112,14 @@ abstract class RxSingleStateBloc<T extends RxSingleStateBloc<T>>
   /// object itself, so internal mutable variable and the dependent that depend
   /// on those will be rebuilt accordingly.
   @override
-  T get state => this as T;
+  RxSingleStateBloc get state => this;
 
   /// Signature function of [RxSingleStateBloc], call to this function
   /// will cause all the dependent widget of this bloc to be rebuilt.
   @protected
   @nonVirtual
   void stateChanged() {
-    _stateSubject.add(this as T);
+    _stateSubject.add(this);
   }
 }
 
