@@ -75,10 +75,10 @@ class App extends StatelessWidget {
       home: RxMultiProvider(
         providers: [
           RxProvider<CounterBloc>(
-              create: () => CounterBloc(const MyState(text: "hi", number: 10))),
+              create: () => CounterBloc(const MyState(text: "hi", number: 0))),
           RxProvider<CounterBloc2>(create: () => CounterBloc2(10)),
           RxProvider<CounterBloc3>(
-            create: () => CounterBloc3(10),
+            create: () => CounterBloc3(20),
           ),
         ],
         child: const MyHomePage(),
