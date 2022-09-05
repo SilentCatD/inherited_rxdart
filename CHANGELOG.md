@@ -1,3 +1,8 @@
+## 1.0.0
+
+* Change all "SingleState" blocs and related Widget name to "ViewModel"
+* Modify README
+
 ## 0.0.5+2
 
 * Add more details to README
