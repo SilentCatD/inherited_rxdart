@@ -17,9 +17,8 @@ A simple state management solution that combine the power of inherited widget an
 
 ## Features
 
-Create state management logic for your app using multitude of blocs, which internal
-is just stream and rxdart, you can access them anywhere in your widget tree when
-provided using providers.
+Create state management logic for your app using multitude of blocs, which internal is just stream
+and rxdart, you can access them anywhere in your widget tree when provided using providers.
 
 ## Getting started
 
@@ -31,9 +30,20 @@ First import it:
 import 'package:inherited_rxdart/inherited_rxdart.dart';
 ```
 
-Create your bloc:
+Create your bloc and state:
 
 ```dart
+@immutable
+class MyState {
+  final int number;
+  final String text;
+
+  const MyState({required this.number, required this.text});
+
+  MyState copyWith({int? number, String? text}) {
+    return MyState(number: number ?? this.number, text: text ?? this.text);
+  }
+}
 
 class CounterBloc extends RxBloc<MyState, String> {
   CounterBloc(MyState initialState) : super(initialState);
@@ -66,7 +76,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         home: RxProvider<CounterBloc>(
-          create: () => CounterBloc(10),
+          create: () => CounterBloc(const MyState(text: "hi", number: 0)),
           child: MyHomePage(),
         )
     );
@@ -77,13 +87,13 @@ class App extends StatelessWidget {
 Access them anywhere in your subtree with:
 
 ```dart
-
 final bloc = RxProvider.of<CounterBloc>(context);
 ```
 
 ## Usage
 
-View documents of each API for more details. The library support multiple type of blocs and related widgets.
+View documents of each API for more details. The library support multiple type of blocs and related
+widgets.
 
 - RxSingleStateBloc: for simple model based state-management, shipped with related widget:
     - RxSingleStateBuilder: for handle rebuilding widget when a new state is emitted.
@@ -109,7 +119,8 @@ For other blocs, there will be specific widget for each purpose include: rebuild
     - RxStateListener
 
 
-- RxBloc: bloc with notification beside states, which can be listened and react accordingly. Work with:
+- RxBloc: bloc with notification beside states, which can be listened and react accordingly. Work
+  with:
     - RxBuilder
     - RxListener
     - RxStateListener
@@ -117,8 +128,8 @@ For other blocs, there will be specific widget for each purpose include: rebuild
     - RxStateConsumer
     - RxSelector
 
-There's also simple service provider for controller/repo or simply to inject an instance through a widget
-subtree.
+There's also simple service provider for controller/repo or simply to inject an instance through a
+widget subtree.
 
 - ServiceProvider
 
