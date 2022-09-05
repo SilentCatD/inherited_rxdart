@@ -47,11 +47,11 @@ class CounterBloc2 extends RxCubit<int> {
   }
 }
 
-class CounterBloc3 extends RxViewModel {
+class CounterViewModel extends RxViewModel {
   int num;
   int num2;
 
-  CounterBloc3(this.num, [this.num2 = 0]);
+  CounterViewModel(this.num, [this.num2 = 0]);
 
   void increase() {
     num++;
@@ -77,8 +77,8 @@ class App extends StatelessWidget {
           RxProvider<CounterBloc>(
               create: () => CounterBloc(const MyState(text: "hi", number: 0))),
           RxProvider<CounterBloc2>(create: () => CounterBloc2(10)),
-          RxProvider<CounterBloc3>(
-            create: () => CounterBloc3(20),
+          RxProvider<CounterViewModel>(
+            create: () => CounterViewModel(20),
           ),
         ],
         child: const MyHomePage(),
@@ -107,7 +107,7 @@ class MyHomePage extends StatelessWidget {
               debugPrint("build Text");
               return Text("state text: $value");
             }),
-            RxViewModelSelector<CounterBloc3, int>(
+            RxViewModelSelector<CounterViewModel, int>(
                 stateRebuildSelector: (state) {
               return state.num2;
             }, builder: (context, value) {
@@ -129,7 +129,7 @@ class MyHomePage extends StatelessWidget {
                           .increase();
                       RxProvider.of<CounterBloc2>(context, listen: false)
                           .increase();
-                      RxProvider.of<CounterBloc3>(context, listen: false)
+                      RxProvider.of<CounterViewModel>(context, listen: false)
                           .increase();
                     },
                     child: const Text("Increase")),
@@ -139,7 +139,7 @@ class MyHomePage extends StatelessWidget {
                           .decrease();
                       RxProvider.of<CounterBloc2>(context, listen: false)
                           .decrease();
-                      RxProvider.of<CounterBloc3>(context, listen: false)
+                      RxProvider.of<CounterViewModel>(context, listen: false)
                           .decrease();
                     },
                     child: const Text("Decrease")),
@@ -182,7 +182,7 @@ class MyCounter extends StatelessWidget {
             debugPrint(
                 "from RxStateListener: CounterBloc/${state.number}/${state.text}");
           },
-          child: RxViewModelListener<CounterBloc3>(
+          child: RxViewModelListener<CounterViewModel>(
             stateCallback: (context, state) {
               debugPrint(
                   "from RxStateListener: CounterBloc3/${state.num}/${state.num2}");
@@ -207,7 +207,7 @@ class MyCounter extends StatelessWidget {
                     return curr < 10;
                   },
                 ),
-                RxViewModelBuilder<CounterBloc3>(
+                RxViewModelBuilder<CounterViewModel>(
                   builder: (context, state) {
                     debugPrint("build Number 3");
                     return Text('counter bloc 3:  ${state.num}');

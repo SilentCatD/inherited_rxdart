@@ -87,22 +87,22 @@ abstract class RxBase<S> {
   }
 }
 
-/// Simple bloc without complicated state, notification,etc,... similar to model
-/// based state management like [ChangeNotifierProvider].
+/// Simple view model based state management without complicated state,
+/// notification,etc,... similar to [ChangeNotifierProvider].
 ///
-/// Bloc extending this class only need to call [RxViewModel.stateChanged]
-/// to notify all other dependent that the state of this bloc has changed and
-/// need to rebuild. For example:
+/// Classes extending this class only need to call [RxViewModel.stateChanged]
+/// to notify all other dependent that the state of this view model has changed
+/// and need to rebuild. For example:
 ///
 /// ```dart
-/// class CounterBloc3 extends RxViewModel {
+/// class CounterViewModel extends RxViewModel {
 ///   int num;
 ///   int num2;
 ///
-///   CounterBloc3(this.num, [this.num2 = 0]);
+///   CounterViewModel(this.num, [this.num2 = 0]);
 ///
 ///   @override
-///   CounterBloc3 get state => super.state as CounterBloc3;
+///   CounterViewModel get state => super.state as CounterViewModel;
 ///
 ///   void increase() {
 ///     num++;
@@ -118,21 +118,20 @@ abstract class RxBase<S> {
 /// }
 ///```
 ///
-/// Because the simplicity of this modal based bloc, there are classes
-/// that handle the rebuild or listen to the states of this type of
-/// bloc dependent:
+/// There are classes that handle the rebuild or listen to the states of this
+/// type of view model dependent:
 /// * [RxViewModelBuilder]
 /// * [RxViewModelSelector]
 /// * [RxViewModelListener]
 /// * [RxViewModelConsumer]
 ///
-/// The init and dispose logic of these bloc are called automatically by
+/// The init and dispose logic of these view model are called automatically by
 /// [RxProvider], so implementer of these class don't have to, but if a Bloc
 /// object are created outside of [RxProvider] (ex: [RxProvider.value]), its
 /// life cycle operation (init, dispose) must be handled and ensured by
 /// implementer.
 abstract class RxViewModel extends RxBase<RxViewModel> {
-  /// This bloc will use [PublishSubject] as its internal.
+  /// This view model will use [PublishSubject] as its internal.
   RxViewModel() : super(PublishSubject<RxViewModel>());
 
   /// Whether to skip the first build trigger by stream, for when using
@@ -144,7 +143,7 @@ abstract class RxViewModel extends RxBase<RxViewModel> {
   @nonVirtual
   bool get shouldSkipFirstBuild => false;
 
-  /// The current state this bloc is holding. Which in this case is this
+  /// The current state this view model is holding. Which in this case is this
   /// object itself, so internal mutable variable and the dependent that depend
   /// on those will be rebuilt accordingly.
   @override
