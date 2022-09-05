@@ -19,8 +19,18 @@ abstract class RxBlocBase<S> {
 
   bool _initialized;
 
+  @nonVirtual
   bool get initialized => _initialized;
 
+  /// Whether the bloc is initialized.
+  ///
+  /// This variable should not be set outside the [init] function. The value to
+  /// be set for this variable can't be False, this is to prevent an initialized
+  /// bloc is mark as uninitialized when the init function has been run.
+  ///
+  /// It also can't be set a second time, this mean initialized bloc will stay
+  /// initialized for the whole of its life-span.
+  @nonVirtual
   set initialized(bool value) {
     if (!value) {
       throw BlocInitializedSetToFalseException();
