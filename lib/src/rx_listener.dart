@@ -10,8 +10,7 @@ import 'type_def.dart';
 ///
 /// Will execute callback when a new state of type [S] is emitted from the bloc
 /// of type [B].
-abstract class RxListenerBase<B extends RxBase<S>, S>
-    extends StatefulWidget {
+abstract class RxListenerBase<B extends RxBase<S>, S> extends StatefulWidget {
   const RxListenerBase({Key? key, required this.child, this.stateCallback})
       : super(key: key);
 
@@ -68,8 +67,7 @@ class _RxListenerBaseState<B extends RxBase<S>, S>
 ///
 /// Does not work with:
 /// * [RxViewModel]
-class RxStateListener<B extends RxCubit<S>, S>
-    extends RxListenerBase<B, S> {
+class RxStateListener<B extends RxCubit<S>, S> extends RxListenerBase<B, S> {
   const RxStateListener(
       {Key? key, required Widget child, RxBlocEventListener<S>? stateCallback})
       : super(key: key, stateCallback: stateCallback, child: child);
@@ -82,18 +80,15 @@ class RxStateListener<B extends RxCubit<S>, S>
 ///
 /// Work only with:
 /// * [RxViewModel]
-class RxViewModelListener<B extends RxViewModel>
-    extends StatefulWidget {
-  const RxViewModelListener(
-      {Key? key, required this.child, this.stateCallback})
+class RxViewModelListener<B extends RxViewModel> extends StatefulWidget {
+  const RxViewModelListener({Key? key, required this.child, this.stateCallback})
       : super(key: key);
 
   final Widget child;
   final RxBlocEventListener<B>? stateCallback;
 
   @override
-  State<RxViewModelListener<B>> createState() =>
-      _RxViewModelListenerState<B>();
+  State<RxViewModelListener<B>> createState() => _RxViewModelListenerState<B>();
 }
 
 class _RxViewModelListenerState<B extends RxViewModel>

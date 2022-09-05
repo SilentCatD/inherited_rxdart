@@ -68,8 +68,7 @@ class _RxSelectorBaseState<B extends RxBase<S>, S, T>
 /// Work with:
 /// * [RxCubit]
 /// * [RxBloc]
-class RxSelector<B extends RxCubit<S>, S, T>
-    extends RxSelectorBase<B, S, T> {
+class RxSelector<B extends RxCubit<S>, S, T> extends RxSelectorBase<B, S, T> {
   const RxSelector({
     Key? key,
     required StateRebuildSelector<S, T> stateRebuildSelector,
@@ -99,8 +98,7 @@ class RxSelector<B extends RxCubit<S>, S, T>
 ///
 /// Work with:
 /// * [RxViewModel]
-class RxViewModelSelector<B extends RxViewModel, T>
-    extends StatefulWidget {
+class RxViewModelSelector<B extends RxViewModel, T> extends StatefulWidget {
   const RxViewModelSelector({
     Key? key,
     required this.stateRebuildSelector,

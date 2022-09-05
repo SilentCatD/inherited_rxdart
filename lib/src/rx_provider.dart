@@ -102,8 +102,7 @@ class RxProvider<B extends RxBase> extends SingleChildStatefulWidget {
   ///
   /// is not valid. You CAN get the instance of the bloc in [State.initState]
   /// but CAN NOT subscribe to its changes.
-  static T of<T extends RxBase>(BuildContext context,
-      {bool listen = true}) {
+  static T of<T extends RxBase>(BuildContext context, {bool listen = true}) {
     if (T == dynamic) {
       throw RxBlocMustBeOfSpecificTypeException();
     }

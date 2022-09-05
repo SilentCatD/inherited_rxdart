@@ -41,8 +41,7 @@ class RxBuilder<B extends RxCubit<S>, S> extends StatefulWidget {
   State<RxBuilder<B, S>> createState() => _RxBuilderState<B, S>();
 }
 
-class _RxBuilderState<B extends RxCubit<S>, S>
-    extends State<RxBuilder<B, S>> {
+class _RxBuilderState<B extends RxCubit<S>, S> extends State<RxBuilder<B, S>> {
   Widget? _cachedWidget;
   S? _cachedState;
   late S _state;
@@ -98,8 +97,7 @@ class RxViewModelBuilder<B extends RxViewModel> extends StatefulWidget {
   final ShouldRebuildViewModel<B>? shouldRebuildWidget;
 
   @override
-  State<RxViewModelBuilder<B>> createState() =>
-      _RxViewModelBuilderState<B>();
+  State<RxViewModelBuilder<B>> createState() => _RxViewModelBuilderState<B>();
 }
 
 class _RxViewModelBuilderState<B extends RxViewModel>

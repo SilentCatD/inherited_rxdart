@@ -7,8 +7,7 @@ export 'src/exception.dart'
         ServiceNotProvidedException,
         ServiceMustBeOfSpecificTypeException;
 export 'src/multi_service_provider.dart' show MultiServiceProvider;
-export 'src/rx_bloc.dart'
-    show RxBloc, RxViewModel, RxCubit, RxBase;
+export 'src/rx_bloc.dart' show RxBloc, RxViewModel, RxCubit, RxBase;
 export 'src/rx_builder.dart' show RxBuilder, RxViewModelBuilder;
 export 'src/rx_listener.dart'
     show RxStateListener, RxViewModelListener, RxListener;
