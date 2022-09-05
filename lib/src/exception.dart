@@ -59,3 +59,23 @@ class ServiceMustBeOfSpecificTypeException implements Exception {
     return "Service must be of specific type";
   }
 }
+
+/// Exception to be thrown when trying to set the bloc [RxBlocBase.initialized]
+/// variable to False, the default value of this variable is False when the
+/// bloc is created.
+class BlocInitializedSetToFalseException implements Exception {
+  @override
+  String toString() {
+    return "Setting the initialized variable of blocs to False is not allowed";
+  }
+}
+
+/// Exception to be thrown when an initialized bloc, which
+/// [RxBlocBase.initialized] are [True], are set again. For blocs can only be
+/// init one time.
+class BlocInitializedASecondTimeException implements Exception {
+  @override
+  String toString() {
+    return "Initialized variable of an initialized bloc is set to True a second time";
+  }
+}

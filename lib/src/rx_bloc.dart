@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
+import 'exception.dart';
 
 /// Base class for others bloc, subclass this when making a new bloc.
 ///
@@ -12,7 +13,23 @@ import 'package:rxdart/rxdart.dart';
 /// implementer.
 abstract class RxBlocBase<S> {
   /// This bloc need a type of subject to work with.
-  const RxBlocBase(Subject<S> stateSubject) : _stateSubject = stateSubject;
+  RxBlocBase(Subject<S> stateSubject)
+      : _stateSubject = stateSubject,
+        _initialized = false;
+
+  bool _initialized;
+
+  bool get initialized => _initialized;
+
+  set initialized(bool value) {
+    if (!value) {
+      throw BlocInitializedSetToFalseException();
+    }
+    if (initialized) {
+      throw BlocInitializedASecondTimeException();
+    }
+    _initialized = value;
+  }
 
   /// Whether to skip the first build trigger by stream, for when using
   /// [BehaviorSubject], the first state rebuild is not really necessary and
@@ -41,7 +58,9 @@ abstract class RxBlocBase<S> {
   /// Initialize logic for this bloc, will be automatically called by
   /// [RxProvider] if the [Create] function is used in constructor.
   @mustCallSuper
-  Future<void> init() async {}
+  Future<void> init() async {
+    initialized = true;
+  }
 
   /// Disposing logic for this bloc, will be automatically called by
   /// [RxProvider] if the [Create] function is used in constructor.
