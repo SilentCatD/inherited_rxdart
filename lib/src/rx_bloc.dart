@@ -43,6 +43,13 @@ abstract class RxBlocBase<S> {
   /// The current state this bloc is holding.
   S get state;
 
+  /// Function to emit new state values to the [stateStream].
+  @nonVirtual
+  @protected
+  void _stateChanged(S value) {
+    _stateSubject.sink.add(value);
+  }
+
   /// The subject this bloc will use, because built on rxdart, those subject
   /// maybe:
   /// * [PublishSubject] for [RxSingleStateBloc] and notifications
@@ -137,9 +144,7 @@ abstract class RxSingleStateBloc extends RxBlocBase<RxSingleStateBloc> {
   /// will cause all the dependent widget of this bloc to be rebuilt.
   @protected
   @nonVirtual
-  void stateChanged() {
-    _stateSubject.add(this);
-  }
+  void stateChanged() => _stateChanged(this);
 }
 
 /// A bloc that will emit new states through out its life cycle.
@@ -233,7 +238,7 @@ abstract class RxSilentBloc<S> extends RxBlocBase<S> {
   /// Call to this setter will cause all dependent of this Bloc to be rebuilt.
   @nonVirtual
   @protected
-  set state(S value) => subject.value = value;
+  set state(S value) => _stateChanged(value);
 
   /// The value stream of this bloc, which listened by the library and cause the
   /// rebuild of dependents, subclass can override this to add filter,
