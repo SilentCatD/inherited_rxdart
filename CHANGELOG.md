@@ -1,3 +1,7 @@
+## 0.0.5+1
+
+* Add doc to main README
+
 ## 0.0.5
 
 * Internal changes of RxBlocBase, add function to notify a new state has
