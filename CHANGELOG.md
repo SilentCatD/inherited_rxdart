@@ -1,3 +1,7 @@
+## 0.0.5+2
+
+* Add more details to README
+
 ## 0.0.5+1
 
 * Add doc to main README

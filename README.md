@@ -11,6 +11,8 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages). 
 -->
 
+[![pub package](https://img.shields.io/pub/v/inherited_rxdart?color=green&include_prereleases&style=plastic)](https://pub.dev/packages/inherited_rxdart)
+
 A simple state management solution that combine the power of inherited widget and rxdart
 
 ## Features
@@ -22,6 +24,39 @@ provided using providers.
 ## Getting started
 
 Started by providing blocs and service for your widget's subtree like this:
+
+First import it:
+
+```dart
+import 'package:inherited_rxdart/inherited_rxdart.dart';
+```
+
+Create your bloc:
+
+```dart
+
+class CounterBloc extends RxBloc<MyState, String> {
+  CounterBloc(MyState initialState) : super(initialState);
+
+  void showDialog() {
+    notify("showDialog");
+  }
+
+  void changeText(String newText) {
+    state = state.copyWith(text: newText);
+  }
+
+  void increase() {
+    state = state.copyWith(number: state.number + 1);
+  }
+
+  void decrease() {
+    state = state.copyWith(number: state.number - 1);
+  }
+}
+```
+
+And start using it in your app:
 
 ```dart
 class App extends StatelessWidget {
@@ -39,7 +74,7 @@ class App extends StatelessWidget {
 }
 ```
 
-And then access them anywhere in your subtree with:
+Access them anywhere in your subtree with:
 
 ```dart
 
@@ -84,6 +119,7 @@ For other blocs, there will be specific widget for each purpose include: rebuild
 
 There's also simple service provider for controller/repo or simply to inject an instance through a widget
 subtree.
+
 - ServiceProvider
 
 ## Additional information
@@ -94,11 +130,14 @@ To provide multiple blocs or model instance, the use of these widget is encourag
 - MultiServiceProvider
 
 To quickly access blocs/services, rather than use these function:
+
 ```dart
 RxProvider.of<MyBloc>(context);
 ServiceProvider.of<MyService>(context);
 ```
+
 One can use:
+
 ```dart
 context.watch<MyBloc>(); // for getting an instance of a bloc.
 context.read<MyBloc>(); // for getting an instance of a bloc and subscribe to it's changes.
