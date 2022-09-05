@@ -10,7 +10,7 @@ import 'type_def.dart';
 ///
 /// Will execute callback when a new state of type [S] is emitted from the bloc
 /// of type [B].
-abstract class RxListenerBase<B extends RxBlocBase<S>, S>
+abstract class RxListenerBase<B extends RxBase<S>, S>
     extends StatefulWidget {
   const RxListenerBase({Key? key, required this.child, this.stateCallback})
       : super(key: key);
@@ -23,7 +23,7 @@ abstract class RxListenerBase<B extends RxBlocBase<S>, S>
   State<RxListenerBase<B, S>> createState() => _RxListenerBaseState<B, S>();
 }
 
-class _RxListenerBaseState<B extends RxBlocBase<S>, S>
+class _RxListenerBaseState<B extends RxBase<S>, S>
     extends State<RxListenerBase<B, S>> {
   late B _bloc;
 
@@ -64,27 +64,27 @@ class _RxListenerBaseState<B extends RxBlocBase<S>, S>
 ///
 /// Work with:
 /// * [RxBloc]
-/// * [RxSilentBloc]
+/// * [RxCubit]
 ///
 /// Does not work with:
-/// * [RxSingleStateBloc]
-class RxStateListener<B extends RxSilentBloc<S>, S>
+/// * [RxViewModel]
+class RxStateListener<B extends RxCubit<S>, S>
     extends RxListenerBase<B, S> {
   const RxStateListener(
       {Key? key, required Widget child, RxBlocEventListener<S>? stateCallback})
       : super(key: key, stateCallback: stateCallback, child: child);
 }
 
-/// Listener for listening state changes for [RxSingleStateBloc]
+/// Listener for listening state changes for [RxViewModel]
 ///
 /// Will execute [stateCallback] when a new state of type [S] is emitted from
 /// the bloc of type [B].
 ///
 /// Work only with:
-/// * [RxSingleStateBloc]
-class RxSingleStateListener<B extends RxSingleStateBloc>
+/// * [RxViewModel]
+class RxViewModelListener<B extends RxViewModel>
     extends StatefulWidget {
-  const RxSingleStateListener(
+  const RxViewModelListener(
       {Key? key, required this.child, this.stateCallback})
       : super(key: key);
 
@@ -92,12 +92,12 @@ class RxSingleStateListener<B extends RxSingleStateBloc>
   final RxBlocEventListener<B>? stateCallback;
 
   @override
-  State<RxSingleStateListener<B>> createState() =>
-      _RxSingleStateListenerState<B>();
+  State<RxViewModelListener<B>> createState() =>
+      _RxViewModelListenerState<B>();
 }
 
-class _RxSingleStateListenerState<B extends RxSingleStateBloc>
-    extends State<RxSingleStateListener<B>> {
+class _RxViewModelListenerState<B extends RxViewModel>
+    extends State<RxViewModelListener<B>> {
   late B _bloc;
 
   @override
@@ -107,7 +107,7 @@ class _RxSingleStateListenerState<B extends RxSingleStateBloc>
     _sub();
   }
 
-  StreamSubscription<RxSingleStateBloc>? _stateSubscription;
+  StreamSubscription<RxViewModel>? _stateSubscription;
 
   void _sub() {
     _stateSubscription = _bloc.stateStream.listen((state) {

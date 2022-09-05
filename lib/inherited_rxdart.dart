@@ -8,14 +8,14 @@ export 'src/exception.dart'
         ServiceMustBeOfSpecificTypeException;
 export 'src/multi_service_provider.dart' show MultiServiceProvider;
 export 'src/rx_bloc.dart'
-    show RxBloc, RxSingleStateBloc, RxSilentBloc, RxBlocBase;
-export 'src/rx_builder.dart' show RxBuilder, RxSingleStateBuilder;
+    show RxBloc, RxViewModel, RxCubit, RxBase;
+export 'src/rx_builder.dart' show RxBuilder, RxViewModelBuilder;
 export 'src/rx_listener.dart'
-    show RxStateListener, RxSingleStateListener, RxListener;
+    show RxStateListener, RxViewModelListener, RxListener;
 export 'src/rx_provider.dart' show RxProvider, RxContext;
-export 'src/rx_selector.dart' show RxSelector, RxSingleStateSelector;
+export 'src/rx_selector.dart' show RxSelector, RxViewModelSelector;
 export 'src/rx_consumer.dart'
-    show RxStateConsumer, RxSingleStateConsumer, RxConsumer;
+    show RxStateConsumer, RxViewModelConsumer, RxConsumer;
 export 'src/service_provider.dart' show ServiceProvider, ServiceContext;
 export 'src/type_def.dart'
     show
@@ -23,6 +23,6 @@ export 'src/type_def.dart'
         RxBlocEventListener,
         RxBlocWidgetBuilder,
         ShouldRebuildWidget,
-        ShouldRebuildSingleState,
+        ShouldRebuildViewModel,
         StateRebuildSelector;
 export 'src/rx_multi_provider.dart' show RxMultiProvider;

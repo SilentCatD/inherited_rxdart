@@ -12,8 +12,8 @@ import 'type_def.dart';
 /// through [Create]. However, in case the reuse of existed bloc is required,
 /// [RxProvider.value] should be used instead.
 ///
-/// If the default constructor is used, created bloc's [RxBlocBase.init] and
-/// [RxBlocBase.dispose] are called automatically. In case of reusing existed
+/// If the default constructor is used, created bloc's [RxBase.init] and
+/// [RxBase.dispose] are called automatically. In case of reusing existed
 /// bloc, life cycle of this bloc must be handled by the implementer.
 ///
 /// ```dart
@@ -36,7 +36,7 @@ import 'type_def.dart';
 /// ```
 /// If multiple bloc are to be provided at once, consider [RxMultiProvider] to
 /// avoid deeply nested [RxProvider] widgets.
-class RxProvider<B extends RxBlocBase> extends SingleChildStatefulWidget {
+class RxProvider<B extends RxBase> extends SingleChildStatefulWidget {
   const RxProvider({
     Key? key,
     required Create<B> create,
@@ -61,7 +61,7 @@ class RxProvider<B extends RxBlocBase> extends SingleChildStatefulWidget {
 
   /// Method to locate and get the provided bloc of this subtree.
   ///
-  /// Type [T] is required to be a subtype of [RxBlocBase] and must be specified
+  /// Type [T] is required to be a subtype of [RxBase] and must be specified
   /// Failing to so will throw [RxBlocMustBeOfSpecificTypeException], and
   /// failing to find a bloc of specified type will thrown
   /// [RxBlocNotProvidedException].
@@ -102,7 +102,7 @@ class RxProvider<B extends RxBlocBase> extends SingleChildStatefulWidget {
   ///
   /// is not valid. You CAN get the instance of the bloc in [State.initState]
   /// but CAN NOT subscribe to its changes.
-  static T of<T extends RxBlocBase>(BuildContext context,
+  static T of<T extends RxBase>(BuildContext context,
       {bool listen = true}) {
     if (T == dynamic) {
       throw RxBlocMustBeOfSpecificTypeException();
@@ -124,7 +124,7 @@ class RxProvider<B extends RxBlocBase> extends SingleChildStatefulWidget {
   State<RxProvider<B>> createState() => _RxProviderState<B>();
 }
 
-class _RxProviderState<B extends RxBlocBase>
+class _RxProviderState<B extends RxBase>
     extends SingleChildState<RxProvider<B>> {
   late final B _bloc;
   late final bool _isCreated;
@@ -159,7 +159,7 @@ class _RxProviderState<B extends RxBlocBase>
   }
 }
 
-class _InheritedBlocScope<B extends RxBlocBase> extends InheritedWidget {
+class _InheritedBlocScope<B extends RxBase> extends InheritedWidget {
   final B bloc;
 
   const _InheritedBlocScope(
@@ -177,7 +177,7 @@ class _InheritedBlocScope<B extends RxBlocBase> extends InheritedWidget {
   }
 }
 
-class _InheritedBlocElement<B extends RxBlocBase> extends InheritedElement {
+class _InheritedBlocElement<B extends RxBase> extends InheritedElement {
   B get bloc => widget.bloc;
   StreamSubscription? _streamSubscription;
   bool _dirty = false;
@@ -272,7 +272,7 @@ extension RxContext on BuildContext {
   ///
   /// is not valid. You CAN get the instance of the bloc in [State.initState]
   /// but CAN NOT subscribe to its changes.
-  B read<B extends RxBlocBase>() {
+  B read<B extends RxBase>() {
     return RxProvider.of<B>(this, listen: false);
   }
 
@@ -304,7 +304,7 @@ extension RxContext on BuildContext {
   ///
   /// is not valid. You CAN get the instance of the bloc in [State.initState]
   /// but CAN NOT subscribe to its changes.
-  B watch<B extends RxBlocBase>() {
+  B watch<B extends RxBase>() {
     return RxProvider.of<B>(this, listen: true);
   }
 }

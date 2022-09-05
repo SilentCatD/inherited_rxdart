@@ -5,8 +5,8 @@ import 'type_def.dart';
 
 /// Widget for selectively rebuild ui base on a property of the whole state [S].
 ///
-/// Base Widget for [RxSelector] and [RxSingleStateSelector].
-class RxSelectorBase<B extends RxBlocBase<S>, S, T> extends StatefulWidget {
+/// Base Widget for [RxSelector] and [RxViewModelSelector].
+class RxSelectorBase<B extends RxBase<S>, S, T> extends StatefulWidget {
   const RxSelectorBase({
     Key? key,
     required this.stateRebuildSelector,
@@ -25,7 +25,7 @@ class RxSelectorBase<B extends RxBlocBase<S>, S, T> extends StatefulWidget {
       _RxSelectorBaseState<B, S, T>();
 }
 
-class _RxSelectorBaseState<B extends RxBlocBase<S>, S, T>
+class _RxSelectorBaseState<B extends RxBase<S>, S, T>
     extends State<RxSelectorBase<B, S, T>> {
   Widget? _cachedWidget;
   T? _cachedValue;
@@ -66,9 +66,9 @@ class _RxSelectorBaseState<B extends RxBlocBase<S>, S, T>
 /// when [state.text] changed between state.
 ///
 /// Work with:
-/// * [RxSilentBloc]
+/// * [RxCubit]
 /// * [RxBloc]
-class RxSelector<B extends RxSilentBloc<S>, S, T>
+class RxSelector<B extends RxCubit<S>, S, T>
     extends RxSelectorBase<B, S, T> {
   const RxSelector({
     Key? key,
@@ -81,12 +81,12 @@ class RxSelector<B extends RxSilentBloc<S>, S, T>
 }
 
 /// Widget for selectively rebuild ui base on value of type [T] emitted by bloc
-/// [B], with B is a subtype of [RxSingleStateBloc].
+/// [B], with B is a subtype of [RxViewModel].
 ///
 /// For example:
 ///
 /// ```dart
-///  RxSingleStateSelector<CounterBloc3, int>(
+///  RxViewModelSelector<CounterBloc3, int>(
 ///   stateRebuildSelector: (state) {
 ///     return state.num2;
 ///   }, builder: (context, value) {
@@ -98,10 +98,10 @@ class RxSelector<B extends RxSilentBloc<S>, S, T>
 /// when [state.text] changed between state.
 ///
 /// Work with:
-/// * [RxSingleStateBloc]
-class RxSingleStateSelector<B extends RxSingleStateBloc, T>
+/// * [RxViewModel]
+class RxViewModelSelector<B extends RxViewModel, T>
     extends StatefulWidget {
-  const RxSingleStateSelector({
+  const RxViewModelSelector({
     Key? key,
     required this.stateRebuildSelector,
     required this.builder,
@@ -111,12 +111,12 @@ class RxSingleStateSelector<B extends RxSingleStateBloc, T>
   final RxBlocWidgetBuilder<T> builder;
 
   @override
-  State<RxSingleStateSelector<B, T>> createState() =>
-      _RxSingleStateSelectorState<B, T>();
+  State<RxViewModelSelector<B, T>> createState() =>
+      _RxViewModelSelectorState<B, T>();
 }
 
-class _RxSingleStateSelectorState<B extends RxSingleStateBloc, T>
-    extends State<RxSingleStateSelector<B, T>> {
+class _RxViewModelSelectorState<B extends RxViewModel, T>
+    extends State<RxViewModelSelector<B, T>> {
   Widget? _cachedWidget;
   T? _cachedValue;
   late T _value;

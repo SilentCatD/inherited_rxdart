@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+
 import 'rx_bloc.dart';
+import 'rx_builder.dart';
 import 'rx_listener.dart';
 import 'type_def.dart';
-import 'rx_builder.dart';
 
 /// Combination of [RxStateListener] and [RxBuilder].
 ///
 /// Work with:
 /// * [RxBloc]
-/// * [RxSilentBloc]
-class RxStateConsumer<B extends RxSilentBloc<S>, S> extends StatefulWidget {
+/// * [RxCubit]
+class RxStateConsumer<B extends RxCubit<S>, S> extends StatefulWidget {
   const RxStateConsumer({
     Key? key,
     this.stateCallback,
@@ -25,7 +26,7 @@ class RxStateConsumer<B extends RxSilentBloc<S>, S> extends StatefulWidget {
   State<RxStateConsumer<B, S>> createState() => _RxStateConsumerState<B, S>();
 }
 
-class _RxStateConsumerState<B extends RxSilentBloc<S>, S>
+class _RxStateConsumerState<B extends RxCubit<S>, S>
     extends State<RxStateConsumer<B, S>> {
   @override
   Widget build(BuildContext context) {
@@ -76,13 +77,12 @@ class _RxConsumerState<B extends RxBloc<S, N>, S, N>
   }
 }
 
-/// Combination of [RxSingleStateListener] and [RxSingleStateBuilder].
+/// Combination of [RxViewModelListener] and [RxViewModelBuilder].
 ///
 /// Work with:
-/// * [RxSingleStateBloc]
-class RxSingleStateConsumer<B extends RxSingleStateBloc>
-    extends StatefulWidget {
-  const RxSingleStateConsumer({
+/// * [RxViewModel]
+class RxViewModelConsumer<B extends RxViewModel> extends StatefulWidget {
+  const RxViewModelConsumer({
     Key? key,
     this.stateCallback,
     required this.builder,
@@ -90,20 +90,19 @@ class RxSingleStateConsumer<B extends RxSingleStateBloc>
   }) : super(key: key);
   final RxBlocEventListener<B>? stateCallback;
   final RxBlocWidgetBuilder<B> builder;
-  final ShouldRebuildSingleState<B>? shouldRebuildWidget;
+  final ShouldRebuildViewModel<B>? shouldRebuildWidget;
 
   @override
-  State<RxSingleStateConsumer<B>> createState() =>
-      _RxSingleStateConsumerState<B>();
+  State<RxViewModelConsumer<B>> createState() => _RxViewModelConsumerState<B>();
 }
 
-class _RxSingleStateConsumerState<B extends RxSingleStateBloc>
-    extends State<RxSingleStateConsumer<B>> {
+class _RxViewModelConsumerState<B extends RxViewModel>
+    extends State<RxViewModelConsumer<B>> {
   @override
   Widget build(BuildContext context) {
-    return RxSingleStateListener<B>(
+    return RxViewModelListener<B>(
       stateCallback: widget.stateCallback,
-      child: RxSingleStateBuilder<B>(
+      child: RxViewModelBuilder<B>(
         builder: widget.builder,
         shouldRebuildWidget: widget.shouldRebuildWidget,
       ),

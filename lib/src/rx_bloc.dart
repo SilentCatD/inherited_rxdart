@@ -11,9 +11,9 @@ import 'exception.dart';
 /// object are created outside of [RxProvider] (ex: [RxProvider.value]), its
 /// life cycle operation (init, dispose) must be handled and ensured by
 /// implementer.
-abstract class RxBlocBase<S> {
+abstract class RxBase<S> {
   /// This bloc need a type of subject to work with.
-  RxBlocBase(Subject<S> stateSubject)
+  RxBase(Subject<S> stateSubject)
       : _stateSubject = stateSubject,
         _initialized = false;
 
@@ -62,8 +62,8 @@ abstract class RxBlocBase<S> {
 
   /// The subject this bloc will use, because built on rxdart, those subject
   /// maybe:
-  /// * [PublishSubject] for [RxSingleStateBloc] and notifications
-  /// * [BehaviorSubject] for [RxBloc], [RxSilentBloc]
+  /// * [PublishSubject] for [RxViewModel] and notifications
+  /// * [BehaviorSubject] for [RxBloc], [RxCubit]
   @protected
   Subject<S> get subject => _stateSubject;
 
@@ -90,12 +90,12 @@ abstract class RxBlocBase<S> {
 /// Simple bloc without complicated state, notification,etc,... similar to model
 /// based state management like [ChangeNotifierProvider].
 ///
-/// Bloc extending this class only need to call [RxSingleStateBloc.stateChanged]
+/// Bloc extending this class only need to call [RxViewModel.stateChanged]
 /// to notify all other dependent that the state of this bloc has changed and
 /// need to rebuild. For example:
 ///
 /// ```dart
-/// class CounterBloc3 extends RxSingleStateBloc {
+/// class CounterBloc3 extends RxViewModel {
 ///   int num;
 ///   int num2;
 ///
@@ -121,19 +121,19 @@ abstract class RxBlocBase<S> {
 /// Because the simplicity of this modal based bloc, there are classes
 /// that handle the rebuild or listen to the states of this type of
 /// bloc dependent:
-/// * [RxSingleStateBuilder]
-/// * [RxSingleStateSelector]
-/// * [RxSingleStateListener]
-/// * [RxSingleStateConsumer]
+/// * [RxViewModelBuilder]
+/// * [RxViewModelSelector]
+/// * [RxViewModelListener]
+/// * [RxViewModelConsumer]
 ///
 /// The init and dispose logic of these bloc are called automatically by
 /// [RxProvider], so implementer of these class don't have to, but if a Bloc
 /// object are created outside of [RxProvider] (ex: [RxProvider.value]), its
 /// life cycle operation (init, dispose) must be handled and ensured by
 /// implementer.
-abstract class RxSingleStateBloc extends RxBlocBase<RxSingleStateBloc> {
+abstract class RxViewModel extends RxBase<RxViewModel> {
   /// This bloc will use [PublishSubject] as its internal.
-  RxSingleStateBloc() : super(PublishSubject<RxSingleStateBloc>());
+  RxViewModel() : super(PublishSubject<RxViewModel>());
 
   /// Whether to skip the first build trigger by stream, for when using
   /// [BehaviorSubject], the first state rebuild is not really necessary and
@@ -148,9 +148,9 @@ abstract class RxSingleStateBloc extends RxBlocBase<RxSingleStateBloc> {
   /// object itself, so internal mutable variable and the dependent that depend
   /// on those will be rebuilt accordingly.
   @override
-  RxSingleStateBloc get state => this;
+  RxViewModel get state => this;
 
-  /// Signature function of [RxSingleStateBloc], call to this function
+  /// Signature function of [RxViewModel], call to this function
   /// will cause all the dependent widget of this bloc to be rebuilt.
   @protected
   @nonVirtual
@@ -162,7 +162,7 @@ abstract class RxSingleStateBloc extends RxBlocBase<RxSingleStateBloc> {
 /// Generic type [S] in this bloc would be the type of [state] it will be
 /// emitting.
 /// Will notify all of its dependent to rebuild when the setter
-/// [RxSilentBloc.state] is used:
+/// [RxCubit.state] is used:
 ///
 /// ```dart
 /// state = newState
@@ -170,7 +170,7 @@ abstract class RxSingleStateBloc extends RxBlocBase<RxSingleStateBloc> {
 ///
 /// Here's an example of class subclassing this:
 ///```dart
-/// class CounterBloc2 extends RxSilentBloc<int> {
+/// class CounterBloc2 extends RxCubit<int> {
 ///   CounterBloc2(int initialState) : super(initialState);
 ///
 ///   void increase() {
@@ -215,11 +215,11 @@ abstract class RxSingleStateBloc extends RxBlocBase<RxSingleStateBloc> {
 /// object are created outside of [RxProvider] (ex: [RxProvider.value]), its
 /// life cycle operation (init, dispose) must be handled and ensured by
 /// implementer.
-abstract class RxSilentBloc<S> extends RxBlocBase<S> {
+abstract class RxCubit<S> extends RxBase<S> {
   /// Using [BehaviorSubject] as its internal, this bloc will need an
   /// [initialState], which will then be [BehaviorSubject.seeded] by the
   /// subject.
-  RxSilentBloc(S initialState) : super(BehaviorSubject<S>.seeded(initialState));
+  RxCubit(S initialState) : super(BehaviorSubject<S>.seeded(initialState));
 
   /// Whether to skip the first build trigger by stream, for when using
   /// [BehaviorSubject], the first state rebuild is not really necessary and
@@ -233,8 +233,8 @@ abstract class RxSilentBloc<S> extends RxBlocBase<S> {
 
   /// The subject this bloc will use, because built on rxdart, those subject
   /// maybe:
-  /// * [PublishSubject] for [RxSingleStateBloc] and notifications
-  /// * [BehaviorSubject] for [RxBloc], [RxSilentBloc]
+  /// * [PublishSubject] for [RxViewModel] and notifications
+  /// * [BehaviorSubject] for [RxBloc], [RxCubit]
   @override
   @protected
   BehaviorSubject<S> get subject => _stateSubject as BehaviorSubject<S>;
@@ -265,7 +265,7 @@ abstract class RxSilentBloc<S> extends RxBlocBase<S> {
 /// Generic type [S] in this bloc would be the type of [state] it will be
 /// emitting, and [N] would be the type of notification event.
 ///
-/// This class extends [RxSilentBloc] to add one new feature to it:
+/// This class extends [RxCubit] to add one new feature to it:
 /// notification.
 /// Notification is the state or event that has nothing to do with the rebuild
 /// of UI components, and for action only (ex: [showDialog], [Navigator.push],.)
@@ -311,7 +311,7 @@ abstract class RxSilentBloc<S> extends RxBlocBase<S> {
 /// object are created outside of [RxProvider] (ex: [RxProvider.value]), its
 /// life cycle operation (init, dispose) must be handled and ensured by
 /// implementer.
-abstract class RxBloc<S, N> extends RxSilentBloc<S> {
+abstract class RxBloc<S, N> extends RxCubit<S> {
   /// Using [BehaviorSubject] as its internal, this bloc will need an
   /// [initialState], which will then be [BehaviorSubject.seeded] by the
   /// subject.

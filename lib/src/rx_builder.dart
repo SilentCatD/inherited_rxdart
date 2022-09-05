@@ -5,7 +5,7 @@ import 'rx_provider.dart';
 import 'type_def.dart';
 
 /// Builder function to subscribe for changes of specific Bloc of type [B]
-/// like [RxBloc], [RxSilentBloc] with state [S]
+/// like [RxBloc], [RxCubit] with state [S]
 ///
 /// * [RxBlocWidgetBuilder] for widget building operation, which will only
 /// be called when a new state is emitted and [ShouldRebuildWidget] is true
@@ -22,7 +22,7 @@ import 'type_def.dart';
 ///       },
 ///   ),
 /// ```
-class RxBuilder<B extends RxSilentBloc<S>, S> extends StatefulWidget {
+class RxBuilder<B extends RxCubit<S>, S> extends StatefulWidget {
   const RxBuilder({
     Key? key,
     required this.builder,
@@ -41,7 +41,7 @@ class RxBuilder<B extends RxSilentBloc<S>, S> extends StatefulWidget {
   State<RxBuilder<B, S>> createState() => _RxBuilderState<B, S>();
 }
 
-class _RxBuilderState<B extends RxSilentBloc<S>, S>
+class _RxBuilderState<B extends RxCubit<S>, S>
     extends State<RxBuilder<B, S>> {
   Widget? _cachedWidget;
   S? _cachedState;
@@ -65,14 +65,14 @@ class _RxBuilderState<B extends RxSilentBloc<S>, S>
 }
 
 /// Builder function to subscribe for changes of specific Bloc of type [B]
-/// like [RxSingleStateBloc]
+/// like [RxViewModel]
 ///
 /// * [RxBlocWidgetBuilder] for widget building operation.
 /// Which will only be called when a new state is emitted and
-/// [ShouldRebuildSingleState] is true (or not specified)
+/// [ShouldRebuildViewModel] is true (or not specified)
 ///
 /// ```dart
-///  RxSingleStateBuilder<CounterBloc3>(
+///  RxViewModelBuilder<CounterBloc3>(
 ///      builder: (context, state) {
 ///          debugPrint("build Number 3");
 ///          return Text('counter bloc 3:  ${state.num}');
@@ -82,8 +82,8 @@ class _RxBuilderState<B extends RxSilentBloc<S>, S>
 ///      },
 ///  ),
 /// ```
-class RxSingleStateBuilder<B extends RxSingleStateBloc> extends StatefulWidget {
-  const RxSingleStateBuilder({
+class RxViewModelBuilder<B extends RxViewModel> extends StatefulWidget {
+  const RxViewModelBuilder({
     Key? key,
     required this.builder,
     this.shouldRebuildWidget,
@@ -95,15 +95,15 @@ class RxSingleStateBuilder<B extends RxSingleStateBloc> extends StatefulWidget {
 
   /// Function to determine whether this widget should rebuild itself when state
   /// changed.
-  final ShouldRebuildSingleState<B>? shouldRebuildWidget;
+  final ShouldRebuildViewModel<B>? shouldRebuildWidget;
 
   @override
-  State<RxSingleStateBuilder<B>> createState() =>
-      _RxSingleStateBuilderState<B>();
+  State<RxViewModelBuilder<B>> createState() =>
+      _RxViewModelBuilderState<B>();
 }
 
-class _RxSingleStateBuilderState<B extends RxSingleStateBloc>
-    extends State<RxSingleStateBuilder<B>> {
+class _RxViewModelBuilderState<B extends RxViewModel>
+    extends State<RxViewModelBuilder<B>> {
   Widget? _cachedWidget;
   late B _state;
 

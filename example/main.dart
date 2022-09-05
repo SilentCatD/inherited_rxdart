@@ -35,7 +35,7 @@ class CounterBloc extends RxBloc<MyState, String> {
   }
 }
 
-class CounterBloc2 extends RxSilentBloc<int> {
+class CounterBloc2 extends RxCubit<int> {
   CounterBloc2(int initialState) : super(initialState);
 
   void increase() {
@@ -47,7 +47,7 @@ class CounterBloc2 extends RxSilentBloc<int> {
   }
 }
 
-class CounterBloc3 extends RxSingleStateBloc {
+class CounterBloc3 extends RxViewModel {
   int num;
   int num2;
 
@@ -107,7 +107,7 @@ class MyHomePage extends StatelessWidget {
               debugPrint("build Text");
               return Text("state text: $value");
             }),
-            RxSingleStateSelector<CounterBloc3, int>(
+            RxViewModelSelector<CounterBloc3, int>(
                 stateRebuildSelector: (state) {
               return state.num2;
             }, builder: (context, value) {
@@ -182,7 +182,7 @@ class MyCounter extends StatelessWidget {
             debugPrint(
                 "from RxStateListener: CounterBloc/${state.number}/${state.text}");
           },
-          child: RxSingleStateListener<CounterBloc3>(
+          child: RxViewModelListener<CounterBloc3>(
             stateCallback: (context, state) {
               debugPrint(
                   "from RxStateListener: CounterBloc3/${state.num}/${state.num2}");
@@ -207,7 +207,7 @@ class MyCounter extends StatelessWidget {
                     return curr < 10;
                   },
                 ),
-                RxSingleStateBuilder<CounterBloc3>(
+                RxViewModelBuilder<CounterBloc3>(
                   builder: (context, state) {
                     debugPrint("build Number 3");
                     return Text('counter bloc 3:  ${state.num}');

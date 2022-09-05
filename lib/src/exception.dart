@@ -60,7 +60,7 @@ class ServiceMustBeOfSpecificTypeException implements Exception {
   }
 }
 
-/// Exception to be thrown when trying to set the bloc [RxBlocBase.initialized]
+/// Exception to be thrown when trying to set the bloc [RxBase.initialized]
 /// variable to False, the default value of this variable is False when the
 /// bloc is created.
 class BlocInitializedSetToFalseException implements Exception {
@@ -71,7 +71,7 @@ class BlocInitializedSetToFalseException implements Exception {
 }
 
 /// Exception to be thrown when an initialized bloc, which
-/// [RxBlocBase.initialized] are [True], are set again. For blocs can only be
+/// [RxBase.initialized] are [True], are set again. For blocs can only be
 /// init one time.
 class BlocInitializedASecondTimeException implements Exception {
   @override

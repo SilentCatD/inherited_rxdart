@@ -87,6 +87,7 @@ class App extends StatelessWidget {
 Access them anywhere in your subtree with:
 
 ```dart
+
 final bloc = RxProvider.of<CounterBloc>(context);
 ```
 
@@ -95,11 +96,11 @@ final bloc = RxProvider.of<CounterBloc>(context);
 View documents of each API for more details. The library support multiple type of blocs and related
 widgets.
 
-- RxSingleStateBloc: for simple model based state-management, shipped with related widget:
-    - RxSingleStateBuilder: for handle rebuilding widget when a new state is emitted.
-    - RxSingleStateSelector: for selectively rebuilding when state changed.
-    - RxSingleStateListener: for a listener callback when state changed.
-    - RxSingleStateConsumer: combination of builder and listener.
+- RxViewModel: for simple view model based state-management, shipped with related widget:
+    - RxViewModelBuilder: for handle rebuilding widget when a new state is emitted.
+    - RxViewModelSelector: for selectively rebuilding when state changed.
+    - RxViewModelListener: for a listener callback when state changed.
+    - RxViewModelConsumer: combination of builder and listener.
 
 For other blocs, there will be specific widget for each purpose include: rebuilding, listening,...
 
@@ -111,8 +112,8 @@ For other blocs, there will be specific widget for each purpose include: rebuild
 - RxSelector: For selectively rebuilding widgets based on specific property of state.
 
 
-- RxSilentBloc: for a bloc, which will emit states throughout its life-cycle and rebuild widgets
-  when necessary. Work with:
+- RxCubit: for a bloc, which will emit states throughout its life-cycle and rebuild widgets when
+  necessary. Work with:
     - RxBuilder
     - RxSelector
     - RxStateConsumer
