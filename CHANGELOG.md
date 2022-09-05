@@ -1,3 +1,9 @@
+## 0.0.5
+
+* Internal changes of RxBlocBase, add function to notify a new state has
+  been emitted.
+* Add initialized variable to bloc, to indicate whether it has been initialized.
+
 ## 0.0.4
 
 * Remove generic type requirement in RxSingleStateBloc
