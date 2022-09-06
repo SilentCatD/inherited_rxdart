@@ -1,3 +1,9 @@
+## 1.0.1
+
+* Hide subject for each bloc
+* Add guard check before add state
+* Downgrade rxdart to 0.26.0 and cope with it's changes
+
 ## 1.0.0+1
 
 * Edit example
