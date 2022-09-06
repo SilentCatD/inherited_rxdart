@@ -96,11 +96,16 @@ final bloc = RxProvider.of<CounterBloc>(context);
 View documents of each API for more details. The library support multiple type of blocs and related
 widgets.
 
-- RxViewModel: for simple view model based state-management, shipped with related widget:
-    - RxViewModelBuilder: for handle rebuilding widget when a new state is emitted.
-    - RxViewModelSelector: for selectively rebuilding when state changed.
-    - RxViewModelListener: for a listener callback when state changed.
-    - RxViewModelConsumer: combination of builder and listener.
+### RxViewModel
+
+For simple view model based state-management, shipped with related widget:
+
+- RxViewModelBuilder: for handle rebuilding widget when a new state is emitted.
+- RxViewModelSelector: for selectively rebuilding when state changed.
+- RxViewModelListener: for a listener callback when state changed.
+- RxViewModelConsumer: combination of builder and listener.
+
+### Bloc's Widgets
 
 For other blocs, there will be specific widget for each purpose include: rebuilding, listening,...
 
@@ -111,23 +116,28 @@ For other blocs, there will be specific widget for each purpose include: rebuild
 - RxStateConsumer: Combination of RxStateListener and RxBuilder.
 - RxSelector: For selectively rebuilding widgets based on specific property of state.
 
+### RxCubit:
 
-- RxCubit: for a bloc, which will emit states throughout its life-cycle and rebuild widgets when
-  necessary. Work with:
-    - RxBuilder
-    - RxSelector
-    - RxStateConsumer
-    - RxStateListener
+For a bloc, which will emit states throughout its life-cycle and rebuild widgets when necessary.
+Work with:
 
+- RxBuilder
+- RxSelector
+- RxStateConsumer
+- RxStateListener
 
-- RxBloc: bloc with notification beside states, which can be listened and react accordingly. Work
-  with:
-    - RxBuilder
-    - RxListener
-    - RxStateListener
-    - RxConsumer
-    - RxStateConsumer
-    - RxSelector
+### RxBloc:
+
+Bloc with notification beside states, which can be listened and react accordingly. Work with:
+
+- RxBuilder
+- RxListener
+- RxStateListener
+- RxConsumer
+- RxStateConsumer
+- RxSelector
+
+### ServiceProvider
 
 There's also simple service provider for controller/repo or simply to inject an instance through a
 widget subtree.

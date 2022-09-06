@@ -1,3 +1,8 @@
+## 1.0.2
+
+* Upgrade rxdart to ^0.27.0
+* Edit README
+
 ## 1.0.1
 
 * Hide subject for each bloc

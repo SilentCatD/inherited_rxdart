@@ -245,7 +245,7 @@ abstract class RxCubit<S> extends RxBase<S> {
   /// emitted by the publish subject.
   @override
   @nonVirtual
-  S get state => _subject.value ?? initialState;
+  S get state => _subject.valueOrNull ?? initialState;
 
   /// Call to this setter will cause all dependent of this Bloc to be rebuilt.
   @nonVirtual
