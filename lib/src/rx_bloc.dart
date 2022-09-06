@@ -57,7 +57,9 @@ abstract class RxBase<S> {
   @nonVirtual
   @protected
   void _stateChanged(S value) {
-    _stateSubject.sink.add(value);
+    if (!_stateSubject.isClosed) {
+      _stateSubject.sink.add(value);
+    }
   }
 
   /// The subject this bloc will use, because built on rxdart, those subject
@@ -65,12 +67,12 @@ abstract class RxBase<S> {
   /// * [PublishSubject] for [RxViewModel] and notifications
   /// * [BehaviorSubject] for [RxBloc], [RxCubit]
   @protected
-  Subject<S> get subject => _stateSubject;
+  Subject<S> get _subject => _stateSubject;
 
   /// The value stream of this bloc, which listened by the library and cause the
   /// rebuild of dependents, subclass can override this to add filter,
   /// throttle,...
-  Stream<S> get stateStream => subject.stream;
+  Stream<S> get stateStream => _subject.stream;
 
   /// Initialize logic for this bloc, will be automatically called by
   /// [RxProvider] if the [Create] function is used in constructor.
@@ -218,7 +220,8 @@ abstract class RxCubit<S> extends RxBase<S> {
   /// Using [BehaviorSubject] as its internal, this bloc will need an
   /// [initialState], which will then be [BehaviorSubject.seeded] by the
   /// subject.
-  RxCubit(S initialState) : super(BehaviorSubject<S>.seeded(initialState));
+  RxCubit(this.initialState) : super(BehaviorSubject<S>.seeded(initialState));
+  final S initialState;
 
   /// Whether to skip the first build trigger by stream, for when using
   /// [BehaviorSubject], the first state rebuild is not really necessary and
@@ -236,13 +239,13 @@ abstract class RxCubit<S> extends RxBase<S> {
   /// * [BehaviorSubject] for [RxBloc], [RxCubit]
   @override
   @protected
-  BehaviorSubject<S> get subject => _stateSubject as BehaviorSubject<S>;
+  BehaviorSubject<S> get _subject => _stateSubject as BehaviorSubject<S>;
 
   /// The current state this bloc is holding. In this case is the last [state]
   /// emitted by the publish subject.
   @override
   @nonVirtual
-  S get state => subject.value;
+  S get state => _subject.value ?? initialState;
 
   /// Call to this setter will cause all dependent of this Bloc to be rebuilt.
   @nonVirtual
@@ -256,7 +259,7 @@ abstract class RxCubit<S> extends RxBase<S> {
   /// which means sequentially duplicated [state] emitted will be skipped
   /// to avoid unnecessary rebuilding.
   @override
-  Stream<S> get stateStream => subject.stream.distinct();
+  Stream<S> get stateStream => _subject.stream.distinct();
 }
 
 /// A bloc with many supported features that this library is designed for.
@@ -319,17 +322,21 @@ abstract class RxBloc<S, N> extends RxCubit<S> {
   /// Notification subject for this bloc.
   @protected
   @nonVirtual
-  final PublishSubject<N> notificationSubject = PublishSubject<N>();
+  final PublishSubject<N> _notificationSubject = PublishSubject<N>();
 
   /// Function to call when notifying its notification listener, will be
   /// caught be [RxListener].
   @nonVirtual
   @protected
-  void notify(N value) => notificationSubject.add(value);
+  void notify(N value) {
+    if (!_notificationSubject.isClosed) {
+      return _notificationSubject.add(value);
+    }
+  }
 
   /// The notification stream to be emit to listener, subclass can override
   /// this to add filter.
-  Stream<N> get notificationStream => notificationSubject.stream;
+  Stream<N> get notificationStream => _notificationSubject.stream;
 
   /// Disposing logic for this bloc, will be automatically called by
   /// [RxProvider] if the [Create] function is used in constructor.
@@ -337,6 +344,6 @@ abstract class RxBloc<S, N> extends RxCubit<S> {
   @override
   Future<void> dispose() async {
     await super.dispose();
-    return notificationSubject.close();
+    return _notificationSubject.close();
   }
 }
