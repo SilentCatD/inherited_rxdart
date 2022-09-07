@@ -171,3 +171,15 @@ context.watch<MyBloc>(); // for getting an instance of a bloc.
 context.read<MyBloc>(); // for getting an instance of a bloc and subscribe to it's changes.
 context.get<MyService>(); //for getting an instance of a service. 
 ```
+
+And
+
+```dart
+final text = RxValue<String>("hello");
+```
+
+Is equivalent to:
+
+```dart
+final text = "hello".rx;
+```

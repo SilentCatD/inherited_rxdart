@@ -123,17 +123,35 @@ class _RxViewModelBuilderState<B extends RxViewModel>
   }
 }
 
+/// Widget to work with [RxValue].
+///
+/// Take an [RxValue] and rebuild when the value emitted changed.
+/// ```dart
+/// RxValueBuilder(
+///   value: context.read<MyModel>().number,
+///   // builder function will be called each time the value is set.
+///   builder: (context, value){
+///     return ElevatedButton(
+///       onPressed: (){
+///         myViewModel.increase();
+///       }
+///       child: Text("$value"),
+///     );
+///   }
+/// ),
+/// ```
 class RxValueBuilder<T> extends StatefulWidget {
-  final RxBlocWidgetBuilder<T> builder;
-
   const RxValueBuilder({
     Key? key,
-    required RxValue<T> value,
+    required this.value,
     required this.builder,
-  })  : _value = value,
-        super(key: key);
+  }) : super(key: key);
 
-  final RxValue<T> _value;
+  /// Function called when rebuilding widget.
+  final RxBlocWidgetBuilder<T> builder;
+
+  /// Reactive value that will cause this widget to be rebuilt when changed.
+  final RxValue<T> value;
 
   @override
   State<RxValueBuilder<T>> createState() => _RxValueBuilderState<T>();
@@ -167,7 +185,7 @@ class _RxValueBuilderState<T> extends State<RxValueBuilder<T>> {
   @override
   void initState() {
     super.initState();
-    _rxValue = widget._value;
+    _rxValue = widget.value;
     _sub(_rxValue);
     _value = _rxValue.value;
   }
@@ -175,11 +193,11 @@ class _RxValueBuilderState<T> extends State<RxValueBuilder<T>> {
   @override
   void didUpdateWidget(covariant RxValueBuilder<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget._value != widget._value) {
+    if (oldWidget.value != widget.value) {
       if (_subscription != null) {
         _unSub();
       }
-      _rxValue = widget._value;
+      _rxValue = widget.value;
       _sub(_rxValue);
     }
   }
