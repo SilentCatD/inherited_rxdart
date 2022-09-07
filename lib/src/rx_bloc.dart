@@ -1,4 +1,3 @@
-import 'package:inherited_rxdart/src/rx_value_extension.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 import 'exception.dart';
@@ -349,6 +348,68 @@ abstract class RxBloc<S, N> extends RxCubit<S> {
   }
 }
 
+/// Class for making reactive value.
+///
+/// Create value of type T and observing it's changes with [RxValueBuilder].
+/// Each time an [RxValue] is set by it's setter [RxValue.value], all of the
+/// dependent [RxValueBuilder] widget will call it's build function again.
+///
+/// ```dart
+/// class MyViewModel{
+///   final number = RxValue<int>(0);
+///   void increase(){
+///     number.value++;
+///   }
+/// }
+///
+/// final myViewModel = MyViewModel();
+///
+/// RxValueBuilder(
+///   value: myViewModel.number,
+///   // builder function will be called each time the value is set.
+///   builder: (context, value){
+///     return ElevatedButton(
+///       onPressed: (){
+///         myViewModel.increase();
+///       }
+///       child: Text("$value"),
+///     );
+///   }
+/// ),
+/// ```
+///
+/// A short hand way to create an [RxValue]  of type T is to just use
+/// [RxValueExtension], which add: getter rx.
+///
+/// ```dart
+/// class MyViewModel{
+///   final number = 0.rx;
+///   final text = "hello".rx;
+/// }
+/// ```
+///
+/// An [RxValue] can be used as a property of [RxViewModel], or with any [RxBase]
+/// or even services (if the init and dispose function is not needed), to inject
+/// it through inherited widget.
+///
+/// An [RxValue] property can be get by:
+///
+/// ```dart
+/// RxValueBuilder(
+///   value: context.read<MyModel>().number,
+///   // builder function will be called each time the value is set.
+///   builder: (context, value){
+///     return ElevatedButton(
+///       onPressed: (){
+///         myViewModel.increase();
+///       }
+///       child: Text("$value"),
+///     );
+///   }
+/// ),
+/// ```
+///
+/// ... given that MyModel have been provided to this subtree with providers.
 class RxValue<T> extends RxBase<T> {
   RxValue(this.initialValue) : super(BehaviorSubject<T>.seeded(initialValue));
   final T initialValue;

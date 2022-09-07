@@ -224,6 +224,7 @@ class MyCounter extends StatelessWidget {
                 RxValueBuilder<int>(
                     value: context.read<CounterViewModel>().num3,
                     builder: (context, value) {
+                      print("rebuild elevated button of counter view model");
                       return ElevatedButton(
                           onPressed: () {
                             context.read<CounterViewModel>().increaseNum3();
