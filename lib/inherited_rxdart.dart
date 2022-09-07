@@ -7,7 +7,7 @@ export 'src/exception.dart'
         ServiceNotProvidedException,
         ServiceMustBeOfSpecificTypeException;
 export 'src/multi_service_provider.dart' show MultiServiceProvider;
-export 'src/rx_bloc.dart' show RxBloc, RxViewModel, RxCubit, RxBase;
+export 'src/rx_bloc.dart' show RxBloc, RxViewModel, RxCubit, RxBase, RxValue;
 export 'src/rx_builder.dart' show RxBuilder, RxViewModelBuilder;
 export 'src/rx_listener.dart'
     show RxStateListener, RxViewModelListener, RxListener;
@@ -25,3 +25,4 @@ export 'src/type_def.dart'
         ShouldRebuildViewModel,
         StateRebuildSelector;
 export 'src/rx_multi_provider.dart' show RxMultiProvider;
+export 'src/rx_value_extension.dart' show RxValueExtension;
