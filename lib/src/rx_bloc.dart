@@ -65,7 +65,7 @@ abstract class RxBase<S> {
   /// The subject this bloc will use, because built on rxdart, those subject
   /// maybe:
   /// * [PublishSubject] for [RxViewModel] and notifications
-  /// * [BehaviorSubject] for [RxBloc], [RxCubit]
+  /// * [BehaviorSubject] for [RxBloc], [RxCubit], [RxValue]
   @protected
   Subject<S> get _subject => _stateSubject;
 
@@ -236,7 +236,7 @@ abstract class RxCubit<S> extends RxBase<S> {
   /// The subject this bloc will use, because built on rxdart, those subject
   /// maybe:
   /// * [PublishSubject] for [RxViewModel] and notifications
-  /// * [BehaviorSubject] for [RxBloc], [RxCubit]
+  /// * [BehaviorSubject] for [RxBloc], [RxCubit], [RxValue]
   @override
   @protected
   BehaviorSubject<S> get _subject => _stateSubject as BehaviorSubject<S>;
@@ -412,22 +412,36 @@ abstract class RxBloc<S, N> extends RxCubit<S> {
 /// ... given that MyModel have been provided to this subtree with providers.
 class RxValue<T> extends RxBase<T> {
   RxValue(this.initialValue) : super(BehaviorSubject<T>.seeded(initialValue));
+
+  /// Initial value of the stream
   final T initialValue;
 
+  /// The subject this bloc will use, because built on rxdart, those subject
+  /// maybe:
+  /// * [PublishSubject] for [RxViewModel] and notifications
+  /// * [BehaviorSubject] for [RxBloc], [RxCubit], [RxValue]
   @override
   @protected
   BehaviorSubject<T> get _subject => _stateSubject as BehaviorSubject<T>;
 
+  /// Whether to skip the first build trigger by stream, for when using
+  /// [BehaviorSubject], the first state rebuild is not really necessary and
+  /// can be optimized by this variable.
   @override
   bool get shouldSkipFirstBuild => true;
 
   T get value => _subject.valueOrNull ?? initialValue;
 
+  /// Signature function of [RxValue], calling this will cause all of
+  /// [RxValueBuilder] that dependent on this object to be rebuilt.
   set value(T value) => _stateChanged(value);
 
+  /// The state stream of this will be distinct, two consecutive state of the
+  /// same value will not be emitted two time.
   @override
   Stream<T> get stateStream => _subject.stream.distinct();
 
+  /// Delegate to [value].
   @override
   T get state => value;
 }
