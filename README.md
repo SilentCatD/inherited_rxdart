@@ -138,6 +138,7 @@ For simple view model based state-management, shipped with related widget:
 - RxViewModelConsumer: combination of builder and listener.
 
 ### RxValue
+
 A value for reactive state management, will cause its dependent to rebuild when its value is set.
 
 - RxValueBuilder: build to work with RxValue.
