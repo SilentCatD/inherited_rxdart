@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'rx_bloc.dart';
@@ -27,7 +29,20 @@ class RxBuilder<B extends RxCubit<S>, S> extends StatefulWidget {
     Key? key,
     required this.builder,
     this.shouldRebuildWidget,
-  }) : super(key: key);
+  })  : _value = null,
+        _fromValue = false,
+        super(key: key);
+
+  const RxBuilder.value({
+    Key? key,
+    required this.builder,
+    this.shouldRebuildWidget,
+    required B value,
+  })  : _value = value,
+        _fromValue = true,
+        super(key: key);
+  final bool _fromValue;
+  final B? _value;
 
   /// Typical Builder function, which called when the bloc this widget depend
   /// on require its to rebuild itself with new value.
@@ -45,11 +60,65 @@ class _RxBuilderState<B extends RxCubit<S>, S> extends State<RxBuilder<B, S>> {
   Widget? _cachedWidget;
   S? _cachedState;
   late S _state;
+  B? _bloc;
+  late final bool _fromValue;
+
+  StreamSubscription<S>? _subscription;
+
+  void _sub(B bloc) {
+    _subscription = bloc.stateStream.listen((event) {
+      _handleUpdate(event);
+    });
+  }
+
+  void _unSub() {
+    _subscription?.cancel();
+    _subscription = null;
+  }
+
+  void _handleUpdate(S state) {
+    if (!mounted) return;
+    setState(() {
+      _state = state;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fromValue = widget._fromValue;
+    if (_fromValue) {
+      _bloc = widget._value;
+      _sub(_bloc!);
+    }
+  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _state = context.watch<B>().state;
+    if (!_fromValue) {
+      _state = context.watch<B>().state;
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant RxBuilder<B, S> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_fromValue) {
+      if (oldWidget._value != widget._value) {
+        if (_subscription != null) {
+          _unSub();
+        }
+        _bloc = widget._value;
+        _sub(_bloc!);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _unSub();
+    super.dispose();
   }
 
   @override
@@ -86,7 +155,20 @@ class RxViewModelBuilder<B extends RxViewModel> extends StatefulWidget {
     Key? key,
     required this.builder,
     this.shouldRebuildWidget,
-  }) : super(key: key);
+  })  : _fromValue = false,
+        _value = null,
+        super(key: key);
+
+  const RxViewModelBuilder.value({
+    Key? key,
+    required this.builder,
+    this.shouldRebuildWidget,
+    required B value,
+  })  : _fromValue = true,
+        _value = value,
+        super(key: key);
+  final bool _fromValue;
+  final B? _value;
 
   /// Typical Builder function, which called when the bloc this widget depend
   /// on require its to rebuild itself with new value.
@@ -104,11 +186,64 @@ class _RxViewModelBuilderState<B extends RxViewModel>
     extends State<RxViewModelBuilder<B>> {
   Widget? _cachedWidget;
   late B _state;
+  late final bool _fromValue;
+
+  StreamSubscription<RxViewModel>? _subscription;
+
+  void _sub(B viewModel) {
+    _subscription = viewModel.stateStream.listen((event) {
+      _handleUpdate(event as B);
+    });
+  }
+
+  void _unSub() {
+    _subscription?.cancel();
+    _subscription = null;
+  }
+
+  void _handleUpdate(B viewModel) {
+    if (!mounted) return;
+    setState(() {
+      _state = viewModel;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fromValue = widget._fromValue;
+    if (_fromValue) {
+      _state = widget._value!;
+      _sub(_state);
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant RxViewModelBuilder<B> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_fromValue) {
+      if (oldWidget._value != widget._value) {
+        if (_subscription != null) {
+          _unSub();
+        }
+        _state = widget._value!;
+        _sub(_state);
+      }
+    }
+  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _state = context.watch<B>().state as B;
+    if (!_fromValue) {
+      _state = context.watch<B>().state as B;
+    }
+  }
+
+  @override
+  void dispose() {
+    _unSub();
+    super.dispose();
   }
 
   @override

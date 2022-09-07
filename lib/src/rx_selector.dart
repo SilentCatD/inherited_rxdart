@@ -1,52 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'rx_bloc.dart';
 import 'rx_provider.dart';
 import 'type_def.dart';
-
-/// Widget for selectively rebuild ui base on a property of the whole state [S].
-///
-/// Base Widget for [RxSelector] and [RxViewModelSelector].
-class RxSelectorBase<B extends RxBase<S>, S, T> extends StatefulWidget {
-  const RxSelectorBase({
-    Key? key,
-    required this.stateRebuildSelector,
-    required this.builder,
-  }) : super(key: key);
-
-  /// Function to select the property for rebuilding decision, only when  the
-  /// property changed between states, would the ui rebuild.
-  final StateRebuildSelector<S, T> stateRebuildSelector;
-
-  /// Typical builder function, return a widget.
-  final RxBlocWidgetBuilder<T> builder;
-
-  @override
-  State<RxSelectorBase<B, S, T>> createState() =>
-      _RxSelectorBaseState<B, S, T>();
-}
-
-class _RxSelectorBaseState<B extends RxBase<S>, S, T>
-    extends State<RxSelectorBase<B, S, T>> {
-  Widget? _cachedWidget;
-  T? _cachedValue;
-  late T _value;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final state = context.watch<B>().state;
-    _value = widget.stateRebuildSelector(state);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_cachedValue == null || _cachedValue != _value) {
-      _cachedWidget = widget.builder(context, _value);
-      _cachedValue = _value;
-    }
-    return _cachedWidget!;
-  }
-}
 
 /// Widget for selectively rebuild ui base on a property [T] of the whole
 /// state [S].
@@ -68,15 +25,113 @@ class _RxSelectorBaseState<B extends RxBase<S>, S, T>
 /// Work with:
 /// * [RxCubit]
 /// * [RxBloc]
-class RxSelector<B extends RxCubit<S>, S, T> extends RxSelectorBase<B, S, T> {
+class RxSelector<B extends RxCubit<S>, S, T> extends StatefulWidget {
   const RxSelector({
     Key? key,
-    required StateRebuildSelector<S, T> stateRebuildSelector,
-    required RxBlocWidgetBuilder<T> builder,
-  }) : super(
-            key: key,
-            stateRebuildSelector: stateRebuildSelector,
-            builder: builder);
+    required this.builder,
+    required this.stateRebuildSelector,
+  })  : _fromValue = false,
+        _value = null,
+        super(key: key);
+
+  const RxSelector.value({
+    Key? key,
+    required B value,
+    required this.builder,
+    required this.stateRebuildSelector,
+  })  : _fromValue = true,
+        _value = value,
+        super(key: key);
+
+  final bool _fromValue;
+  final B? _value;
+
+  /// Function to select the property for rebuilding decision, only when  the
+  /// property changed between states, would the ui rebuild.
+  final StateRebuildSelector<S, T> stateRebuildSelector;
+
+  /// Typical builder function, return a widget.
+  final RxBlocWidgetBuilder<T> builder;
+
+  @override
+  State<RxSelector<B, S, T>> createState() => _RxSelectorState<B, S, T>();
+}
+
+class _RxSelectorState<B extends RxCubit<S>, S, T>
+    extends State<RxSelector<B, S, T>> {
+  Widget? _cachedWidget;
+  T? _cachedValue;
+  late T _value;
+  late final bool _fromValue;
+  B? _bloc;
+
+  StreamSubscription<S>? _subscription;
+
+  void _sub(B bloc) {
+    _subscription = bloc.stateStream.listen((event) {
+      _handleUpdate(event);
+    });
+  }
+
+  void _unSub() {
+    _subscription?.cancel();
+    _subscription = null;
+  }
+
+  void _handleUpdate(S state) {
+    if (!mounted) return;
+    setState(() {
+      _value = widget.stateRebuildSelector(state);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fromValue = widget._fromValue;
+    if (_fromValue) {
+      _bloc = widget._value;
+      _sub(_bloc!);
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant RxSelector<B, S, T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_fromValue) {
+      if (oldWidget._value != widget._value) {
+        if (_subscription != null) {
+          _unSub();
+        }
+        _bloc = widget._value;
+        _sub(_bloc!);
+      }
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_fromValue) {
+      final state = context.watch<B>().state;
+      _value = widget.stateRebuildSelector(state);
+    }
+  }
+
+  @override
+  void dispose() {
+    _unSub();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_cachedValue == null || _cachedValue != _value) {
+      _cachedWidget = widget.builder(context, _value);
+      _cachedValue = _value;
+    }
+    return _cachedWidget!;
+  }
 }
 
 /// Widget for selectively rebuild ui base on value of type [T] emitted by bloc
@@ -103,7 +158,21 @@ class RxViewModelSelector<B extends RxViewModel, T> extends StatefulWidget {
     Key? key,
     required this.stateRebuildSelector,
     required this.builder,
-  }) : super(key: key);
+  })  : _value = null,
+        _fromValue = false,
+        super(key: key);
+
+  const RxViewModelSelector.value({
+    Key? key,
+    required B value,
+    required this.stateRebuildSelector,
+    required this.builder,
+  })  : _value = value,
+        _fromValue = true,
+        super(key: key);
+
+  final B? _value;
+  final bool _fromValue;
 
   final StateRebuildSelector<B, T> stateRebuildSelector;
   final RxBlocWidgetBuilder<T> builder;
@@ -118,12 +187,65 @@ class _RxViewModelSelectorState<B extends RxViewModel, T>
   Widget? _cachedWidget;
   T? _cachedValue;
   late T _value;
+  late final bool _fromValue;
+  B? _viewModel;
+  StreamSubscription<RxViewModel>? _subscription;
+
+  void _sub(B bloc) {
+    _subscription = bloc.stateStream.listen((event) {
+      _handleUpdate(event as B);
+    });
+  }
+
+  void _unSub() {
+    _subscription?.cancel();
+    _subscription = null;
+  }
+
+  void _handleUpdate(B state) {
+    if (!mounted) return;
+    setState(() {
+      _value = widget.stateRebuildSelector(state);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fromValue = widget._fromValue;
+    if (_fromValue) {
+      _viewModel = widget._value;
+      _sub(_viewModel!);
+    }
+  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final state = context.watch<B>().state as B;
-    _value = widget.stateRebuildSelector(state);
+    if (!_fromValue) {
+      final state = context.watch<B>().state as B;
+      _value = widget.stateRebuildSelector(state);
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant RxViewModelSelector<B, T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_fromValue) {
+      if (widget._value != oldWidget._value) {
+        if (_subscription != null) {
+          _unSub();
+        }
+        _viewModel = widget._value;
+        _sub(_viewModel!);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _unSub();
+    super.dispose();
   }
 
   @override
