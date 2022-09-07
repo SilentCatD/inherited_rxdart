@@ -96,18 +96,9 @@ final bloc = RxProvider.of<CounterBloc>(context);
 View documents of each API for more details. The library support multiple type of blocs and related
 widgets.
 
-### RxViewModel
-
-For simple view model based state-management, shipped with related widget:
-
-- RxViewModelBuilder: for handle rebuilding widget when a new state is emitted.
-- RxViewModelSelector: for selectively rebuilding when state changed.
-- RxViewModelListener: for a listener callback when state changed.
-- RxViewModelConsumer: combination of builder and listener.
-
 ### Bloc's Widgets
 
-For other blocs, there will be specific widget for each purpose include: rebuilding, listening,...
+For blocs, there will be specific widget for each purpose include: rebuilding, listening,...
 
 - RxBuilder: For building widgets based on states.
 - RxListener: For listening to state changes and notifications.
@@ -118,7 +109,7 @@ For other blocs, there will be specific widget for each purpose include: rebuild
 
 ### RxCubit:
 
-For a bloc, which will emit states throughout its life-cycle and rebuild widgets when necessary.
+A simple bloc, which will emit states throughout its life-cycle and rebuild widgets when necessary.
 Work with:
 
 - RxBuilder
@@ -136,6 +127,20 @@ Bloc with notification beside states, which can be listened and react accordingl
 - RxConsumer
 - RxStateConsumer
 - RxSelector
+
+### RxViewModel
+
+For simple view model based state-management, shipped with related widget:
+
+- RxViewModelBuilder: for handle rebuilding widget when a new state is emitted.
+- RxViewModelSelector: for selectively rebuilding when state changed.
+- RxViewModelListener: for a listener callback when state changed.
+- RxViewModelConsumer: combination of builder and listener.
+
+### RxValue
+A value for reactive state management, will cause its dependent to rebuild when its value is set.
+
+- RxValueBuilder: build to work with RxValue.
 
 ### ServiceProvider
 

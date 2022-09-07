@@ -1,3 +1,7 @@
+## 1.1.0
+
+* Add RxValue and RxValueBuilder for simple reactive state management.
+
 ## 1.0.2
 
 * Upgrade rxdart to ^0.27.0
@@ -7,7 +11,7 @@
 
 * Hide subject for each bloc
 * Add guard check before add state
-* Downgrade rxdart to 0.26.0 and cope with it's changes
+* Downgrade rxdart to 0.26.0 and cope with its changes
 
 ## 1.0.0+1
 
