@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'rx_bloc.dart';
@@ -118,5 +120,103 @@ class _RxViewModelBuilderState<B extends RxViewModel>
       _cachedWidget = widget.builder(context, _state);
     }
     return _cachedWidget!;
+  }
+}
+
+class RxValueBuilder<T> extends StatefulWidget {
+  const RxValueBuilder({Key? key, required this.builder})
+      : _fromValue = false,
+        _value = null,
+        super(key: key);
+
+  final RxBlocWidgetBuilder<T> builder;
+
+  const RxValueBuilder.value({
+    Key? key,
+    required RxValue<T> value,
+    required this.builder,
+  })  : _value = value,
+        _fromValue = true,
+        super(key: key);
+
+  final bool _fromValue;
+  final RxValue<T>? _value;
+
+  @override
+  State<RxValueBuilder<T>> createState() => _RxValueBuilderState<T>();
+}
+
+class _RxValueBuilderState<T> extends State<RxValueBuilder<T>> {
+  StreamSubscription<T>? _subscription;
+  late final bool _fromValue;
+  RxValue<T>? _rxValue;
+  late T _value;
+  T? _oldValue;
+  Widget? _cached;
+
+  void _sub(RxValue<T> value) {
+    _subscription = value.stateStream.listen((event) {
+      _handleUpdate(event);
+    });
+  }
+
+  void _handleUpdate(T value) {
+    if (!mounted) return;
+    setState(() {
+      _value = value;
+    });
+  }
+
+  void _unSub() {
+    _subscription?.cancel();
+    _subscription = null;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fromValue = widget._fromValue;
+    if (_fromValue) {
+      _rxValue = widget._value;
+      _sub(_rxValue!);
+      _value = _rxValue!.value;
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant RxValueBuilder<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_fromValue) {
+      if (oldWidget._value != widget._value) {
+        if (_subscription != null) {
+          _unSub();
+        }
+        _rxValue = widget._value;
+        _sub(_rxValue!);
+      }
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_fromValue) {
+      _value = context.watch<RxValue<T>>().value;
+    }
+  }
+
+  @override
+  void dispose() {
+    _unSub();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_cached == null || _oldValue != _value) {
+      _cached = widget.builder(context, _value);
+      _oldValue = _value;
+    }
+    return _cached!;
   }
 }

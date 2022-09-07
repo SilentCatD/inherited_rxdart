@@ -347,3 +347,25 @@ abstract class RxBloc<S, N> extends RxCubit<S> {
     return _notificationSubject.close();
   }
 }
+
+class RxValue<T> extends RxBase<T> {
+  RxValue(this.initialValue) : super(BehaviorSubject<T>.seeded(initialValue));
+  final T initialValue;
+
+  @override
+  @protected
+  BehaviorSubject<T> get _subject => _stateSubject as BehaviorSubject<T>;
+
+  @override
+  bool get shouldSkipFirstBuild => true;
+
+  T get value => _subject.valueOrNull ?? initialValue;
+
+  set value(T value) => _stateChanged(value);
+
+  @override
+  Stream<T> get stateStream => _subject.stream.distinct();
+
+  @override
+  T get state => value;
+}
