@@ -1,3 +1,4 @@
+import 'package:inherited_rxdart/src/rx_value_extension.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 import 'exception.dart';

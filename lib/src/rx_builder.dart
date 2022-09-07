@@ -124,23 +124,16 @@ class _RxViewModelBuilderState<B extends RxViewModel>
 }
 
 class RxValueBuilder<T> extends StatefulWidget {
-  const RxValueBuilder({Key? key, required this.builder})
-      : _fromValue = false,
-        _value = null,
-        super(key: key);
-
   final RxBlocWidgetBuilder<T> builder;
 
-  const RxValueBuilder.value({
+  const RxValueBuilder({
     Key? key,
     required RxValue<T> value,
     required this.builder,
   })  : _value = value,
-        _fromValue = true,
         super(key: key);
 
-  final bool _fromValue;
-  final RxValue<T>? _value;
+  final RxValue<T> _value;
 
   @override
   State<RxValueBuilder<T>> createState() => _RxValueBuilderState<T>();
@@ -148,8 +141,7 @@ class RxValueBuilder<T> extends StatefulWidget {
 
 class _RxValueBuilderState<T> extends State<RxValueBuilder<T>> {
   StreamSubscription<T>? _subscription;
-  late final bool _fromValue;
-  RxValue<T>? _rxValue;
+  late RxValue<T> _rxValue;
   late T _value;
   T? _oldValue;
   Widget? _cached;
@@ -175,33 +167,20 @@ class _RxValueBuilderState<T> extends State<RxValueBuilder<T>> {
   @override
   void initState() {
     super.initState();
-    _fromValue = widget._fromValue;
-    if (_fromValue) {
-      _rxValue = widget._value;
-      _sub(_rxValue!);
-      _value = _rxValue!.value;
-    }
+    _rxValue = widget._value;
+    _sub(_rxValue);
+    _value = _rxValue.value;
   }
 
   @override
   void didUpdateWidget(covariant RxValueBuilder<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (_fromValue) {
-      if (oldWidget._value != widget._value) {
-        if (_subscription != null) {
-          _unSub();
-        }
-        _rxValue = widget._value;
-        _sub(_rxValue!);
+    if (oldWidget._value != widget._value) {
+      if (_subscription != null) {
+        _unSub();
       }
-    }
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_fromValue) {
-      _value = context.watch<RxValue<T>>().value;
+      _rxValue = widget._value;
+      _sub(_rxValue);
     }
   }
 

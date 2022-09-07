@@ -50,8 +50,13 @@ class CounterBloc2 extends RxCubit<int> {
 class CounterViewModel extends RxViewModel {
   int num;
   int num2;
+  final num3 = 0.rx;
 
   CounterViewModel(this.num, [this.num2 = 0]);
+
+  void increaseNum3() {
+    num3.value++;
+  }
 
   void increase() {
     num++;
@@ -216,6 +221,15 @@ class MyCounter extends StatelessWidget {
                     return state.num < 20;
                   },
                 ),
+                RxValueBuilder<int>(
+                    value: context.read<CounterViewModel>().num3,
+                    builder: (context, value) {
+                      return ElevatedButton(
+                          onPressed: () {
+                            context.read<CounterViewModel>().increaseNum3();
+                          },
+                          child: Text("Num3: $value"));
+                    }),
               ],
             ),
           ),
