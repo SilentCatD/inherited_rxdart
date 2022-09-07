@@ -1,3 +1,7 @@
+## 1.1.1
+
+* Edit README and add doc
+
 ## 1.1.0
 
 * Add RxValue and RxValueBuilder for simple reactive state management.
