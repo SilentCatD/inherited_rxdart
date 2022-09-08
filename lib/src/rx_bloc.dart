@@ -85,7 +85,7 @@ abstract class RxBase<S> with RxListenableMixin<S> {
   Stream<S> get stateStream => _subject.stream;
 
   /// [StreamSubscription] of [stateStream] stream.
-  StreamSubscription listen(StateListenerCallback<S> callback) {
+  StreamSubscription<S> listen(StateListenerCallback<S> callback) {
     return stateStream.listen(callback);
   }
 
