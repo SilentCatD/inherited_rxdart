@@ -1,4 +1,5 @@
 import 'package:meta/meta.dart';
+import 'rx_bloc.dart';
 
 import 'type_def.dart';
 
@@ -9,11 +10,12 @@ class _CallbackNode<S> {
   _CallbackNode({required this.callback, this.next});
 }
 
-mixin RxListenableMixin<S>{
+mixin RxListenableMixin<S> {
   _CallbackNode<S>? _head;
   _CallbackNode<S>? _tail;
 
-
+  /// Add a callback that will response to [RxBase.stateStream] when it emitted
+  /// new state.
   void addListener(StateListenerCallback<S> callback) {
     if (_head == null) {
       assert(_tail == null);
@@ -26,6 +28,7 @@ mixin RxListenableMixin<S>{
     }
   }
 
+  /// Remove a callback from the callbacks list.
   void removeListener(StateListenerCallback<S> callback) {
     _CallbackNode<S>? prev;
     _CallbackNode<S>? curr = _head;
@@ -49,6 +52,8 @@ mixin RxListenableMixin<S>{
     }
   }
 
+  /// trigger all callback, this is by default called automatically when a new
+  /// state is emitted by the [RxBase.stateStream].
   @protected
   void notifyListeners(S value) {
     _notifyListeners(_head, value);
