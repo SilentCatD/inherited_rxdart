@@ -43,7 +43,7 @@ mixin RxListenableMixin<S>{
         return;
       }
       if (curr == _tail) {
-        _tail = null;
+        _tail = prev;
       }
       prev?.next = curr.next;
     }
