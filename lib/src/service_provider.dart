@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'exception.dart';
 import 'type_def.dart';
 import 'package:nested/nested.dart';
+import 'rx_provider.dart';
 
 /// Widget to provide a service of type [S] to a subtree.
 ///

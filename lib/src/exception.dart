@@ -1,3 +1,5 @@
+import 'rx_bloc.dart';
+
 /// An [Exception] to be throw when this current subtree don't have any provided
 /// bloc of [Type].
 class RxBlocNotProvidedException implements Exception {

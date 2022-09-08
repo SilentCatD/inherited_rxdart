@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nested/nested.dart';
+import 'service_provider.dart';
 
 /// A widget that should be used when you want to provide multiple
 /// [ServiceProvider] at once, without nesting them.

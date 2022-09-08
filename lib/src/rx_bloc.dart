@@ -1,5 +1,9 @@
+import 'dart:async';
+
+import 'type_def.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
+import 'rx_listenable_mixin.dart';
 import 'exception.dart';
 
 /// Base class for others bloc, subclass this when making a new bloc.
@@ -11,13 +15,19 @@ import 'exception.dart';
 /// object are created outside of [RxProvider] (ex: [RxProvider.value]), its
 /// life cycle operation (init, dispose) must be handled and ensured by
 /// implementer.
-abstract class RxBase<S> {
+abstract class RxBase<S> with RxListenableMixin<S> {
   /// This bloc need a type of subject to work with.
   RxBase(Subject<S> stateSubject)
       : _stateSubject = stateSubject,
-        _initialized = false;
+        _initialized = false {
+    _listenerSubscription = stateStream.listen((event) {
+      notifyListeners(event);
+    });
+  }
 
   bool _initialized;
+
+  late final StreamSubscription<S> _listenerSubscription;
 
   @nonVirtual
   bool get initialized => _initialized;
@@ -74,6 +84,11 @@ abstract class RxBase<S> {
   /// throttle,...
   Stream<S> get stateStream => _subject.stream;
 
+  /// [StreamSubscription] of [stateStream] stream.
+  StreamSubscription<S> listen(StateListenerCallback<S> callback) {
+    return stateStream.listen(callback);
+  }
+
   /// Initialize logic for this bloc, will be automatically called by
   /// [RxProvider] if the [Create] function is used in constructor.
   @mustCallSuper
@@ -84,8 +99,9 @@ abstract class RxBase<S> {
   /// Disposing logic for this bloc, will be automatically called by
   /// [RxProvider] if the [Create] function is used in constructor.
   @mustCallSuper
-  Future<void> dispose() {
-    return _stateSubject.close();
+  Future<void> dispose() async {
+    await _stateSubject.close();
+    await _listenerSubscription.cancel();
   }
 }
 
@@ -344,7 +360,7 @@ abstract class RxBloc<S, N> extends RxCubit<S> {
   @override
   Future<void> dispose() async {
     await super.dispose();
-    return _notificationSubject.close();
+    await _notificationSubject.close();
   }
 }
 
