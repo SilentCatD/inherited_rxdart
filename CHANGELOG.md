@@ -1,3 +1,7 @@
+## 1.2.0
+
+* Rx now can add/remove listener
+
 ## 1.1.1+1
 
 * Edit README
