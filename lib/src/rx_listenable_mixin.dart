@@ -1,4 +1,4 @@
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 import 'rx_bloc.dart';
 
 import 'type_def.dart';
@@ -10,6 +10,8 @@ class _CallbackNode<S> {
   _CallbackNode({required this.callback, this.next});
 }
 
+/// Mixin to handle callback emitted from state, similar to [ChangeNotifier] but
+/// with a stream value.
 mixin RxListenableMixin<S> {
   _CallbackNode<S>? _head;
   _CallbackNode<S>? _tail;
