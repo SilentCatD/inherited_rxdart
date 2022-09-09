@@ -84,7 +84,7 @@ class BlocInitializedASecondTimeException implements Exception {
 
 /// Exception to be thrown when the RxWidget constructor change from .value
 /// to creation constructor and vice-versa. The use of this is not yet supported.
-class RxMapError implements Exception{
+class RxMapError implements Exception {
   @override
   String toString() {
     return "Failed to map from a .value constructor to creation constructor. "
