@@ -1,3 +1,7 @@
+## 1.4.1
+
+* Fix initial value late
+
 ## 1.4.0
 
 * Add Rx Static class
