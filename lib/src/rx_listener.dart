@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'exception.dart';
 import 'rx_bloc.dart';
 import 'rx_provider.dart';
 import 'type_def.dart';
@@ -66,6 +67,10 @@ class _RxListenerBaseState<B extends RxBase<S>, S>
   @override
   void didUpdateWidget(covariant RxListenerBase<B, S> oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if ((_fromValue && !widget._fromValue) ||
+        (!_fromValue && widget._fromValue)) {
+      throw RxMapError();
+    }
     if (_fromValue) {
       if (oldWidget._value != widget._value) {
         if (_stateSubscription != null) {
@@ -178,6 +183,10 @@ class _RxViewModelListenerState<B extends RxViewModel>
   @override
   void didUpdateWidget(covariant RxViewModelListener<B> oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if ((_fromValue && !widget._fromValue) ||
+        (!_fromValue && widget._fromValue)) {
+      throw RxMapError();
+    }
     if (_fromValue) {
       if (oldWidget._value != widget._value) {
         if (_stateSubscription != null) {

@@ -141,6 +141,11 @@ class _RxProviderState<B extends RxBase>
   }
 
   @override
+  void didUpdateWidget(covariant RxProvider<B> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   void dispose() {
     if (_isCreated) {
       _bloc.dispose();

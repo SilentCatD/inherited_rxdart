@@ -79,3 +79,15 @@ class BlocInitializedASecondTimeException implements Exception {
     return "Initialized variable of an initialized bloc is set to True a second time";
   }
 }
+
+/// Exception to be thrown when the RxWidget constructor change from .value
+/// to creation constructor and vice-versa. The use of this is not yet supported.
+class RxMapError implements Exception{
+  @override
+  String toString() {
+    return "Failed to map from a .value constructor to creation constructor. "
+        "While the instance changes of .value constructor is handled, the"
+        "change between .value constructor and creation constructor is not "
+        "allowed.";
+  }
+}

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'exception.dart';
 import 'rx_bloc.dart';
 import 'rx_builder.dart';
 import 'rx_listener.dart';
@@ -58,6 +59,10 @@ class _RxStateConsumerState<B extends RxCubit<S>, S>
   @override
   void didUpdateWidget(covariant RxStateConsumer<B, S> oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if ((_fromValue && !widget._fromValue) ||
+        (!_fromValue && widget._fromValue)) {
+      throw RxMapError();
+    }
     if (_fromValue) {
       if (oldWidget._value != widget._value) {
         _bloc = widget._value;
@@ -143,6 +148,10 @@ class _RxConsumerState<B extends RxBloc<S, N>, S, N>
   @override
   void didUpdateWidget(covariant RxConsumer<B, S, N> oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if ((_fromValue && !widget._fromValue) ||
+        (!_fromValue && widget._fromValue)) {
+      throw RxMapError();
+    }
     if (_fromValue) {
       if (oldWidget._value != widget._value) {
         _bloc = widget._value;
@@ -227,6 +236,10 @@ class _RxViewModelConsumerState<B extends RxViewModel>
   @override
   void didUpdateWidget(covariant RxViewModelConsumer<B> oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if ((_fromValue && !widget._fromValue) ||
+        (!_fromValue && widget._fromValue)) {
+      throw RxMapError();
+    }
     if (_fromValue) {
       if (oldWidget._value != widget._value) {
         _bloc = widget._value;
