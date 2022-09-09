@@ -12,7 +12,6 @@ import 'type_def.dart';
 /// * [RxBloc]
 /// * [RxCubit]
 class RxStateConsumer<B extends RxCubit<S>, S> extends StatefulWidget {
-
   /// Default constructor, will automatically lookup for RxCubit of type [B].
   const RxStateConsumer({
     Key? key,
@@ -102,7 +101,6 @@ class _RxStateConsumerState<B extends RxCubit<S>, S>
 /// Work with:
 /// * [RxBloc]
 class RxConsumer<B extends RxBloc<S, N>, S, N> extends StatefulWidget {
-
   /// Default constructor, will automatically lookup for RxBloc of type [B].
   const RxConsumer({
     Key? key,
@@ -196,7 +194,6 @@ class _RxConsumerState<B extends RxBloc<S, N>, S, N>
 /// Work with:
 /// * [RxViewModel]
 class RxViewModelConsumer<B extends RxViewModel> extends StatefulWidget {
-
   /// Default constructor, will automatically lookup for RxViewModel of type [B].
   const RxViewModelConsumer({
     Key? key,
