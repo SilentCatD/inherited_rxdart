@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'exception.dart';
 import 'rx_bloc.dart';
 import 'rx_provider.dart';
 import 'type_def.dart';
@@ -12,11 +13,21 @@ import 'type_def.dart';
 /// of type [B].
 abstract class RxListenerBase<B extends RxBase<S>, S> extends StatefulWidget {
   const RxListenerBase({Key? key, required this.child, this.stateCallback})
-      : super(key: key);
+      : _value = null,
+        _fromValue = false,
+        super(key: key);
+
+  const RxListenerBase.value(
+      {Key? key, required this.child, this.stateCallback, required B value})
+      : _value = value,
+        _fromValue = true,
+        super(key: key);
 
   /// This widget require a child, which will not be affected by these callback
   final Widget child;
   final RxBlocEventListener<S>? stateCallback;
+  final B? _value;
+  final bool _fromValue;
 
   @override
   State<RxListenerBase<B, S>> createState() => _RxListenerBaseState<B, S>();
@@ -25,18 +36,12 @@ abstract class RxListenerBase<B extends RxBase<S>, S> extends StatefulWidget {
 class _RxListenerBaseState<B extends RxBase<S>, S>
     extends State<RxListenerBase<B, S>> {
   late B _bloc;
-
-  @override
-  void initState() {
-    super.initState();
-    _bloc = context.read<B>();
-    _sub();
-  }
+  late final bool _fromValue;
 
   StreamSubscription<S>? _stateSubscription;
 
-  void _sub() {
-    _stateSubscription = _bloc.stateStream.listen((state) {
+  void _sub(B bloc) {
+    _stateSubscription = bloc.stateStream.listen((state) {
       if (!mounted) return;
       widget.stateCallback?.call(context, state);
     });
@@ -45,6 +50,36 @@ class _RxListenerBaseState<B extends RxBase<S>, S>
   void _unSub() {
     _stateSubscription?.cancel();
     _stateSubscription = null;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fromValue = widget._fromValue;
+    if (_fromValue) {
+      _bloc = widget._value!;
+    } else {
+      _bloc = context.read<B>();
+    }
+    _sub(_bloc);
+  }
+
+  @override
+  void didUpdateWidget(covariant RxListenerBase<B, S> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if ((_fromValue && !widget._fromValue) ||
+        (!_fromValue && widget._fromValue)) {
+      throw RxMapError();
+    }
+    if (_fromValue) {
+      if (oldWidget._value != widget._value) {
+        if (_stateSubscription != null) {
+          _unSub();
+        }
+        _bloc = widget._value!;
+        _sub(_bloc);
+      }
+    }
   }
 
   @override
@@ -71,6 +106,18 @@ class RxStateListener<B extends RxCubit<S>, S> extends RxListenerBase<B, S> {
   const RxStateListener(
       {Key? key, required Widget child, RxBlocEventListener<S>? stateCallback})
       : super(key: key, stateCallback: stateCallback, child: child);
+
+  const RxStateListener.value(
+      {Key? key,
+      required Widget child,
+      RxBlocEventListener<S>? stateCallback,
+      required B value})
+      : super.value(
+          key: key,
+          stateCallback: stateCallback,
+          child: child,
+          value: value,
+        );
 }
 
 /// Listener for listening state changes for [RxViewModel]
@@ -82,10 +129,20 @@ class RxStateListener<B extends RxCubit<S>, S> extends RxListenerBase<B, S> {
 /// * [RxViewModel]
 class RxViewModelListener<B extends RxViewModel> extends StatefulWidget {
   const RxViewModelListener({Key? key, required this.child, this.stateCallback})
-      : super(key: key);
+      : _value = null,
+        _fromValue = false,
+        super(key: key);
+
+  const RxViewModelListener.value(
+      {Key? key, required this.child, this.stateCallback, required B value})
+      : _value = value,
+        _fromValue = true,
+        super(key: key);
 
   final Widget child;
   final RxBlocEventListener<B>? stateCallback;
+  final B? _value;
+  final bool _fromValue;
 
   @override
   State<RxViewModelListener<B>> createState() => _RxViewModelListenerState<B>();
@@ -95,17 +152,12 @@ class _RxViewModelListenerState<B extends RxViewModel>
     extends State<RxViewModelListener<B>> {
   late B _bloc;
 
-  @override
-  void initState() {
-    super.initState();
-    _bloc = context.read<B>();
-    _sub();
-  }
+  late final bool _fromValue;
 
   StreamSubscription<RxViewModel>? _stateSubscription;
 
-  void _sub() {
-    _stateSubscription = _bloc.stateStream.listen((state) {
+  void _sub(B bloc) {
+    _stateSubscription = bloc.stateStream.listen((state) {
       if (!mounted) return;
       widget.stateCallback?.call(context, state as B);
     });
@@ -114,6 +166,36 @@ class _RxViewModelListenerState<B extends RxViewModel>
   void _unSub() {
     _stateSubscription?.cancel();
     _stateSubscription = null;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fromValue = widget._fromValue;
+    if (_fromValue) {
+      _bloc = widget._value!;
+    } else {
+      _bloc = context.read<B>();
+    }
+    _sub(_bloc);
+  }
+
+  @override
+  void didUpdateWidget(covariant RxViewModelListener<B> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if ((_fromValue && !widget._fromValue) ||
+        (!_fromValue && widget._fromValue)) {
+      throw RxMapError();
+    }
+    if (_fromValue) {
+      if (oldWidget._value != widget._value) {
+        if (_stateSubscription != null) {
+          _unSub();
+        }
+        _bloc = widget._value!;
+        _sub(_bloc);
+      }
+    }
   }
 
   @override
@@ -184,6 +266,15 @@ class RxListener<B extends RxBloc<S, N>, S, N> extends RxListenerBase<B, S> {
       RxBlocEventListener<S>? stateCallback,
       this.notificationCallback})
       : super(key: key, stateCallback: stateCallback, child: child);
+
+  const RxListener.value(
+      {Key? key,
+      required B value,
+      required Widget child,
+      RxBlocEventListener<S>? stateCallback,
+      this.notificationCallback})
+      : super.value(
+            key: key, stateCallback: stateCallback, child: child, value: value);
   final RxBlocEventListener<N>? notificationCallback;
 
   @override
@@ -199,8 +290,8 @@ class _RxBlocListenerState<B extends RxBloc<S, N>, S, N>
   RxListener<B, S, N> get widget => super.widget as RxListener<B, S, N>;
 
   @override
-  void _sub() {
-    super._sub();
+  void _sub(B bloc) {
+    super._sub(bloc);
     _notificationSubscription = _bloc.notificationStream.listen((notification) {
       if (!mounted) return;
       widget.notificationCallback?.call(context, notification);
