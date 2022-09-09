@@ -94,6 +94,7 @@ class _RxSelectorState<B extends RxCubit<S>, S, T>
     _fromValue = widget._fromValue;
     if (_fromValue) {
       _bloc = widget._value;
+      _value = widget.stateRebuildSelector(_bloc!.state);
       _sub(_bloc!);
     }
   }
@@ -224,6 +225,7 @@ class _RxViewModelSelectorState<B extends RxViewModel, T>
     _fromValue = widget._fromValue;
     if (_fromValue) {
       _viewModel = widget._value;
+      _value = widget.stateRebuildSelector(_viewModel!);
       _sub(_viewModel!);
     }
   }

@@ -92,6 +92,7 @@ class _RxBuilderState<B extends RxCubit<S>, S> extends State<RxBuilder<B, S>> {
     _fromValue = widget._fromValue;
     if (_fromValue) {
       _bloc = widget._value;
+      _state = _bloc!.state;
       _sub(_bloc!);
     }
   }
