@@ -12,11 +12,14 @@ import 'type_def.dart';
 /// Will execute callback when a new state of type [S] is emitted from the bloc
 /// of type [B].
 abstract class RxListenerBase<B extends RxBase<S>, S> extends StatefulWidget {
+
+  /// Default constructor, will automatically lookup for RxBase of type [B].
   const RxListenerBase({Key? key, required this.child, this.stateCallback})
       : _value = null,
         _fromValue = false,
         super(key: key);
 
+  /// Value constructor, take a concrete instance of RxBase.
   const RxListenerBase.value(
       {Key? key, required this.child, this.stateCallback, required B value})
       : _value = value,
@@ -103,10 +106,13 @@ class _RxListenerBaseState<B extends RxBase<S>, S>
 /// Does not work with:
 /// * [RxViewModel]
 class RxStateListener<B extends RxCubit<S>, S> extends RxListenerBase<B, S> {
+
+  /// Default constructor, will automatically lookup for RxCubit of type [B].
   const RxStateListener(
       {Key? key, required Widget child, RxBlocEventListener<S>? stateCallback})
       : super(key: key, stateCallback: stateCallback, child: child);
 
+  /// Value constructor, take a concrete instance of RxCubit.
   const RxStateListener.value(
       {Key? key,
       required Widget child,
@@ -128,11 +134,14 @@ class RxStateListener<B extends RxCubit<S>, S> extends RxListenerBase<B, S> {
 /// Work only with:
 /// * [RxViewModel]
 class RxViewModelListener<B extends RxViewModel> extends StatefulWidget {
+
+  /// Default constructor, will automatically lookup for RxViewModel of type [B].
   const RxViewModelListener({Key? key, required this.child, this.stateCallback})
       : _value = null,
         _fromValue = false,
         super(key: key);
 
+  /// Value constructor, take a concrete instance of RxViewModel.
   const RxViewModelListener.value(
       {Key? key, required this.child, this.stateCallback, required B value})
       : _value = value,
@@ -260,6 +269,8 @@ class _RxViewModelListenerState<B extends RxViewModel>
 ///     );
 /// ```
 class RxListener<B extends RxBloc<S, N>, S, N> extends RxListenerBase<B, S> {
+
+  /// Default constructor, will automatically lookup for RxBloc of type [B].
   const RxListener(
       {Key? key,
       required Widget child,
@@ -267,6 +278,7 @@ class RxListener<B extends RxBloc<S, N>, S, N> extends RxListenerBase<B, S> {
       this.notificationCallback})
       : super(key: key, stateCallback: stateCallback, child: child);
 
+  /// Value constructor, take a concrete instance of RxBloc.
   const RxListener.value(
       {Key? key,
       required B value,

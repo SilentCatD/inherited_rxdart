@@ -26,6 +26,8 @@ import 'type_def.dart';
 ///   ),
 /// ```
 class RxBuilder<B extends RxCubit<S>, S> extends StatefulWidget {
+
+  /// Default constructor, will automatically lookup for RxCubit of type [B].
   const RxBuilder({
     Key? key,
     required this.builder,
@@ -34,6 +36,7 @@ class RxBuilder<B extends RxCubit<S>, S> extends StatefulWidget {
         _fromValue = false,
         super(key: key);
 
+  /// Value constructor, take a concrete instance of RxCubit.
   const RxBuilder.value({
     Key? key,
     required this.builder,
@@ -156,6 +159,9 @@ class _RxBuilderState<B extends RxCubit<S>, S> extends State<RxBuilder<B, S>> {
 ///  ),
 /// ```
 class RxViewModelBuilder<B extends RxViewModel> extends StatefulWidget {
+
+  /// Default constructor, will automatically lookup for [RxViewModelBuilder] of
+  /// type [B].
   const RxViewModelBuilder({
     Key? key,
     required this.builder,
@@ -164,6 +170,7 @@ class RxViewModelBuilder<B extends RxViewModel> extends StatefulWidget {
         _value = null,
         super(key: key);
 
+  /// Value constructor, take a concrete instance of RxViewModel.
   const RxViewModelBuilder.value({
     Key? key,
     required this.builder,

@@ -1,3 +1,7 @@
+## 1.3.0
+
+* Builders and Listeners now have a value constructor. Which can take an instance of rx.
+
 ## 1.2.0
 
 * Rx now can add/remove listener

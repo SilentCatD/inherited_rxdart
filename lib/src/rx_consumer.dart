@@ -12,6 +12,8 @@ import 'type_def.dart';
 /// * [RxBloc]
 /// * [RxCubit]
 class RxStateConsumer<B extends RxCubit<S>, S> extends StatefulWidget {
+
+  /// Default constructor, will automatically lookup for RxCubit of type [B].
   const RxStateConsumer({
     Key? key,
     this.stateCallback,
@@ -21,6 +23,7 @@ class RxStateConsumer<B extends RxCubit<S>, S> extends StatefulWidget {
         _value = null,
         super(key: key);
 
+  /// Value constructor, take a concrete instance of RxCubit.
   const RxStateConsumer.value({
     required B value,
     Key? key,
@@ -99,6 +102,8 @@ class _RxStateConsumerState<B extends RxCubit<S>, S>
 /// Work with:
 /// * [RxBloc]
 class RxConsumer<B extends RxBloc<S, N>, S, N> extends StatefulWidget {
+
+  /// Default constructor, will automatically lookup for RxBloc of type [B].
   const RxConsumer({
     Key? key,
     required this.builder,
@@ -109,6 +114,7 @@ class RxConsumer<B extends RxBloc<S, N>, S, N> extends StatefulWidget {
         _fromValue = false,
         super(key: key);
 
+  /// Value constructor, take a concrete instance of RxBloc.
   const RxConsumer.value({
     Key? key,
     required B value,
@@ -190,6 +196,8 @@ class _RxConsumerState<B extends RxBloc<S, N>, S, N>
 /// Work with:
 /// * [RxViewModel]
 class RxViewModelConsumer<B extends RxViewModel> extends StatefulWidget {
+
+  /// Default constructor, will automatically lookup for RxViewModel of type [B].
   const RxViewModelConsumer({
     Key? key,
     this.stateCallback,
@@ -199,6 +207,7 @@ class RxViewModelConsumer<B extends RxViewModel> extends StatefulWidget {
         _fromValue = false,
         super(key: key);
 
+  /// Value constructor, take a concrete instance of RxViewModel.
   const RxViewModelConsumer.value({
     Key? key,
     required B value,
