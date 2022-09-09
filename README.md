@@ -150,6 +150,11 @@ widget subtree.
 
 - ServiceProvider
 
+## Rx
+
+Though not really inherited, this library do provide the use of register an instance through GetIt,
+and use them in builders, listeners .value constructor. This feature can be access with Rx static method
+
 ## Additional information
 
 To provide multiple blocs or model instance, the use of these widget is encouraged:
@@ -175,11 +180,13 @@ context.get<MyService>(); //for getting an instance of a service.
 And
 
 ```dart
+
 final text = RxValue<String>("hello");
 ```
 
 Is equivalent to:
 
 ```dart
+
 final text = "hello".rx;
 ```

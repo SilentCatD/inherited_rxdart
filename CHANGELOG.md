@@ -1,3 +1,7 @@
+## 1.4.0
+
+* Add Rx Static class
+
 ## 1.3.0+1
 
 * Format
