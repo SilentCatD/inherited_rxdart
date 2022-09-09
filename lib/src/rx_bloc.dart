@@ -19,11 +19,14 @@ abstract class RxBase<S> with RxListenableMixin<S> {
   /// This bloc need a type of subject to work with.
   RxBase(Subject<S> stateSubject)
       : _stateSubject = stateSubject,
-        _initialized = false {
+        _initialized = false,
+        _disposed = false {
     _listenerSubscription = stateStream.listen((event) {
       notifyListeners(event);
     });
   }
+
+  bool disposeWhenPop = false;
 
   bool _initialized;
 
@@ -32,15 +35,38 @@ abstract class RxBase<S> with RxListenableMixin<S> {
   @nonVirtual
   bool get initialized => _initialized;
 
+  bool _disposed;
+
+  bool get disposed => _disposed;
+
+  /// Whether the bloc is disposed.
+  ///
+  /// This variable should not be set outside the [dispose] function. The value
+  /// to be set for this variable can't be False, this is to prevent an
+  /// disposed bloc is mark as disposed when the [dispose] function has been run.
+  ///
+  /// It also can't be set a second time, this mean disposed bloc will stay
+  /// disposed.
+  set disposed(bool value) {
+    if (!value) {
+      throw BlocDisposedSetToFalseException();
+    }
+    if (disposed) {
+      throw BlocDisposedASecondTimeException();
+    }
+    _disposed = value;
+  }
+
   /// Whether the bloc is initialized.
   ///
   /// This variable should not be set outside the [init] function. The value to
   /// be set for this variable can't be False, this is to prevent an initialized
-  /// bloc is mark as uninitialized when the init function has been run.
+  /// bloc is mark as uninitialized when the [init] function has been run.
   ///
   /// It also can't be set a second time, this mean initialized bloc will stay
   /// initialized for the whole of its life-span.
   @nonVirtual
+  @protected
   set initialized(bool value) {
     if (!value) {
       throw BlocInitializedSetToFalseException();
@@ -100,6 +126,7 @@ abstract class RxBase<S> with RxListenableMixin<S> {
   /// [RxProvider] if the [Create] function is used in constructor.
   @mustCallSuper
   Future<void> dispose() async {
+    _disposed = true;
     await _stateSubject.close();
     await _listenerSubscription.cancel();
   }
