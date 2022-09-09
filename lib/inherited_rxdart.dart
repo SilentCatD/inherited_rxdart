@@ -30,3 +30,4 @@ export 'src/type_def.dart'
         StateListenerCallback;
 export 'src/rx_multi_provider.dart' show RxMultiProvider;
 export 'src/rx_value_extension.dart' show RxValueExtension;
+export 'src/rx.dart' show Rx;
