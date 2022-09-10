@@ -1,3 +1,8 @@
+## 1.4.2
+
+* Edit README, doc
+* Change Error classes name
+
 ## 1.4.1
 
 * Fix initial value late
