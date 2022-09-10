@@ -6,17 +6,17 @@ import 'package:rxdart/rxdart.dart';
 import 'rx_listenable_mixin.dart';
 import 'exception.dart';
 
-/// Base class for others bloc, subclass this when making a new bloc.
+/// Base class for others Rx, subclass this when making a new type of Rx.
 ///
 /// The type [S] would be the type of value of [Stream] and [state].
 ///
-/// The init and dispose logic of these bloc are called automatically by
-/// [RxProvider], so implementer of these class don't have to, but if a Bloc
+/// The init and dispose logic of these Rx are called automatically by
+/// [RxProvider], so implementer of these class don't have to, but if an Rx
 /// object are created outside of [RxProvider] (ex: [RxProvider.value]), its
 /// life cycle operation (init, dispose) must be handled and ensured by
 /// implementer.
 abstract class RxBase<S> with RxListenableMixin<S> {
-  /// This bloc need a type of subject to work with.
+  /// This Rx need a type of subject to work with.
   RxBase(Subject<S> stateSubject)
       : _stateSubject = stateSubject,
         _initialized = false,
@@ -26,6 +26,8 @@ abstract class RxBase<S> with RxListenableMixin<S> {
     });
   }
 
+  /// Whether to call dispose when pop by [Rx.pop], this property should not be
+  /// set by any party other than the library itself.
   bool disposeWhenPop = false;
 
   bool _initialized;
@@ -39,40 +41,40 @@ abstract class RxBase<S> with RxListenableMixin<S> {
 
   bool get disposed => _disposed;
 
-  /// Whether the bloc is disposed.
+  /// Whether the Rx is disposed.
   ///
   /// This variable should not be set outside the [dispose] function. The value
   /// to be set for this variable can't be False, this is to prevent an
-  /// disposed bloc is mark as disposed when the [dispose] function has been run.
+  /// disposed Rx is mark as disposed when the [dispose] function has been run.
   ///
-  /// It also can't be set a second time, this mean disposed bloc will stay
+  /// It also can't be set a second time, this mean disposed Rx will stay
   /// disposed.
   set disposed(bool value) {
     if (!value) {
-      throw BlocDisposedSetToFalseException();
+      throw RxDisposedSetToFalseException();
     }
     if (disposed) {
-      throw BlocDisposedASecondTimeException();
+      throw RxDisposedASecondTimeException();
     }
     _disposed = value;
   }
 
-  /// Whether the bloc is initialized.
+  /// Whether the Rx is initialized.
   ///
   /// This variable should not be set outside the [init] function. The value to
   /// be set for this variable can't be False, this is to prevent an initialized
-  /// bloc is mark as uninitialized when the [init] function has been run.
+  /// Rx is mark as uninitialized when the [init] function has been run.
   ///
-  /// It also can't be set a second time, this mean initialized bloc will stay
+  /// It also can't be set a second time, this mean initialized Rx will stay
   /// initialized for the whole of its life-span.
   @nonVirtual
   @protected
   set initialized(bool value) {
     if (!value) {
-      throw BlocInitializedSetToFalseException();
+      throw RxInitializedSetToFalseException();
     }
     if (initialized) {
-      throw BlocInitializedASecondTimeException();
+      throw RxInitializedASecondTimeException();
     }
     _initialized = value;
   }
@@ -86,7 +88,7 @@ abstract class RxBase<S> with RxListenableMixin<S> {
   @protected
   final Subject<S> _stateSubject;
 
-  /// The current state this bloc is holding.
+  /// The current state this Rx is holding.
   S get state;
 
   /// Function to emit new state values to the [stateStream].
@@ -98,14 +100,14 @@ abstract class RxBase<S> with RxListenableMixin<S> {
     }
   }
 
-  /// The subject this bloc will use, because built on rxdart, those subject
+  /// The subject this Rx will use, because built on rxdart, those subject
   /// maybe:
   /// * [PublishSubject] for [RxViewModel] and notifications
   /// * [BehaviorSubject] for [RxBloc], [RxCubit], [RxValue]
   @protected
   Subject<S> get _subject => _stateSubject;
 
-  /// The value stream of this bloc, which listened by the library and cause the
+  /// The value stream of this Rx, which listened by the library and cause the
   /// rebuild of dependents, subclass can override this to add filter,
   /// throttle,...
   Stream<S> get stateStream => _subject.stream;
@@ -115,14 +117,14 @@ abstract class RxBase<S> with RxListenableMixin<S> {
     return stateStream.listen(callback);
   }
 
-  /// Initialize logic for this bloc, will be automatically called by
+  /// Initialize logic for this Rx, will be automatically called by
   /// [RxProvider] if the [Create] function is used in constructor.
   @mustCallSuper
   Future<void> init() async {
     initialized = true;
   }
 
-  /// Disposing logic for this bloc, will be automatically called by
+  /// Disposing logic for this Rx, will be automatically called by
   /// [RxProvider] if the [Create] function is used in constructor.
   @mustCallSuper
   Future<void> dispose() async {
@@ -171,7 +173,7 @@ abstract class RxBase<S> with RxListenableMixin<S> {
 /// * [RxViewModelConsumer]
 ///
 /// The init and dispose logic of these view model are called automatically by
-/// [RxProvider], so implementer of these class don't have to, but if a Bloc
+/// [RxProvider], so implementer of these class don't have to, but if an Rx
 /// object are created outside of [RxProvider] (ex: [RxProvider.value]), its
 /// life cycle operation (init, dispose) must be handled and ensured by
 /// implementer.
@@ -254,8 +256,8 @@ abstract class RxViewModel extends RxBase<RxViewModel> {
 /// * [RxStateConsumer]
 /// * [RxStateListener]
 ///
-/// The init and dispose logic of these bloc are called automatically by
-/// [RxProvider], so implementer of these class don't have to, but if a bloc
+/// The init and dispose logic of these Rx are called automatically by
+/// [RxProvider], so implementer of these class don't have to, but if an Rx
 /// object are created outside of [RxProvider] (ex: [RxProvider.value]), its
 /// life cycle operation (init, dispose) must be handled and ensured by
 /// implementer.
@@ -351,8 +353,8 @@ abstract class RxCubit<S> extends RxBase<S> {
 /// * [RxStateConsumer]
 /// * [RxSelector]
 ///
-/// The init and dispose logic of these bloc are called automatically by
-/// [RxProvider], so implementer of these class don't have to, but if a Bloc
+/// The init and dispose logic of these Rx are called automatically by
+/// [RxProvider], so implementer of these class don't have to, but if an Rx
 /// object are created outside of [RxProvider] (ex: [RxProvider.value]), its
 /// life cycle operation (init, dispose) must be handled and ensured by
 /// implementer.
@@ -459,7 +461,7 @@ class RxValue<T> extends RxBase<T> {
   /// Initial value of the stream
   final T initialValue;
 
-  /// The subject this bloc will use, because built on rxdart, those subject
+  /// The subject this RxValue will use, because built on rxdart, those subject
   /// maybe:
   /// * [PublishSubject] for [RxViewModel] and notifications
   /// * [BehaviorSubject] for [RxBloc], [RxCubit], [RxValue]

@@ -2,12 +2,12 @@ library inherited_rxdart;
 
 export 'src/exception.dart'
     show
-        RxBlocMustBeOfSpecificTypeException,
-        RxBlocNotProvidedException,
+        RxMustBeOfSpecificTypeException,
+        RxNotProvidedException,
         ServiceNotProvidedException,
         ServiceMustBeOfSpecificTypeException,
-        BlocInitializedSetToFalseException,
-        BlocInitializedASecondTimeException,
+        RxInitializedSetToFalseException,
+        RxInitializedASecondTimeException,
         RxMapError;
 export 'src/multi_service_provider.dart' show MultiServiceProvider;
 export 'src/rx_bloc.dart' show RxBloc, RxViewModel, RxCubit, RxBase, RxValue;

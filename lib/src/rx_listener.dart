@@ -127,7 +127,7 @@ class RxStateListener<B extends RxCubit<S>, S> extends RxListenerBase<B, S> {
 /// Listener for listening state changes for [RxViewModel]
 ///
 /// Will execute [stateCallback] when a new state of type [S] is emitted from
-/// the bloc of type [B].
+/// the view model of type [B].
 ///
 /// Work only with:
 /// * [RxViewModel]

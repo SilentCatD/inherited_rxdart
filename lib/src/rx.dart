@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:inherited_rxdart/inherited_rxdart.dart';
 
+/// Static class to register and unregister an Rx or service.
 class Rx {
   /// Function to put an Rx lazily, which can be get with [Rx.get]. This
   /// function will call the [init] Function of [RxBase]

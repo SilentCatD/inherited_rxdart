@@ -140,12 +140,7 @@ class _RxBuilderState<B extends RxCubit<S>, S> extends State<RxBuilder<B, S>> {
   }
 }
 
-/// Builder function to subscribe for changes of specific Bloc of type [B]
-/// like [RxViewModel]
-///
-/// * [RxBlocWidgetBuilder] for widget building operation.
-/// Which will only be called when a new state is emitted and
-/// [ShouldRebuildViewModel] is true (or not specified)
+/// Builder widget to subscribe for changes of specific ViewModel of type [B]
 ///
 /// ```dart
 ///  RxViewModelBuilder<CounterBloc3>(
@@ -181,8 +176,8 @@ class RxViewModelBuilder<B extends RxViewModel> extends StatefulWidget {
   final bool _fromValue;
   final B? _value;
 
-  /// Typical Builder function, which called when the bloc this widget depend
-  /// on require its to rebuild itself with new value.
+  /// Typical Builder function, which called when the ViewModel this widget
+  /// depend on require it to rebuild itself with new value.
   final RxBlocWidgetBuilder<B> builder;
 
   /// Function to determine whether this widget should rebuild itself when state

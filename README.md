@@ -45,22 +45,29 @@ class MyState {
   }
 }
 
+// Define bloc with two type:
+// MyState: State of the bloc
+// String: Type of notification
 class CounterBloc extends RxBloc<MyState, String> {
   CounterBloc(MyState initialState) : super(initialState);
 
   void showDialog() {
+    // will notify all notification listeners
     notify("showDialog");
   }
 
   void changeText(String newText) {
+    // will cause dependent to rebuild
     state = state.copyWith(text: newText);
   }
 
   void increase() {
+    // will cause dependent to rebuild
     state = state.copyWith(number: state.number + 1);
   }
 
   void decrease() {
+    // will cause dependent to rebuild
     state = state.copyWith(number: state.number - 1);
   }
 }
@@ -93,8 +100,8 @@ final bloc = RxProvider.of<CounterBloc>(context);
 
 ## Usage
 
-View documents of each API for more details. The library support multiple type of blocs and related
-widgets.
+View documents of each API for more details. The library support bloc pattern and view model pattern
+for your app.
 
 ### Bloc's Widgets
 
@@ -145,7 +152,7 @@ A value for reactive state management, will cause its dependent to rebuild when 
 
 ### ServiceProvider
 
-There's also simple service provider for controller/repo or simply to inject an instance through a
+There's also simple service provider for repo or simply to inject an instance through a
 widget subtree.
 
 - ServiceProvider
@@ -157,7 +164,7 @@ and use them in builders, listeners .value constructor. This feature can be acce
 
 ## Additional information
 
-To provide multiple blocs or model instance, the use of these widget is encouraged:
+To provide multiple blocs/view model/service instances, the use of these widget is encouraged:
 
 - RxMultiProvider
 - MultiServiceProvider
@@ -172,8 +179,8 @@ ServiceProvider.of<MyService>(context);
 One can use:
 
 ```dart
-context.watch<MyBloc>(); // for getting an instance of a bloc.
-context.read<MyBloc>(); // for getting an instance of a bloc and subscribe to it's changes.
+context.watch<MyBloc>(); // for getting an instance of a bloc / view model and subscribe to it's changes.
+context.read<MyBloc>(); // for getting an instance of a bloc/view model
 context.get<MyService>(); //for getting an instance of a service. 
 ```
 

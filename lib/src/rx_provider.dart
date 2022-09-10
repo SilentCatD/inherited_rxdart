@@ -62,9 +62,9 @@ class RxProvider<B extends RxBase> extends SingleChildStatefulWidget {
   /// Method to locate and get the provided bloc of this subtree.
   ///
   /// Type [T] is required to be a subtype of [RxBase] and must be specified
-  /// Failing to so will throw [RxBlocMustBeOfSpecificTypeException], and
+  /// Failing to so will throw [RxMustBeOfSpecificTypeException], and
   /// failing to find a bloc of specified type will thrown
-  /// [RxBlocNotProvidedException].
+  /// [RxNotProvidedException].
   ///
   /// The parameter listen will determine whether to subscribe to the bloc [T]
   /// when it emit new states or just simple get instance of the bloc.
@@ -104,14 +104,14 @@ class RxProvider<B extends RxBase> extends SingleChildStatefulWidget {
   /// but CAN NOT subscribe to its changes.
   static T of<T extends RxBase>(BuildContext context, {bool listen = true}) {
     if (T == dynamic) {
-      throw RxBlocMustBeOfSpecificTypeException();
+      throw RxMustBeOfSpecificTypeException();
     }
     final element = context
             .getElementForInheritedWidgetOfExactType<_InheritedBlocScope<T>>()
         as _InheritedBlocElement<T>?;
     final bloc = element?.bloc;
     if (bloc is! T) {
-      throw RxBlocNotProvidedException(T);
+      throw RxNotProvidedException(T);
     }
     if (listen) {
       context.dependOnInheritedWidgetOfExactType<_InheritedBlocScope<T>>();

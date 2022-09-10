@@ -7,7 +7,7 @@ import 'rx_provider.dart';
 /// Widget to provide a service of type [S] to a subtree.
 ///
 /// The default constructor indicate the creation of above mentioned service [S]
-/// through [Create]. However, in case the reuse of existed bloc is required,
+/// through [Create]. However, in case the reuse of existed service is required,
 /// [ServiceProvider.value] should be used instead.
 ///
 /// Different from [RxProvider], [ServiceProvider] take any class, and does not
@@ -46,10 +46,10 @@ class ServiceProvider<S> extends SingleChildStatefulWidget {
         super(key: key, child: child);
   final S _service;
 
-  /// Method to locate and get the provided bloc of this subtree.
+  /// Method to locate and get the provided service of this subtree.
   ///
   /// Type [T] is required to be specified. Failing to so will throw
-  /// [ServiceMustBeOfSpecificTypeException], and failing to find a bloc of
+  /// [ServiceMustBeOfSpecificTypeException], and failing to find a service of
   /// specified type will thrown [ServiceNotProvidedException].
   /// Consider [ServiceContext.get] for a short-hand way to call this function.
   static T of<T>(BuildContext context) {
