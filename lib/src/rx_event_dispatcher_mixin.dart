@@ -1,13 +1,10 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
+import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
-
+import 'type_def.dart';
 import 'rx_provider.dart';
-
-typedef EventCallback<T> = FutureOr<void> Function(T event);
 
 mixin EventDispatcherMixin<S, E> on RxCubit<S> {
   final _eventSet = HashSet<Type>();

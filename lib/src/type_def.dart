@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 typedef Create<T> = T Function();
@@ -7,3 +9,4 @@ typedef ShouldRebuildWidget<S> = bool Function(S prev, S curr);
 typedef StateRebuildSelector<S, T> = T Function(S state);
 typedef ShouldRebuildViewModel<S> = bool Function(S state);
 typedef StateListenerCallback<S> = Function(S state);
+typedef EventCallback<T> = FutureOr<void> Function(T event);
