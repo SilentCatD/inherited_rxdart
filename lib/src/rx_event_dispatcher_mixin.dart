@@ -13,7 +13,8 @@ mixin EventDispatcherMixin<S, E> on RxCubit<S> {
   final _compositeSubscription = CompositeSubscription();
   final _eventStream = PublishSubject<E>();
 
-  void add(E event) {
+  void dispatch(E event) {
+    if (disposed) return;
     _eventStream.add(event);
   }
 
@@ -28,7 +29,7 @@ mixin EventDispatcherMixin<S, E> on RxCubit<S> {
     }());
     _eventSet.add(T);
     Stream<T> subEventStream =
-    _eventStream.where((event) => event is T) as Stream<T>;
+        _eventStream.where((event) => event is T) as Stream<T>;
     if (transformer != null) {
       subEventStream = subEventStream.transform(transformer);
     }
@@ -60,8 +61,7 @@ class Event2 extends MyEvent {
   Event2(this.a);
 }
 
-
-class A extends RxCubit<int> with EventDispatcherMixin<int, MyEvent> {
+class A extends RxBloc<int, String> with EventDispatcherMixin<int, MyEvent> {
   A(int initialState) : super(initialState) {
     on<Event1>((event) {
       state += event.b ?? 0;
@@ -74,5 +74,5 @@ class A extends RxCubit<int> with EventDispatcherMixin<int, MyEvent> {
 
 void main() {
   final a = A(0);
-  a.add(Event1(5));
+  a.dispatch(Event1(5));
 }
