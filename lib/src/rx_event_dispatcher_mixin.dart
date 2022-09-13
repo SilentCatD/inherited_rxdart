@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'rx_provider.dart';
@@ -13,11 +15,14 @@ mixin EventDispatcherMixin<S, E> on RxCubit<S> {
   final _compositeSubscription = CompositeSubscription();
   final _eventStream = PublishSubject<E>();
 
+  @nonVirtual
   void dispatch(E event) {
     if (disposed) return;
     _eventStream.add(event);
   }
 
+  @protected
+  @nonVirtual
   void on<T extends E>(EventCallback<T> callBack,
       {StreamTransformer<T, T>? transformer}) {
     assert(T != dynamic);
@@ -45,34 +50,4 @@ mixin EventDispatcherMixin<S, E> on RxCubit<S> {
     await _compositeSubscription.dispose();
     await super.dispose();
   }
-}
-
-abstract class MyEvent {}
-
-class Event1 extends MyEvent {
-  final int? b;
-
-  Event1(this.b);
-}
-
-class Event2 extends MyEvent {
-  final int? a;
-
-  Event2(this.a);
-}
-
-class A extends RxBloc<int, String> with EventDispatcherMixin<int, MyEvent> {
-  A(int initialState) : super(initialState) {
-    on<Event1>((event) {
-      state += event.b ?? 0;
-    });
-    on<Event2>((event) {
-      state += event.a ?? 0;
-    });
-  }
-}
-
-void main() {
-  final a = A(0);
-  a.dispatch(Event1(5));
 }
