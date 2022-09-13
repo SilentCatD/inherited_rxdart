@@ -1,4 +1,4 @@
-import 'rx_bloc.dart';
+import 'rx_provider.dart';
 
 /// Extension for [RxValue].
 ///

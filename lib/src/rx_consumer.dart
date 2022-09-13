@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'exception.dart';
-import 'rx_bloc.dart';
 import 'rx_builder.dart';
 import 'rx_listener.dart';
+import 'rx_provider.dart';
 import 'type_def.dart';
 
 /// Combination of [RxStateListener] and [RxBuilder].

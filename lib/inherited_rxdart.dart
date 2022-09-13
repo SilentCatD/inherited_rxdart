@@ -10,11 +10,19 @@ export 'src/exception.dart'
         RxInitializedASecondTimeException,
         RxMapError;
 export 'src/multi_service_provider.dart' show MultiServiceProvider;
-export 'src/rx_bloc.dart' show RxBloc, RxViewModel, RxCubit, RxBase, RxValue;
 export 'src/rx_builder.dart' show RxBuilder, RxViewModelBuilder, RxValueBuilder;
 export 'src/rx_listener.dart'
     show RxStateListener, RxViewModelListener, RxListener;
-export 'src/rx_provider.dart' show RxProvider, RxContext;
+export 'src/rx_provider.dart'
+    show
+        RxProvider,
+        RxContext,
+        Rx,
+        RxBloc,
+        RxViewModel,
+        RxCubit,
+        RxBase,
+        RxValue;
 export 'src/rx_selector.dart' show RxSelector, RxViewModelSelector;
 export 'src/rx_consumer.dart'
     show RxStateConsumer, RxViewModelConsumer, RxConsumer;
@@ -30,4 +38,3 @@ export 'src/type_def.dart'
         StateListenerCallback;
 export 'src/rx_multi_provider.dart' show RxMultiProvider;
 export 'src/rx_value_extension.dart' show RxValueExtension;
-export 'src/rx.dart' show Rx;

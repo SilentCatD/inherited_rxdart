@@ -1,10 +1,4 @@
-import 'dart:async';
-
-import 'type_def.dart';
-import 'package:meta/meta.dart';
-import 'package:rxdart/rxdart.dart';
-import 'rx_listenable_mixin.dart';
-import 'exception.dart';
+part of 'rx_provider.dart';
 
 /// Base class for others Rx, subclass this when making a new type of Rx.
 ///
@@ -26,9 +20,7 @@ abstract class RxBase<S> with RxListenableMixin<S> {
     });
   }
 
-  /// Whether to call dispose when pop by [Rx.pop], this property should not be
-  /// set by any party other than the library itself.
-  bool disposeWhenPop = false;
+  late bool _disposeWhenPop;
 
   bool _initialized;
 
@@ -82,7 +74,7 @@ abstract class RxBase<S> with RxListenableMixin<S> {
   /// Whether to skip the first build trigger by stream, for when using
   /// [BehaviorSubject], the first state rebuild is not really necessary and
   /// can be optimized by this variable.
-  bool get shouldSkipFirstBuild;
+  bool get _shouldSkipFirstBuild;
 
   @nonVirtual
   @protected
@@ -128,7 +120,7 @@ abstract class RxBase<S> with RxListenableMixin<S> {
   /// [RxProvider] if the [Create] function is used in constructor.
   @mustCallSuper
   Future<void> dispose() async {
-    _disposed = true;
+    disposed = true;
     await _stateSubject.close();
     await _listenerSubscription.cancel();
   }
@@ -188,7 +180,7 @@ abstract class RxViewModel extends RxBase<RxViewModel> {
   /// [PublishSubject] not emitting last value when listened
   @override
   @nonVirtual
-  bool get shouldSkipFirstBuild => false;
+  bool get _shouldSkipFirstBuild => false;
 
   /// The current state this view model is holding. Which in this case is this
   /// object itself, so internal mutable variable and the dependent that depend
@@ -276,7 +268,7 @@ abstract class RxCubit<S> extends RxBase<S> {
   /// the start is not necessary in the build of widgets.
   @override
   @nonVirtual
-  bool get shouldSkipFirstBuild => true;
+  bool get _shouldSkipFirstBuild => true;
 
   /// The subject this bloc will use, because built on rxdart, those subject
   /// maybe:
@@ -473,7 +465,7 @@ class RxValue<T> extends RxBase<T> {
   /// [BehaviorSubject], the first state rebuild is not really necessary and
   /// can be optimized by this variable.
   @override
-  bool get shouldSkipFirstBuild => true;
+  bool get _shouldSkipFirstBuild => true;
 
   T get value => _subject.valueOrNull ?? initialValue;
 

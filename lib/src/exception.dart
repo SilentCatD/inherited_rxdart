@@ -1,4 +1,4 @@
-import 'rx_bloc.dart';
+import 'rx_provider.dart';
 
 /// An [Exception] to be throw when this current subtree don't have any provided
 /// RxBase of [Type].

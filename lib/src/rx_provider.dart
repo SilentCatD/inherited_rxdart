@@ -1,10 +1,18 @@
 import 'dart:async';
+import 'package:get_it/get_it.dart';
+import 'rx_listenable_mixin.dart';
+import 'package:meta/meta.dart';
+import 'package:rxdart/rxdart.dart';
+
 import 'rx_multi_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:nested/nested.dart';
 import 'exception.dart';
-import 'rx_bloc.dart';
 import 'type_def.dart';
+
+part 'rx_bloc.dart';
+
+part 'rx.dart';
 
 /// Widget to provide a bloc of type [B] to a subtree.
 ///
@@ -85,7 +93,7 @@ class RxProvider<B extends RxBase> extends SingleChildStatefulWidget {
   /// or
   ///
   /// ```dart
-  ///   context.watch<CounterBloc>();
+  ///   context.read<CounterBloc>();
   /// ```
   ///
   /// is valid in [State.initState], while:
@@ -135,6 +143,7 @@ class _RxProviderState<B extends RxBase>
     if (_isCreated) {
       _bloc = widget._create!.call();
       _bloc.init();
+      _bloc._disposeWhenPop = false;
     } else {
       _bloc = widget._bloc!;
     }
@@ -190,7 +199,7 @@ class _InheritedBlocElement<B extends RxBase> extends InheritedElement {
 
   _InheritedBlocElement(_InheritedBlocScope<B> widget) : super(widget) {
     _sub(widget.bloc);
-    _shouldSkipFirstBuild = widget.bloc.shouldSkipFirstBuild;
+    _shouldSkipFirstBuild = widget.bloc._shouldSkipFirstBuild;
   }
 
   @override
@@ -259,7 +268,7 @@ extension RxContext on BuildContext {
   /// or
   ///
   /// ```dart
-  ///   context.watch<CounterBloc>();
+  ///   context.read<CounterBloc>();
   /// ```
   ///
   /// is valid in [State.initState], while:
@@ -291,7 +300,7 @@ extension RxContext on BuildContext {
   /// or
   ///
   /// ```dart
-  ///   context.watch<CounterBloc>();
+  ///   context.read<CounterBloc>();
   /// ```
   ///
   /// is valid in [State.initState], while:
