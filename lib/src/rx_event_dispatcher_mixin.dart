@@ -27,13 +27,13 @@ mixin EventDispatcherMixin<S, E> on RxCubit<S> {
       return true;
     }());
     _eventSet.add(T);
-    Stream<T> subEventStream =
-    _eventStream.where((event) => event is T) as Stream<T>;
+    Stream<E> subEventStream =
+    _eventStream.where((event) => event is T);
     if (transformer != null) {
       subEventStream = subEventStream.transform(transformer);
     }
     final subSubscription = subEventStream.listen((event) async {
-      await callBack.call(event);
+      await callBack.call(event as T);
     });
     _compositeSubscription.add(subSubscription);
   }
