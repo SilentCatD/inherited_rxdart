@@ -1,3 +1,9 @@
+## 1.5.0
+
+* Correct doc
+* Change Rx class structure
+* Rework import
+
 ## 1.4.2
 
 * Edit README, doc
