@@ -28,7 +28,7 @@ class Rx {
   }
 
   /// Function to get instance of type [T]
-  static T get<T>() {
+  static T get<T extends Object>() {
     return GetIt.I<T>();
   }
 
