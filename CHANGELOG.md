@@ -1,3 +1,7 @@
+## 1.6.0
+
+* Introduce event dispatcher, allow event stream from ui to bloc.
+
 ## 1.5.0
 
 * Correct doc
