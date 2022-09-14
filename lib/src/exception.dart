@@ -1,3 +1,5 @@
+import 'package:inherited_rxdart/inherited_rxdart.dart';
+
 import 'rx_provider.dart';
 
 /// An [Exception] to be throw when this current subtree don't have any provided
@@ -111,5 +113,18 @@ class RxMapError implements Exception {
         "While the instance changes of .value constructor is handled, the"
         "change between .value constructor and creation constructor is not "
         "allowed.";
+  }
+}
+
+/// Exception to be thrown by [EventDispatcherMixin] when a duplication of event
+/// type handler is registered.
+class DuplicateTypeRegistryException implements Exception {
+  final Type type;
+
+  const DuplicateTypeRegistryException(this.type);
+
+  @override
+  String toString() {
+    return "Failed to register a duplication event type $type. An event type can only be register for event-handling once.";
   }
 }

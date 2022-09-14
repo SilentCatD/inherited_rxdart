@@ -162,6 +162,17 @@ widget subtree.
 Though not really inherited, this library do provide the use of register an instance through GetIt,
 and use them in builders, listeners .value constructor. This feature can be access with Rx static method
 
+### EventDispatcherMixin
+Mixin to add event dispatch capability to RxCubit/RxBloc and register
+a callback to those event.
+
+By default, there's only one stream from RxCubit/RxBloc and that is
+RxBase.stateStream, this stream would output states to rebuild ui.
+
+This mixin introduce another stream from ui to RxCubit/RxBloc that can
+be used to handle an event type and a subtype of it. Which each can be
+transformed using StreamTransformer.
+
 ## Additional information
 
 To provide multiple blocs/view model/service instances, the use of these widget is encouraged:
