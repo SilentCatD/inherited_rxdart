@@ -157,7 +157,7 @@ widget subtree.
 
 - ServiceProvider
 
-## Rx
+### Rx
 
 Though not really inherited, this library do provide the use of register an instance through GetIt,
 and use them in builders, listeners .value constructor. This feature can be access with Rx static method

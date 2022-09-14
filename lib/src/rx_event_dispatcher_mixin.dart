@@ -30,7 +30,7 @@ import 'rx_provider.dart';
 /// class MyCounter extends RxCubit<int> with EventDispatcherMixin<int, MyCounterEvent> {
 ///   MyCounter() : super(0) {
 ///     on<CounterIncreased>((event) => state++);
-///     on<CounterDecreased>((event) => state++);
+///     on<CounterDecreased>((event) => state--);
 ///   }
 /// }
 /// void main(){

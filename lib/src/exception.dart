@@ -1,6 +1,5 @@
-import 'package:inherited_rxdart/inherited_rxdart.dart';
-
 import 'rx_provider.dart';
+import 'rx_event_dispatcher_mixin.dart';
 
 /// An [Exception] to be throw when this current subtree don't have any provided
 /// RxBase of [Type].

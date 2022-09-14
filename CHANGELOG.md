@@ -1,3 +1,7 @@
+## 1.6.0+1
+
+* Update doc
+
 ## 1.6.0
 
 * Introduce event dispatcher, allow event stream from ui to bloc.
