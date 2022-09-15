@@ -1,3 +1,7 @@
+## 1.6.1
+
+* Hotfix not rebuild as dependency changed.
+
 ## 1.6.0+1
 
 * Update doc

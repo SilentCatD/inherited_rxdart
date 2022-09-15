@@ -58,10 +58,8 @@ class RxBuilder<B extends RxCubit<S>, S> extends StatefulWidget {
 }
 
 class _RxBuilderState<B extends RxCubit<S>, S> extends State<RxBuilder<B, S>> {
-  Widget? _cachedWidget;
-  S? _cachedState;
   late S _state;
-  B? _bloc;
+  late B _bloc;
   late final bool _fromValue;
 
   StreamSubscription<S>? _subscription;
@@ -79,9 +77,11 @@ class _RxBuilderState<B extends RxCubit<S>, S> extends State<RxBuilder<B, S>> {
 
   void _handleUpdate(S state) {
     if (!mounted) return;
-    setState(() {
-      _state = state;
-    });
+    if (widget.shouldRebuildWidget?.call(_state, state) ?? true) {
+      setState(() {
+        _state = state;
+      });
+    }
   }
 
   @override
@@ -89,18 +89,12 @@ class _RxBuilderState<B extends RxCubit<S>, S> extends State<RxBuilder<B, S>> {
     super.initState();
     _fromValue = widget._fromValue;
     if (_fromValue) {
-      _bloc = widget._value;
-      _state = _bloc!.state;
-      _sub(_bloc!);
+      _bloc = widget._value!;
+    } else {
+      _bloc = context.read<B>();
     }
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_fromValue) {
-      _state = context.watch<B>().state;
-    }
+    _state = _bloc.state;
+    _sub(_bloc);
   }
 
   @override
@@ -115,8 +109,8 @@ class _RxBuilderState<B extends RxCubit<S>, S> extends State<RxBuilder<B, S>> {
         if (_subscription != null) {
           _unSub();
         }
-        _bloc = widget._value;
-        _sub(_bloc!);
+        _bloc = widget._value!;
+        _sub(_bloc);
       }
     }
   }
@@ -129,12 +123,7 @@ class _RxBuilderState<B extends RxCubit<S>, S> extends State<RxBuilder<B, S>> {
 
   @override
   Widget build(BuildContext context) {
-    if (_cachedWidget == null ||
-        (widget.shouldRebuildWidget?.call(_cachedState as S, _state) ?? true)) {
-      _cachedWidget = widget.builder(context, _state);
-      _cachedState = _state;
-    }
-    return _cachedWidget!;
+    return widget.builder(context, _state);
   }
 }
 
@@ -188,7 +177,6 @@ class RxViewModelBuilder<B extends RxViewModel> extends StatefulWidget {
 
 class _RxViewModelBuilderState<B extends RxViewModel>
     extends State<RxViewModelBuilder<B>> {
-  Widget? _cachedWidget;
   late B _state;
   late final bool _fromValue;
 
@@ -207,9 +195,11 @@ class _RxViewModelBuilderState<B extends RxViewModel>
 
   void _handleUpdate(B viewModel) {
     if (!mounted) return;
-    setState(() {
-      _state = viewModel;
-    });
+    if (widget.shouldRebuildWidget?.call(viewModel) ?? true) {
+      setState(() {
+        _state = viewModel;
+      });
+    }
   }
 
   @override
@@ -218,8 +208,10 @@ class _RxViewModelBuilderState<B extends RxViewModel>
     _fromValue = widget._fromValue;
     if (_fromValue) {
       _state = widget._value!;
-      _sub(_state);
+    } else {
+      _state = context.watch<B>().state as B;
     }
+    _sub(_state);
   }
 
   @override
@@ -241,14 +233,6 @@ class _RxViewModelBuilderState<B extends RxViewModel>
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_fromValue) {
-      _state = context.watch<B>().state as B;
-    }
-  }
-
-  @override
   void dispose() {
     _unSub();
     super.dispose();
@@ -256,11 +240,7 @@ class _RxViewModelBuilderState<B extends RxViewModel>
 
   @override
   Widget build(BuildContext context) {
-    if (_cachedWidget == null ||
-        (widget.shouldRebuildWidget?.call(_state) ?? true)) {
-      _cachedWidget = widget.builder(context, _state);
-    }
-    return _cachedWidget!;
+    return widget.builder(context, _state);
   }
 }
 
@@ -302,8 +282,6 @@ class _RxValueBuilderState<T> extends State<RxValueBuilder<T>> {
   StreamSubscription<T>? _subscription;
   late RxValue<T> _rxValue;
   late T _value;
-  T? _oldValue;
-  Widget? _cached;
 
   void _sub(RxValue<T> value) {
     _subscription = value.stateStream.listen((event) {
@@ -327,8 +305,8 @@ class _RxValueBuilderState<T> extends State<RxValueBuilder<T>> {
   void initState() {
     super.initState();
     _rxValue = widget.value;
-    _sub(_rxValue);
     _value = _rxValue.value;
+    _sub(_rxValue);
   }
 
   @override
@@ -351,10 +329,6 @@ class _RxValueBuilderState<T> extends State<RxValueBuilder<T>> {
 
   @override
   Widget build(BuildContext context) {
-    if (_cached == null || _oldValue != _value) {
-      _cached = widget.builder(context, _value);
-      _oldValue = _value;
-    }
-    return _cached!;
+    return widget.builder(context, _value);
   }
 }
