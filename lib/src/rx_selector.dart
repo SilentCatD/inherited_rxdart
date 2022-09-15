@@ -94,7 +94,7 @@ class _RxSelectorState<B extends RxCubit<S>, S, T>
     if (_fromValue) {
       _bloc = widget._value!;
     } else {
-      _bloc = context.watch<B>();
+      _bloc = context.read<B>();
     }
     _value = widget.stateRebuildSelector(_bloc.state);
     _sub(_bloc);

@@ -209,7 +209,7 @@ class _RxViewModelBuilderState<B extends RxViewModel>
     if (_fromValue) {
       _state = widget._value!;
     } else {
-      _state = context.watch<B>().state as B;
+      _state = context.read<B>().state as B;
     }
     _sub(_state);
   }
