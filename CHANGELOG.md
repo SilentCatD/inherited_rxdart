@@ -1,3 +1,7 @@
+## 1.6.2
+
+* Hotfix context.watch
+
 ## 1.6.1
 
 * Hotfix not rebuild as dependency changed.
