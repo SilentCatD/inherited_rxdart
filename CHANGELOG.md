@@ -1,3 +1,7 @@
+## 2.0.0+1
+
+* Format
+
 ## 2.0.0
 
 * Remove Rx static class to avoid name clash, it's functionality is now a part of RxProvider

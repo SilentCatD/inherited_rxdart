@@ -14,14 +14,7 @@ export 'src/rx_builder.dart' show RxBuilder, RxViewModelBuilder, RxValueBuilder;
 export 'src/rx_listener.dart'
     show RxStateListener, RxViewModelListener, RxListener;
 export 'src/rx_provider.dart'
-    show
-        RxProvider,
-        RxContext,
-        RxBloc,
-        RxViewModel,
-        RxCubit,
-        RxBase,
-        RxValue;
+    show RxProvider, RxContext, RxBloc, RxViewModel, RxCubit, RxBase, RxValue;
 export 'src/rx_selector.dart' show RxSelector, RxViewModelSelector;
 export 'src/rx_consumer.dart'
     show RxStateConsumer, RxViewModelConsumer, RxConsumer;
