@@ -15,7 +15,7 @@ import 'rx_provider.dart';
 ///
 /// This mixin introduce another stream from ui to [RxCubit]/[RxBloc] that can
 /// be used to handle an event type and a subtype of it. Which each can be
-/// transformed using [StreamTransformer].
+/// transformed using the second parameter of the mixin [on] function.
 ///
 /// This mixin take in 2 generic type. The first one is the state's type [S]
 /// of [RxCubit]/[RxBloc] and the second one is event type [E].
@@ -53,7 +53,7 @@ mixin EventDispatcherMixin<S, E> on RxCubit<S> {
   @protected
   @nonVirtual
   void on<T extends E>(EventCallback<T> callBack,
-      {StreamTransformer<T, T>? transformer}) {
+      {Stream<T> Function(Stream<T> events)? transform}) {
     assert(T != dynamic);
     assert(() {
       if (_eventSet.contains(T)) {
@@ -64,8 +64,8 @@ mixin EventDispatcherMixin<S, E> on RxCubit<S> {
     _eventSet.add(T);
     Stream<T> subEventStream =
         _eventStream.where((event) => event is T).cast<T>();
-    if (transformer != null) {
-      subEventStream = subEventStream.transform(transformer);
+    if (transform != null) {
+      subEventStream = transform(subEventStream);
     }
     final subSubscription = subEventStream.listen((event) async {
       await callBack.call(event);
