@@ -17,7 +17,6 @@ export 'src/rx_provider.dart'
     show
         RxProvider,
         RxContext,
-        Rx,
         RxBloc,
         RxViewModel,
         RxCubit,
