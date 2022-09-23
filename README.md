@@ -157,12 +157,13 @@ widget subtree.
 
 - ServiceProvider
 
-### Rx
+### Register global Singleton
 
 Though not really inherited, this library do provide the use of register an instance through GetIt,
-and use them in builders, listeners .value constructor. This feature can be access with Rx static method
+and use them in builders, listeners .value constructor. This feature can be access with RxProvider static method
 
 ### EventDispatcherMixin
+
 Mixin to add event dispatch capability to RxCubit/RxBloc and register
 a callback to those event.
 
