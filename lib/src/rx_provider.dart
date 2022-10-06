@@ -91,11 +91,15 @@ class RxProvider<B extends RxBase> extends SingleChildStatefulWidget {
 
   const RxProvider({
     Key? key,
-    required Create<B> create,
+    Create<B>? create,
+    CreateWithContext<B>? createCtx,
     Widget? child,
   })  : _isCreated = true,
         _create = create,
+        _createWithContext = createCtx,
         _bloc = null,
+        assert(createCtx == null || create == null,
+            "only one create function can be specified"),
         super(key: key, child: child);
 
   const RxProvider.value({
@@ -105,11 +109,13 @@ class RxProvider<B extends RxBase> extends SingleChildStatefulWidget {
   })  : _bloc = value,
         _isCreated = false,
         _create = null,
+        _createWithContext = null,
         super(key: key, child: child);
 
   final B? _bloc;
   final bool _isCreated;
   final Create<B>? _create;
+  final CreateWithContext<B>? _createWithContext;
 
   /// Method to locate and get the provided bloc of this subtree.
   ///
@@ -185,7 +191,11 @@ class _RxProviderState<B extends RxBase>
     super.initState();
     _isCreated = widget._isCreated;
     if (_isCreated) {
-      _bloc = widget._create!.call();
+      if (widget._createWithContext != null) {
+        _bloc = widget._createWithContext!.call(context);
+      } else {
+        _bloc = widget._create!.call();
+      }
       _bloc.init();
       _bloc._disposeWhenPop = false;
     } else {
