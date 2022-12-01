@@ -1,3 +1,7 @@
+## 2.2.0
+
+* Add listeners state callback
+
 ## 2.1.0
 
 * Add create with context function
@@ -100,8 +104,7 @@
 
 ## 0.0.5
 
-* Internal changes of RxBlocBase, add function to notify a new state has
-  been emitted.
+* Internal changes of RxBlocBase, add function to notify a new state has been emitted.
 * Add initialized variable to bloc, to indicate whether it has been initialized.
 
 ## 0.0.4
