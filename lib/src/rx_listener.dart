@@ -12,20 +12,29 @@ import 'type_def.dart';
 /// of type [B].
 abstract class RxListenerBase<B extends RxBase<S>, S> extends StatefulWidget {
   /// Default constructor, will automatically lookup for RxBase of type [B].
-  const RxListenerBase({Key? key, required this.child, this.stateCallback})
-      : _value = null,
+  const RxListenerBase({
+    Key? key,
+    required this.child,
+    this.stateCallback,
+    this.shouldCallback,
+  })  : _value = null,
         _fromValue = false,
         super(key: key);
 
   /// Value constructor, take a concrete instance of RxBase.
-  const RxListenerBase.value(
-      {Key? key, required this.child, this.stateCallback, required B value})
-      : _value = value,
+  const RxListenerBase.value({
+    Key? key,
+    required this.child,
+    this.stateCallback,
+    required B value,
+    this.shouldCallback,
+  })  : _value = value,
         _fromValue = true,
         super(key: key);
 
   /// This widget require a child, which will not be affected by these callback
   final Widget child;
+  final ShouldRebuildWidget<S>? shouldCallback;
   final RxBlocEventListener<S>? stateCallback;
   final B? _value;
   final bool _fromValue;
@@ -38,13 +47,16 @@ class _RxListenerBaseState<B extends RxBase<S>, S>
     extends State<RxListenerBase<B, S>> {
   late B _bloc;
   late final bool _fromValue;
-
+  late S _state;
   StreamSubscription<S>? _stateSubscription;
 
   void _sub(B bloc) {
     _stateSubscription = bloc.stateStream.listen((state) {
       if (!mounted) return;
-      widget.stateCallback?.call(context, state);
+      if (widget.shouldCallback?.call(_state, state) ?? true) {
+        _state = state;
+        widget.stateCallback?.call(context, state);
+      }
     });
   }
 
@@ -62,6 +74,7 @@ class _RxListenerBaseState<B extends RxBase<S>, S>
     } else {
       _bloc = context.read<B>();
     }
+    _state = _bloc.state;
     _sub(_bloc);
   }
 
@@ -105,19 +118,29 @@ class _RxListenerBaseState<B extends RxBase<S>, S>
 /// * [RxViewModel]
 class RxStateListener<B extends RxCubit<S>, S> extends RxListenerBase<B, S> {
   /// Default constructor, will automatically lookup for RxCubit of type [B].
-  const RxStateListener(
-      {Key? key, required Widget child, RxBlocEventListener<S>? stateCallback})
-      : super(key: key, stateCallback: stateCallback, child: child);
+  const RxStateListener({
+    Key? key,
+    required Widget child,
+    RxBlocEventListener<S>? stateCallback,
+    ShouldRebuildWidget<S>? shouldCallback,
+  }) : super(
+          key: key,
+          stateCallback: stateCallback,
+          shouldCallback: shouldCallback,
+          child: child,
+        );
 
   /// Value constructor, take a concrete instance of RxCubit.
   const RxStateListener.value(
       {Key? key,
       required Widget child,
       RxBlocEventListener<S>? stateCallback,
+      ShouldRebuildWidget<S>? shouldCallback,
       required B value})
       : super.value(
           key: key,
           stateCallback: stateCallback,
+          shouldCallback: shouldCallback,
           child: child,
           value: value,
         );
@@ -266,12 +289,18 @@ class _RxViewModelListenerState<B extends RxViewModel>
 /// ```
 class RxListener<B extends RxBloc<S, N>, S, N> extends RxListenerBase<B, S> {
   /// Default constructor, will automatically lookup for RxBloc of type [B].
-  const RxListener(
-      {Key? key,
-      required Widget child,
-      RxBlocEventListener<S>? stateCallback,
-      this.notificationCallback})
-      : super(key: key, stateCallback: stateCallback, child: child);
+  const RxListener({
+    Key? key,
+    required Widget child,
+    RxBlocEventListener<S>? stateCallback,
+    ShouldRebuildWidget<S>? shouldStateCallback,
+    this.notificationCallback,
+  }) : super(
+          key: key,
+          stateCallback: stateCallback,
+          child: child,
+          shouldCallback: shouldStateCallback,
+        );
 
   /// Value constructor, take a concrete instance of RxBloc.
   const RxListener.value(
@@ -279,9 +308,15 @@ class RxListener<B extends RxBloc<S, N>, S, N> extends RxListenerBase<B, S> {
       required B value,
       required Widget child,
       RxBlocEventListener<S>? stateCallback,
+      ShouldRebuildWidget<S>? shouldStateCallback,
       this.notificationCallback})
       : super.value(
-            key: key, stateCallback: stateCallback, child: child, value: value);
+          key: key,
+          stateCallback: stateCallback,
+          child: child,
+          value: value,
+          shouldCallback: shouldStateCallback,
+        );
   final RxBlocEventListener<N>? notificationCallback;
 
   @override
