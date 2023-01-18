@@ -40,8 +40,7 @@ class ServiceProvider<S> extends SingleChildStatefulWidget {
       : _service = create(),
         super(key: key, child: child);
 
-  const ServiceProvider.value(
-      {Key? key, required Widget child, required S value})
+  const ServiceProvider.value({Key? key, Widget? child, required S value})
       : _service = value,
         super(key: key, child: child);
   final S _service;

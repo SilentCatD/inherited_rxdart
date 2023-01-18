@@ -1,3 +1,7 @@
+## 2.2.1
+
+* Remove required in service provider
+
 ## 2.2.0
 
 * Add listeners state callback
