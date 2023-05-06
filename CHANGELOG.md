@@ -1,3 +1,7 @@
+## 2.2.2
+
+* Fix return type of GetIt.
+
 ## 2.2.1
 
 * Remove required in service provider

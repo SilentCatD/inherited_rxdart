@@ -64,7 +64,7 @@ class RxProvider<B extends RxBase> extends SingleChildStatefulWidget {
   /// Function to add an Rx, which can be get with [RxProvider.get]. This function will
   /// not the [init] Function of [RxBase] if [T] is subtype of [RxBase]
   static void putI<T extends Object>(T instance) {
-    return GetIt.I.registerSingleton<T>(instance);
+    GetIt.I.registerSingleton<T>(instance);
   }
 
   /// Function to get instance of type [T]
